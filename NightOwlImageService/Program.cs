@@ -1,15 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
+using NightOwlImageService.Services;
+using Topshelf;
+
 
 namespace NightOwlImageService
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+       public  static void Main()
         {
+            HostFactory.Run(x =>                                 //1
+            {
+                x.Service<SendImageToSign>(s =>                        //2
+                {
+                    s.ConstructUsing(name => new SendImageToSign());     //3
+                    s.WhenStarted(tc => tc.Start());              //4
+                    s.WhenStopped(tc => tc.Stop());               //5
+                });
+                x.RunAsLocalSystem();                            //6
+
+                x.SetDescription("Send Images to NightOwlSigns");        //7
+                x.SetDisplayName("NightOwlImageSend");                       
+                x.SetServiceName("NightOwlImageSend");                       
+            });
         }
     }
 }
