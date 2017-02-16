@@ -12,9 +12,9 @@ namespace NightOwlImageService
         {
             HostFactory.Run(x =>                                 //1
             {
-                x.Service<SendImageToSign>(s =>                        //2
+                x.Service<ServiceRunner>(s =>                        //2
                 {
-                    s.ConstructUsing(name => new SendImageToSign());     //3
+                    s.ConstructUsing(name => new ServiceRunner());     //3
                     s.WhenStarted(tc => tc.Start());              //4
                     s.WhenStopped(tc => tc.Stop());               //5
                 });

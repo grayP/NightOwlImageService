@@ -4,18 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using NightOwlImageService.Classes;
 
 namespace NightOwlImageService.Services
 {
-   public class SendImageToSign
+    public class SendImageToSign
     {
-        readonly Timer _timer;
-        public SendImageToSign()
-        {
-            _timer = new Timer { AutoReset = true };
-            _timer.Elapsed += (sender, eventArgs) => Console.WriteLine("It is {0} and all is well", DateTime.Now);
-        }
-        public void Start() { _timer.Start(); }
-        public void Stop() { _timer.Stop(); }
+         
+
     }
 }
