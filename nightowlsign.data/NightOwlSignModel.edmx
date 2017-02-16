@@ -1,0 +1,668 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ThumbNailSmall" Type="image" />
+          <Property Name="ThumbNailLarge" Type="image" />
+          <Property Name="ImageURL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Caption" Type="nvarchar(max)" />
+          <Property Name="DateTaken" Type="datetime" />
+          <Property Name="SignSize" Type="int" />
+        </EntityType>
+        <EntityType Name="Schedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="Valid" Type="bit" />
+          <Property Name="Monday" Type="bit" Nullable="false" />
+          <Property Name="Tuesday" Type="bit" Nullable="false" />
+          <Property Name="Wednesday" Type="bit" Nullable="false" />
+          <Property Name="Thursday" Type="bit" Nullable="false" />
+          <Property Name="Friday" Type="bit" Nullable="false" />
+          <Property Name="Saturday" Type="bit" Nullable="false" />
+          <Property Name="Sunday" Type="bit" Nullable="false" />
+          <Property Name="StartTime" Type="time" Precision="7" />
+          <Property Name="EndTime" Type="time" Precision="7" />
+          <Property Name="DefaultPlayList" Type="bit" Nullable="false" />
+          <Property Name="SignId" Type="int" />
+        </EntityType>
+        <EntityType Name="ScheduleImage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ScheduleID" Type="int" />
+          <Property Name="ImageID" Type="int" />
+        </EntityType>
+        <EntityType Name="ScheduleSign">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ScheduleID" Type="int" />
+          <Property Name="SignId" Type="int" />
+        </EntityType>
+        <EntityType Name="ScheduleStore">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ScheduleID" Type="int" />
+          <Property Name="StoreId" Type="int" />
+        </EntityType>
+        <EntityType Name="Sign">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Model" Type="nvarchar" MaxLength="50" />
+          <Property Name="Width" Type="int" />
+          <Property Name="Height" Type="int" />
+          <Property Name="IPAddress" Type="nvarchar" MaxLength="20" />
+          <Property Name="InstallDate" Type="datetime" />
+          <Property Name="StoreId" Type="int" />
+        </EntityType>
+        <EntityType Name="Store">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Suburb" Type="nvarchar" MaxLength="50" />
+          <Property Name="State" Type="nvarchar" MaxLength="10" />
+          <Property Name="Latitude" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Longitude" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Manager" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="SignId" Type="int" />
+          <Property Name="IpAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="SubMask" Type="nvarchar" MaxLength="50" />
+          <Property Name="Port" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="StoreSign">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StoreId" Type="int" />
+          <Property Name="SignId" Type="int" />
+          <Property Name="InstallDate" Type="datetime" />
+          <Property Name="DateUpdated" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nchar" MaxLength="10" />
+          <Property Name="IPAddress" Type="nvarchar" MaxLength="20" />
+          <Property Name="SubMask" Type="varchar" MaxLength="20" />
+          <Property Name="Port" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'nightowlsign.dbo.ImagesAndSign' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ImagesAndSign">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ThumbNailSmall" Type="image" />
+          <Property Name="ThumbNailLarge" Type="image" />
+          <Property Name="ImageURL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Caption" Type="nvarchar(max)" />
+          <Property Name="DateTaken" Type="datetime" />
+          <Property Name="SignSize" Type="int" />
+          <Property Name="Width" Type="int" />
+          <Property Name="Height" Type="int" />
+          <Property Name="Model" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'nightowlsign.dbo.LastInstalledSchedule' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="LastInstalledSchedule">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Manager" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="ScheduleName" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastInstalled" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'nightowlsign.dbo.ScheduleAndSign' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ScheduleAndSign">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Monday" />
+            <PropertyRef Name="Tuesday" />
+            <PropertyRef Name="Wednesday" />
+            <PropertyRef Name="Thursday" />
+            <PropertyRef Name="Friday" />
+            <PropertyRef Name="Saturday" />
+            <PropertyRef Name="Sunday" />
+            <PropertyRef Name="DefaultPlayList" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="Valid" Type="bit" />
+          <Property Name="Monday" Type="bit" Nullable="false" />
+          <Property Name="Tuesday" Type="bit" Nullable="false" />
+          <Property Name="Wednesday" Type="bit" Nullable="false" />
+          <Property Name="Thursday" Type="bit" Nullable="false" />
+          <Property Name="Friday" Type="bit" Nullable="false" />
+          <Property Name="Saturday" Type="bit" Nullable="false" />
+          <Property Name="Sunday" Type="bit" Nullable="false" />
+          <Property Name="StartTime" Type="time" Precision="7" />
+          <Property Name="EndTime" Type="time" Precision="7" />
+          <Property Name="DefaultPlayList" Type="bit" Nullable="false" />
+          <Property Name="SignId" Type="int" />
+          <Property Name="Model" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="StoreAndSign">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Suburb" Type="nvarchar" MaxLength="50" />
+          <Property Name="State" Type="nvarchar" MaxLength="10" />
+          <Property Name="Latitude" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Longitude" Type="decimal" Precision="10" Scale="4" />
+          <Property Name="Manager" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="SignId" Type="int" />
+          <Property Name="IpAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="SubMask" Type="nvarchar" MaxLength="50" />
+          <Property Name="Port" Type="nvarchar" MaxLength="10" />
+          <Property Name="Model" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityContainer Name="ModelsStoreContainer">
+          <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Schedule" EntityType="Self.Schedule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ScheduleImage" EntityType="Self.ScheduleImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ScheduleSign" EntityType="Self.ScheduleSign" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ScheduleStore" EntityType="Self.ScheduleStore" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sign" EntityType="Self.Sign" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StoreSign" EntityType="Self.StoreSign" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImagesAndSign" EntityType="Self.ImagesAndSign" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ImagesAndSign].[Id] AS [Id], 
+    [ImagesAndSign].[ThumbNailSmall] AS [ThumbNailSmall], 
+    [ImagesAndSign].[ThumbNailLarge] AS [ThumbNailLarge], 
+    [ImagesAndSign].[ImageURL] AS [ImageURL], 
+    [ImagesAndSign].[Caption] AS [Caption], 
+    [ImagesAndSign].[DateTaken] AS [DateTaken], 
+    [ImagesAndSign].[SignSize] AS [SignSize], 
+    [ImagesAndSign].[Width] AS [Width], 
+    [ImagesAndSign].[Height] AS [Height], 
+    [ImagesAndSign].[Model] AS [Model]
+    FROM [dbo].[ImagesAndSign] AS [ImagesAndSign]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="LastInstalledSchedule" EntityType="Self.LastInstalledSchedule" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [LastInstalledSchedule].[id] AS [id], 
+    [LastInstalledSchedule].[Name] AS [Name], 
+    [LastInstalledSchedule].[Manager] AS [Manager], 
+    [LastInstalledSchedule].[Phone] AS [Phone], 
+    [LastInstalledSchedule].[ScheduleName] AS [ScheduleName], 
+    [LastInstalledSchedule].[LastInstalled] AS [LastInstalled]
+    FROM [dbo].[LastInstalledSchedule] AS [LastInstalledSchedule]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ScheduleAndSign" EntityType="Self.ScheduleAndSign" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ScheduleAndSign].[Id] AS [Id], 
+    [ScheduleAndSign].[Name] AS [Name], 
+    [ScheduleAndSign].[StartDate] AS [StartDate], 
+    [ScheduleAndSign].[EndDate] AS [EndDate], 
+    [ScheduleAndSign].[Valid] AS [Valid], 
+    [ScheduleAndSign].[Monday] AS [Monday], 
+    [ScheduleAndSign].[Tuesday] AS [Tuesday], 
+    [ScheduleAndSign].[Wednesday] AS [Wednesday], 
+    [ScheduleAndSign].[Thursday] AS [Thursday], 
+    [ScheduleAndSign].[Friday] AS [Friday], 
+    [ScheduleAndSign].[Saturday] AS [Saturday], 
+    [ScheduleAndSign].[Sunday] AS [Sunday], 
+    [ScheduleAndSign].[StartTime] AS [StartTime], 
+    [ScheduleAndSign].[EndTime] AS [EndTime], 
+    [ScheduleAndSign].[DefaultPlayList] AS [DefaultPlayList], 
+    [ScheduleAndSign].[SignId] AS [SignId], 
+    [ScheduleAndSign].[Model] AS [Model]
+    FROM [dbo].[ScheduleAndSign] AS [ScheduleAndSign]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="StoreAndSign" EntityType="Self.StoreAndSign" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [StoreAndSign].[id] AS [id], 
+    [StoreAndSign].[Name] AS [Name], 
+    [StoreAndSign].[Address] AS [Address], 
+    [StoreAndSign].[Suburb] AS [Suburb], 
+    [StoreAndSign].[State] AS [State], 
+    [StoreAndSign].[Latitude] AS [Latitude], 
+    [StoreAndSign].[Longitude] AS [Longitude], 
+    [StoreAndSign].[Manager] AS [Manager], 
+    [StoreAndSign].[Phone] AS [Phone], 
+    [StoreAndSign].[SignId] AS [SignId], 
+    [StoreAndSign].[IpAddress] AS [IpAddress], 
+    [StoreAndSign].[SubMask] AS [SubMask], 
+    [StoreAndSign].[Port] AS [Port], 
+    [StoreAndSign].[Model] AS [Model]
+    FROM [dbo].[StoreAndSign] AS [StoreAndSign]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Sign">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Width" Type="Int32" />
+          <Property Name="Height" Type="Int32" />
+          <Property Name="IPAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="InstallDate" Type="DateTime" Precision="3" />
+          <Property Name="StoreId" Type="Int32" />
+        </EntityType>
+        <EntityContainer Name="nightowlsign_Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Signs" EntityType="Self.Sign" />
+          <EntitySet Name="Store" EntityType="Models.Store" />
+          <EntitySet Name="StoreSigns" EntityType="Models.StoreSign" />
+          <EntitySet Name="Images" EntityType="Models.Image" />
+          <EntitySet Name="Schedules" EntityType="Models.Schedule" />
+          <EntitySet Name="ScheduleStores" EntityType="Models.ScheduleStore" />
+          <EntitySet Name="ScheduleImages" EntityType="Models.ScheduleImage" />
+          <EntitySet Name="ScheduleSigns" EntityType="Models.ScheduleSign" />
+          <EntitySet Name="ImagesAndSigns" EntityType="Models.ImagesAndSign" />
+          <EntitySet Name="LastInstalledSchedules" EntityType="Models.LastInstalledSchedule" />
+          <EntitySet Name="StoreAndSigns" EntityType="Models.StoreAndSign" />
+          <EntitySet Name="ScheduleAndSigns" EntityType="Models.ScheduleAndSign" />
+        </EntityContainer>
+        <EntityType Name="Store">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Suburb" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Longitude" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Manager" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SignId" Type="Int32" />
+          <Property Name="IpAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SubMask" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Port" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="StoreSign">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StoreId" Type="Int32" />
+          <Property Name="SignId" Type="Int32" />
+          <Property Name="InstallDate" Type="DateTime" Precision="3" />
+          <Property Name="DateUpdated" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="IPAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SubMask" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Port" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ThumbNailSmall" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ThumbNailLarge" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ImageURL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Caption" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateTaken" Type="DateTime" Precision="3" />
+          <Property Name="SignSize" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Schedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="Valid" Type="Boolean" />
+          <Property Name="Monday" Type="Boolean" Nullable="false" />
+          <Property Name="Tuesday" Type="Boolean" Nullable="false" />
+          <Property Name="Wednesday" Type="Boolean" Nullable="false" />
+          <Property Name="Thursday" Type="Boolean" Nullable="false" />
+          <Property Name="Friday" Type="Boolean" Nullable="false" />
+          <Property Name="Saturday" Type="Boolean" Nullable="false" />
+          <Property Name="Sunday" Type="Boolean" Nullable="false" />
+          <Property Name="StartTime" Type="Time" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="DefaultPlayList" Type="Boolean" Nullable="false" />
+          <Property Name="SignId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ScheduleStore">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ScheduleID" Type="Int32" />
+          <Property Name="StoreId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ScheduleImage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ScheduleID" Type="Int32" />
+          <Property Name="ImageID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ScheduleSign">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ScheduleID" Type="Int32" />
+          <Property Name="SignId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ImagesAndSign">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ThumbNailSmall" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ThumbNailLarge" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ImageURL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Caption" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateTaken" Type="DateTime" Precision="3" />
+          <Property Name="SignSize" Type="Int32" />
+          <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Width" Type="Int32" />
+          <Property Name="Height" Type="Int32" />
+        </EntityType>
+        <EntityType Name="LastInstalledSchedule">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Manager" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ScheduleName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastInstalled" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="StoreAndSign">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Suburb" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Latitude" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Longitude" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="Manager" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SignId" Type="Int32" />
+          <Property Name="IpAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SubMask" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Port" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ScheduleAndSign">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Monday" />
+            <PropertyRef Name="Tuesday" />
+            <PropertyRef Name="Wednesday" />
+            <PropertyRef Name="Thursday" />
+            <PropertyRef Name="Friday" />
+            <PropertyRef Name="Saturday" />
+            <PropertyRef Name="Sunday" />
+            <PropertyRef Name="DefaultPlayList" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="Valid" Type="Boolean" />
+          <Property Name="Monday" Type="Boolean" Nullable="false" />
+          <Property Name="Tuesday" Type="Boolean" Nullable="false" />
+          <Property Name="Wednesday" Type="Boolean" Nullable="false" />
+          <Property Name="Thursday" Type="Boolean" Nullable="false" />
+          <Property Name="Friday" Type="Boolean" Nullable="false" />
+          <Property Name="Saturday" Type="Boolean" Nullable="false" />
+          <Property Name="Sunday" Type="Boolean" Nullable="false" />
+          <Property Name="StartTime" Type="Time" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="DefaultPlayList" Type="Boolean" Nullable="false" />
+          <Property Name="SignId" Type="Int32" />
+          <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelsStoreContainer" CdmEntityContainer="nightowlsign_Entities">
+          <EntitySetMapping Name="Signs">
+            <EntityTypeMapping TypeName="Models.Sign">
+              <MappingFragment StoreEntitySet="Sign">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="Width" ColumnName="Width" />
+                <ScalarProperty Name="Height" ColumnName="Height" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="InstallDate" ColumnName="InstallDate" />
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Store">
+            <EntityTypeMapping TypeName="Models.Store">
+              <MappingFragment StoreEntitySet="Store">
+                <ScalarProperty Name="Port" ColumnName="Port" />
+                <ScalarProperty Name="SubMask" ColumnName="SubMask" />
+                <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Manager" ColumnName="Manager" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Suburb" ColumnName="Suburb" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StoreSigns">
+            <EntityTypeMapping TypeName="Models.StoreSign">
+              <MappingFragment StoreEntitySet="StoreSign">
+                <ScalarProperty Name="Port" ColumnName="Port" />
+                <ScalarProperty Name="SubMask" ColumnName="SubMask" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="DateUpdated" ColumnName="DateUpdated" />
+                <ScalarProperty Name="InstallDate" ColumnName="InstallDate" />
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Images">
+            <EntityTypeMapping TypeName="Models.Image">
+              <MappingFragment StoreEntitySet="Image">
+                <ScalarProperty Name="SignSize" ColumnName="SignSize" />
+                <ScalarProperty Name="DateTaken" ColumnName="DateTaken" />
+                <ScalarProperty Name="Caption" ColumnName="Caption" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="ThumbNailLarge" ColumnName="ThumbNailLarge" />
+                <ScalarProperty Name="ThumbNailSmall" ColumnName="ThumbNailSmall" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Schedules">
+            <EntityTypeMapping TypeName="Models.Schedule">
+              <MappingFragment StoreEntitySet="Schedule">
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="DefaultPlayList" ColumnName="DefaultPlayList" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Sunday" ColumnName="Sunday" />
+                <ScalarProperty Name="Saturday" ColumnName="Saturday" />
+                <ScalarProperty Name="Friday" ColumnName="Friday" />
+                <ScalarProperty Name="Thursday" ColumnName="Thursday" />
+                <ScalarProperty Name="Wednesday" ColumnName="Wednesday" />
+                <ScalarProperty Name="Tuesday" ColumnName="Tuesday" />
+                <ScalarProperty Name="Monday" ColumnName="Monday" />
+                <ScalarProperty Name="Valid" ColumnName="Valid" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ScheduleStores">
+            <EntityTypeMapping TypeName="Models.ScheduleStore">
+              <MappingFragment StoreEntitySet="ScheduleStore">
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ScheduleImages">
+            <EntityTypeMapping TypeName="Models.ScheduleImage">
+              <MappingFragment StoreEntitySet="ScheduleImage">
+                <ScalarProperty Name="ImageID" ColumnName="ImageID" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ScheduleSigns">
+            <EntityTypeMapping TypeName="Models.ScheduleSign">
+              <MappingFragment StoreEntitySet="ScheduleSign">
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImagesAndSigns">
+            <EntityTypeMapping TypeName="Models.ImagesAndSign">
+              <MappingFragment StoreEntitySet="ImagesAndSign">
+                <ScalarProperty Name="Height" ColumnName="Height" />
+                <ScalarProperty Name="Width" ColumnName="Width" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="SignSize" ColumnName="SignSize" />
+                <ScalarProperty Name="DateTaken" ColumnName="DateTaken" />
+                <ScalarProperty Name="Caption" ColumnName="Caption" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="ThumbNailLarge" ColumnName="ThumbNailLarge" />
+                <ScalarProperty Name="ThumbNailSmall" ColumnName="ThumbNailSmall" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LastInstalledSchedules">
+            <EntityTypeMapping TypeName="Models.LastInstalledSchedule">
+              <MappingFragment StoreEntitySet="LastInstalledSchedule">
+                <ScalarProperty Name="LastInstalled" ColumnName="LastInstalled" />
+                <ScalarProperty Name="ScheduleName" ColumnName="ScheduleName" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Manager" ColumnName="Manager" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StoreAndSigns">
+            <EntityTypeMapping TypeName="Models.StoreAndSign">
+              <MappingFragment StoreEntitySet="StoreAndSign">
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="Port" ColumnName="Port" />
+                <ScalarProperty Name="SubMask" ColumnName="SubMask" />
+                <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Manager" ColumnName="Manager" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Suburb" ColumnName="Suburb" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ScheduleAndSigns">
+            <EntityTypeMapping TypeName="Models.ScheduleAndSign">
+              <MappingFragment StoreEntitySet="ScheduleAndSign">
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="DefaultPlayList" ColumnName="DefaultPlayList" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Sunday" ColumnName="Sunday" />
+                <ScalarProperty Name="Saturday" ColumnName="Saturday" />
+                <ScalarProperty Name="Friday" ColumnName="Friday" />
+                <ScalarProperty Name="Thursday" ColumnName="Thursday" />
+                <ScalarProperty Name="Wednesday" ColumnName="Wednesday" />
+                <ScalarProperty Name="Tuesday" ColumnName="Tuesday" />
+                <ScalarProperty Name="Monday" ColumnName="Monday" />
+                <ScalarProperty Name="Valid" ColumnName="Valid" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

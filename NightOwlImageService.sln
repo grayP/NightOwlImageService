@@ -5,7 +5,11 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NightOwlImageService", "NightOwlImageService\NightOwlImageService.csproj", "{6B4827E4-6F87-4DC7-B1EB-65C9551344E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "imageprocessor", "..\nightowlsigns\imageprocessor\imageprocessor.csproj", "{150B2F5D-B12E-43AE-8E73-018B30A93918}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "basemodel", "basemodel\basemodel.csproj", "{CE5565BE-0F62-4D0D-911B-BE540AF7D2A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "imageprocessor", "imageprocessor\imageprocessor.csproj", "{150B2F5D-B12E-43AE-8E73-018B30A93918}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nightowlsign.data", "nightowlsign.data\nightowlsign.data.csproj", "{E006FAC5-FA56-4A62-921C-2E0CC550AE5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +21,18 @@ Global
 		{6B4827E4-6F87-4DC7-B1EB-65C9551344E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B4827E4-6F87-4DC7-B1EB-65C9551344E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B4827E4-6F87-4DC7-B1EB-65C9551344E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE5565BE-0F62-4D0D-911B-BE540AF7D2A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE5565BE-0F62-4D0D-911B-BE540AF7D2A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE5565BE-0F62-4D0D-911B-BE540AF7D2A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE5565BE-0F62-4D0D-911B-BE540AF7D2A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{150B2F5D-B12E-43AE-8E73-018B30A93918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{150B2F5D-B12E-43AE-8E73-018B30A93918}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{150B2F5D-B12E-43AE-8E73-018B30A93918}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{150B2F5D-B12E-43AE-8E73-018B30A93918}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E006FAC5-FA56-4A62-921C-2E0CC550AE5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E006FAC5-FA56-4A62-921C-2E0CC550AE5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E006FAC5-FA56-4A62-921C-2E0CC550AE5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E006FAC5-FA56-4A62-921C-2E0CC550AE5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
