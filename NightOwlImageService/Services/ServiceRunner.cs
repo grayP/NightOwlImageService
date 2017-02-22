@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Timers;
+using ImageProcessor.Services;
+using nightowlsign.data;
+using nightowlsign.data.Models;
+using nightowlsign.data.Models.Stores;
 
 namespace NightOwlImageService.Services
 {
@@ -10,25 +14,37 @@ namespace NightOwlImageService.Services
         public void Start() { _timer.Start(); }
         public void Stop() { _timer.Stop(); }
 
-        SendImageToSign _sendImageToSign;
-
 
         public ServiceRunner()
         {
 
-            _sendImageToSign = new SendImageToSign();
-            _timer = new Timer { AutoReset = true };
-            _timer.Interval = 5000;
-            _timer.Elapsed += (sender, eventArgs) =>DoTheWork();
-
-
+            //_timer = new Timer { AutoReset = true };
+           // _timer.Interval = 5000;
+           // _timer.Elapsed += (sender, eventArgs) => DoTheWork();
+            DoTheWork();
         }
 
-        public void  DoTheWork()
+        public void DoTheWork()
         {
-            Console.WriteLine("The work is done");
 
+            StoreViewModel svm = new StoreViewModel {EventCommand = "List"};
+            svm.HandleRequest();
+            foreach (StoreAndSign storeAndSign in svm.StoresAndSigns)
+            {
+                if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule.Id != 0)
+                {
+                    SendTheScheduleToSign(storeAndSign);
+                    Console.WriteLine(
+                        $"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
+                }
+            }
+           
         }
 
+        private void SendTheScheduleToSign(StoreAndSign storeAndSign)
+        {
+            CreateFilesToSend createFilesToSend = new CreateFilesToSend(storeAndSign);
+            createFilesToSend.Run();
+        }
     }
 }

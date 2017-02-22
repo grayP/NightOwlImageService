@@ -32,30 +32,25 @@ namespace nightowlsign.data.Models
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
-                //var query = (from s in db.Images
-                //             join ss in db.ScheduleSigns.Where(ss => ss.ScheduleID == scheduleId)
-                //             on s.SignSize equals ss.SignId
-                //             select new ImageSelect() { ImageId = s.Id, Name = s.Caption, ThumbNail = s.ThumbNailSmall });
-                var query = (from s in db.Images.Where(s=>s.SignSize==signId)
+                var query = (from s in db.Images.Where(s => s.SignSize == signId)
                              select new ImageSelect()
                              {
                                  ImageId = s.Id,
                                  Name = s.Caption,
                                  ThumbNail = s.ThumbNailLarge,
                                  SignId = signId,
-                                 SignSize = s.SignSize ??0
+                                 SignSize = s.SignSize ?? 0
                              });
                 return query.ToList();
             }
         }
-
 
         public data.Image Find(int id)
         {
             data.Image ret = null;
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
-                ret = db.Images.FirstOrDefault(e=>e.Id==id);
+                ret = db.Images.FirstOrDefault(e => e.Id == id);
             }
             return ret;
         }
@@ -64,11 +59,11 @@ namespace nightowlsign.data.Models
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
-             var ret= db.ScheduleImages.Where(e => e.ImageID == imageId);
+                var ret = db.ScheduleImages.Where(e => e.ImageID == imageId);
                 db.ScheduleImages.RemoveRange(ret);
                 db.SaveChanges();
-            }      
-    }
+            }
+        }
 
         public void UpdateImageList(ImageSelect imageSelect, data.Schedule schedule)
         {

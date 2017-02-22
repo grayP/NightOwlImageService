@@ -38,15 +38,12 @@ namespace nightowlsign.data.Models
                 var query = (from s in db.Images
                              join si in db.ScheduleImages.Where(si => si.ScheduleID == scheduleId)
                              on s.Id equals si.ImageID
-                             join ss in db.ScheduleSigns on si.ScheduleID equals ss.ScheduleID
-                             join sign in db.Signs on ss.SignId equals sign.id
                              select new ImageSelect()
                              {
                                  ImageId = s.Id,
                                  Name = s.Caption,
                                  ThumbNail = s.ThumbNailSmall,
                                  ScheduleId = scheduleId,
-                                 SignSize = ss.SignId ?? 0,
                                  ImageUrl = s.ImageURL
                              });
                 return query.ToList();

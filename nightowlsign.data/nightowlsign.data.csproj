@@ -58,13 +58,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FindCurrentPlayList_Result.cs">
+      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GetCurrentPlayList_Result.cs">
+      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Image.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ImagesAndSign.cs">
-      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="LastInstalledSchedule.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
     <Compile Include="MetaData\MetaData.cs" />
@@ -133,6 +136,9 @@
     <Compile Include="StoreAndSign.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="StoreScheduleLog.cs">
+      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="StoreSign.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
@@ -145,6 +151,7 @@
     </EntityDeploy>
     <None Include="NightOwlSignModel.edmx.diagram">
       <DependentUpon>NightOwlSignModel.edmx</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -162,6 +169,12 @@
       <DependentUpon>NightOwlSignModel.edmx</DependentUpon>
       <LastGenOutput>NightOwlSignModel.cs</LastGenOutput>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\basemodel\basemodel.csproj">
+      <Project>{ce5565be-0f62-4d0d-911b-be540af7d2a3}</Project>
+      <Name>basemodel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

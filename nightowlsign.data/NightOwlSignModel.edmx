@@ -92,6 +92,17 @@
           <Property Name="SubMask" Type="nvarchar" MaxLength="50" />
           <Property Name="Port" Type="nvarchar" MaxLength="10" />
         </EntityType>
+        <EntityType Name="StoreScheduleLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StoreId" Type="int" />
+          <Property Name="ScheduleName" Type="nvarchar" MaxLength="255" />
+          <Property Name="InstalledOk" Type="bit" />
+          <Property Name="DateInstalled" Type="datetime" Nullable="false" />
+          <Property Name="ScheduleId" Type="int" />
+        </EntityType>
         <EntityType Name="StoreSign">
           <Key>
             <PropertyRef Name="id" />
@@ -122,19 +133,6 @@ warning 6002: The table/view 'nightowlsign.dbo.ImagesAndSign' does not have a pr
           <Property Name="Width" Type="int" />
           <Property Name="Height" Type="int" />
           <Property Name="Model" Type="nvarchar" MaxLength="50" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'nightowlsign.dbo.LastInstalledSchedule' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="LastInstalledSchedule">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Manager" Type="nvarchar" MaxLength="50" />
-          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
-          <Property Name="ScheduleName" Type="nvarchar" MaxLength="255" />
-          <Property Name="LastInstalled" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'nightowlsign.dbo.ScheduleAndSign' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -189,6 +187,8 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="Port" Type="nvarchar" MaxLength="10" />
           <Property Name="Model" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <Function Name="FindCurrentPlayList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetCurrentPlayList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="ModelsStoreContainer">
           <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule" EntityType="Self.Schedule" Schema="dbo" store:Type="Tables" />
@@ -197,6 +197,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySet Name="ScheduleStore" EntityType="Self.ScheduleStore" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sign" EntityType="Self.Sign" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StoreScheduleLog" EntityType="Self.StoreScheduleLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreSign" EntityType="Self.StoreSign" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ImagesAndSign" EntityType="Self.ImagesAndSign" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -211,16 +212,6 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
     [ImagesAndSign].[Height] AS [Height], 
     [ImagesAndSign].[Model] AS [Model]
     FROM [dbo].[ImagesAndSign] AS [ImagesAndSign]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="LastInstalledSchedule" EntityType="Self.LastInstalledSchedule" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [LastInstalledSchedule].[id] AS [id], 
-    [LastInstalledSchedule].[Name] AS [Name], 
-    [LastInstalledSchedule].[Manager] AS [Manager], 
-    [LastInstalledSchedule].[Phone] AS [Phone], 
-    [LastInstalledSchedule].[ScheduleName] AS [ScheduleName], 
-    [LastInstalledSchedule].[LastInstalled] AS [LastInstalled]
-    FROM [dbo].[LastInstalledSchedule] AS [LastInstalledSchedule]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ScheduleAndSign" EntityType="Self.ScheduleAndSign" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -288,9 +279,11 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySet Name="ScheduleImages" EntityType="Models.ScheduleImage" />
           <EntitySet Name="ScheduleSigns" EntityType="Models.ScheduleSign" />
           <EntitySet Name="ImagesAndSigns" EntityType="Models.ImagesAndSign" />
-          <EntitySet Name="LastInstalledSchedules" EntityType="Models.LastInstalledSchedule" />
           <EntitySet Name="StoreAndSigns" EntityType="Models.StoreAndSign" />
           <EntitySet Name="ScheduleAndSigns" EntityType="Models.ScheduleAndSign" />
+          <FunctionImport Name="GetCurrentPlayList" ReturnType="Collection(Models.GetCurrentPlayList_Result)" />
+          <EntitySet Name="StoreScheduleLogs" EntityType="Models.StoreScheduleLog" />
+          <FunctionImport Name="FindCurrentPlayList" ReturnType="Collection(Models.FindCurrentPlayList_Result)" />
         </EntityContainer>
         <EntityType Name="Store">
           <Key>
@@ -396,17 +389,6 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="Width" Type="Int32" />
           <Property Name="Height" Type="Int32" />
         </EntityType>
-        <EntityType Name="LastInstalledSchedule">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Manager" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ScheduleName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="LastInstalled" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="StoreAndSign">
           <Key>
             <PropertyRef Name="id" />
@@ -456,6 +438,28 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="SignId" Type="Int32" />
           <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <ComplexType Name="GetCurrentPlayList_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="SignId" Nullable="true" />
+          <Property Type="Int32" Name="Importance" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="StoreScheduleLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StoreId" Type="Int32" />
+          <Property Name="ScheduleName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InstalledOk" Type="Boolean" />
+          <Property Name="DateInstalled" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ScheduleId" Type="Int32" />
+        </EntityType>
+        <ComplexType Name="FindCurrentPlayList_Result">
+          <Property Type="Int32" Name="ScheduleId" Nullable="false" />
+          <Property Type="Int32" Name="SignId" Nullable="true" />
+          <Property Type="String" Name="ScheduleName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="Importance" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -587,18 +591,6 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LastInstalledSchedules">
-            <EntityTypeMapping TypeName="Models.LastInstalledSchedule">
-              <MappingFragment StoreEntitySet="LastInstalledSchedule">
-                <ScalarProperty Name="LastInstalled" ColumnName="LastInstalled" />
-                <ScalarProperty Name="ScheduleName" ColumnName="ScheduleName" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="Manager" ColumnName="Manager" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="StoreAndSigns">
             <EntityTypeMapping TypeName="Models.StoreAndSign">
               <MappingFragment StoreEntitySet="StoreAndSign">
@@ -642,6 +634,37 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetCurrentPlayList" FunctionName="Models.Store.GetCurrentPlayList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Models.GetCurrentPlayList_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="Importance" ColumnName="Importance" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="StoreScheduleLogs">
+            <EntityTypeMapping TypeName="Models.StoreScheduleLog">
+              <MappingFragment StoreEntitySet="StoreScheduleLog">
+                <ScalarProperty Name="ScheduleId" ColumnName="ScheduleId" />
+                <ScalarProperty Name="DateInstalled" ColumnName="DateInstalled" />
+                <ScalarProperty Name="InstalledOk" ColumnName="InstalledOk" />
+                <ScalarProperty Name="ScheduleName" ColumnName="ScheduleName" />
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="FindCurrentPlayList" FunctionName="Models.Store.FindCurrentPlayList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Models.FindCurrentPlayList_Result">
+                <ScalarProperty Name="ScheduleId" ColumnName="ScheduleId" />
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="ScheduleName" ColumnName="ScheduleName" />
+                <ScalarProperty Name="Importance" ColumnName="Importance" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

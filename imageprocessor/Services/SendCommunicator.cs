@@ -51,7 +51,7 @@ namespace ImageProcessor.Services
                 int uploadCount = 0;
                 foreach (
                     string programFileName in
-                    Directory.GetFiles(HttpContext.Current.Server.MapPath(ProgramFileDirectory), "*.lpb"))
+                    Directory.GetFiles(ProgramFileDirectory, "*.lpb"))
                 {
                     if (0 ==
                       Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1), GetPointerFromFileName(programFileName),

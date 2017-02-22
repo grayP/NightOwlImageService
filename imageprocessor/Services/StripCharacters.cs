@@ -11,7 +11,8 @@ namespace ImageProcessor.Services
         internal static string Strip(string scheduleName)
         {
             var invalidChars = " *./\\$";
-            string invalidCharsRemoved = new string(scheduleName
+            var notNullName = scheduleName ?? "";
+            string invalidCharsRemoved = new string(notNullName
               .Where(x => !invalidChars.Contains(x))
               .ToArray());
             return invalidCharsRemoved;

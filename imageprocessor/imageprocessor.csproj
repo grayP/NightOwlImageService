@@ -82,6 +82,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\basemodel\basemodel.csproj">
+      <Project>{ce5565be-0f62-4d0d-911b-be540af7d2a3}</Project>
+      <Name>basemodel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nightowlsign.data\nightowlsign.data.csproj">
+      <Project>{e006fac5-fa56-4a62-921c-2e0cc550ae5f}</Project>
+      <Name>nightowlsign.data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

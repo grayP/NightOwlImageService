@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
@@ -29,7 +30,6 @@ namespace nightowlsign.data.Models.Stores
                 id = 0,
                 StoreId = 0,
                 InstallDate = DateTime.Now
-              
             };
         }
         //Properties
@@ -44,23 +44,18 @@ namespace nightowlsign.data.Models.Stores
                 {
                     ret = ret.FindAll(p => p.Name.ToLower().StartsWith(Entity.Name));
                 }
-                GetPlayLists(ret);
+                GetSchedulesAndSign(ret);
                 return ret;
             }
         }
 
-        private void GetPlayLists(List<StoreAndSign> storeList)
+        private void GetSchedulesAndSign(List<StoreAndSign> storeList)
         {
             foreach (var store in storeList)
             {
-                store.AvailableSchedules = GetAvailableSchedules(store.id);
-                store.SelectedSchedules = GetSelectedSchedules(store.id);
-                
-                store.CurrentSchedule =
-                    store.SelectedSchedules.Where(x => x.DefaultPlayList == true)
-                        .OrderByDescending(x => x.Id)
-                        .DefaultIfEmpty(defaultSchedule).First();
-                store.Sign = GetSign(store.SignId ?? 0) ?? defaultSign;
+                store.CurrentSchedule = GetCurrentSchedule(store.SignId ?? 0);
+                store.LastInstalled = GetInstalledSchedule(store.id);
+                store.Sign = GetSign(store.SignId ?? 0);
             }
         }
 
@@ -69,8 +64,47 @@ namespace nightowlsign.data.Models.Stores
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 return db.Signs.Find(signId);
-            }        
+            }
         }
+
+        private data.Schedule GetInstalledSchedule(int storeId)
+        {
+            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            {
+                var ret = (from s in db.StoreScheduleLogs
+                           where s.StoreId == storeId
+                           select new { s.ScheduleId, s.ScheduleName, s.DateInstalled })
+                    .AsEnumerable()
+                    .OrderByDescending(x => x.DateInstalled)
+                    .Select(x => new data.Schedule()
+                    {
+                        Id = x.ScheduleId ?? 0,
+                        Name = x.ScheduleName,
+                    }).FirstOrDefault();
+
+                return ret;
+            }
+        }
+
+
+        private data.Schedule GetCurrentSchedule(int signId)
+        {
+            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            {
+                var playListResult = db.Database
+                    .SqlQuery<FindCurrentPlayList_Result>("FindCurrentPlayList")
+                    .OrderBy(x => x.Importance)
+                    .FirstOrDefault(x => x.SignId == signId);
+
+                data.Schedule getCurrentSchedule = new data.Schedule()
+                {
+                    Id = playListResult?.ScheduleId ?? 0,
+                    Name = playListResult?.ScheduleName
+                };
+                return getCurrentSchedule;
+            }
+        }
+
 
         private List<data.Schedule> GetSelectedSchedules(int storeId)
         {

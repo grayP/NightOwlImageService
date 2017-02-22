@@ -12,13 +12,13 @@ namespace nightowlsign.data
     using System;
     using System.Collections.Generic;
     
-    public partial class LastInstalledSchedule
+    public partial class StoreScheduleLog
     {
-        public int id { get; set; }
-        public string Name { get; set; }
-        public string Manager { get; set; }
-        public string Phone { get; set; }
+        public int Id { get; set; }
+        public Nullable<int> StoreId { get; set; }
         public string ScheduleName { get; set; }
-        public Nullable<System.DateTime> LastInstalled { get; set; }
+        public Nullable<bool> InstalledOk { get; set; }
+        public System.DateTime DateInstalled { get; set; }
+        public Nullable<int> ScheduleId { get; set; }
     }
 }
