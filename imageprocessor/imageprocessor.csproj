@@ -87,6 +87,10 @@
       <Project>{ce5565be-0f62-4d0d-911b-be540af7d2a3}</Project>
       <Name>basemodel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{f9b051e0-4837-4197-bd0d-8d943db2a964}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\nightowlsign.data\nightowlsign.data.csproj">
       <Project>{e006fac5-fa56-4a62-921c-2e0cc550ae5f}</Project>
       <Name>nightowlsign.data</Name>

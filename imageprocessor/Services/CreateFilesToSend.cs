@@ -10,7 +10,9 @@ using System.Web;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using Logger;
 using nightowlsign.Services;
+
 namespace ImageProcessor.Services
 
 {
@@ -23,6 +25,8 @@ namespace ImageProcessor.Services
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpp";
+        private mLogger Logger = new mLogger();
+
 
         public List<string> ProgramFiles { get; set; }
         public string PlaybillFileName { get; set; }
@@ -34,6 +38,7 @@ namespace ImageProcessor.Services
         private StoreAndSign _storeAndSign;
 
         public string DebugString { get; set; }
+
         public CreateFilesToSend(StoreAndSign storeAndSign)
         {
             _storeAndSign = storeAndSign;
@@ -42,13 +47,22 @@ namespace ImageProcessor.Services
 
         public void Run()
         {
-            _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
-            DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
-            DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-            DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
-            WriteImagesToDisk(_imagesToSend);
-            GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
-            GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
+            try
+            {
+                _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
+                DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
+                DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
+                DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
+                WriteImagesToDisk(_imagesToSend);
+                GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
+                GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
+                SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory, Logger);
+                senderCommunicator.Run();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLog(ex.Message);
+            }
         }
 
         private List<ImageSelect> GetImages(int scheduleId)
@@ -69,7 +83,6 @@ namespace ImageProcessor.Services
                 System.IO.File.Delete(fileName);
             }
         }
-
 
         private void WriteImagesToDisk(List<ImageSelect> images)
         {
@@ -106,7 +119,6 @@ namespace ImageProcessor.Services
                             Marshal.StringToHGlobalAnsi(fileName), (int)RenderMode.Stretch_to_fit_the_window,
                            0, 100, PeriodToShowImage, 0);
 
-
                         var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", counter));
                         DeleteOldProgramFile(programFileName);
                         if (
@@ -118,7 +130,6 @@ namespace ImageProcessor.Services
                 }
                 counter += 1;
             }
-
         }
 
         private void DeleteOldProgramFile(string fileAndPath)
@@ -165,7 +176,7 @@ namespace ImageProcessor.Services
         private string GeneratePlayBillFileName(string scheduleName)
         {
             var newName = StripCharacters.Strip(scheduleName);
-            return PlaybillFileName = string.Concat(ProgramFileDirectory, newName.Substring(0,Math.Min(8, newName.Length)), PlaybillFileExtension);
+            return PlaybillFileName = string.Concat(ProgramFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
         }
 
         private string GenerateProgramFileName(string sCounter)

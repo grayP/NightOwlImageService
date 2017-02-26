@@ -6,43 +6,52 @@ using System.Runtime.InteropServices;
 using nightowlsign.data.Models.StoreSignDto;
 using System.IO;
 using System.Web;
+using nightowlsign.data;
+using Serilog;
+using Logger;
 
 namespace ImageProcessor.Services
 {
     public class SendCommunicator
     {
         private int TimeOut = 3600;
-        //public string _playbillFile { get; set; }
-        private const string ProgramFileDirectory = "~/playBillFiles/";
+        private readonly StoreAndSign _storeAndSign;
+        private string _programFileDirectory;
+        private mLogger _logger;
 
-        //public SendCommunicator(string PlaybillFile)
-        //{
-        //    // this.ProgramFiles = ProgramFiles;
-        //    this._playbillFile = PlaybillFile;
-        //}
         public SendCommunicator()
         {
            //  this._playbillFile = FindPlaybillFile();
         }
 
+        public SendCommunicator(StoreAndSign storeAndSign, string programFileDirectory, mLogger logger)
+        {
+            _storeAndSign = storeAndSign;
+            _programFileDirectory = programFileDirectory;
+            _logger = logger;
+        }
+
+
+        internal void Run()
+        {
+            _logger.WriteLog(SendFiletoSign(_storeAndSign));
+        }
+
         private string FindPlaybillFile()
         {
-            DirectoryInfo di = new DirectoryInfo(HttpContext.Current.Server.MapPath(ProgramFileDirectory));
+            DirectoryInfo di = new DirectoryInfo(_programFileDirectory);
             var lppFile = di.EnumerateFiles().Select(f => f.Name)
                       .FirstOrDefault(f=>f.Contains(".lpp"));
-            return string.Concat(HttpContext.Current.Server.MapPath(ProgramFileDirectory),lppFile);
+            return string.Concat(_programFileDirectory,lppFile);
 
         }
 
-        public string SendFiletoSign(List<StoreSignDTO> StoresForSchedule)
+        public string SendFiletoSign(StoreAndSign storeAndSign)
         {
-            string displayMessage = string.Empty;
-            foreach (var storeSign in StoresForSchedule)
-            {
-                displayMessage = string.Format(InitComm(storeSign.IPAddress, storeSign.SubMask, storeSign.Port), Environment.NewLine);
-                displayMessage += string.Format(SendFiletoSign(), Environment.NewLine);
-            }
-            return displayMessage;
+            string logMessage = string.Empty;
+            logMessage = string.Format(InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port), Environment.NewLine);
+            logMessage += string.Format(SendFiletoSign(), Environment.NewLine);
+            return logMessage;
         }
         public string SendFiletoSign()
         {
@@ -51,7 +60,7 @@ namespace ImageProcessor.Services
                 int uploadCount = 0;
                 foreach (
                     string programFileName in
-                    Directory.GetFiles(ProgramFileDirectory, "*.lpb"))
+                    Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
                     if (0 ==
                       Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1), GetPointerFromFileName(programFileName),
@@ -78,7 +87,6 @@ namespace ImageProcessor.Services
         }
 
 
-
         public string InitComm(string ipAddress, string idCode, string port)
         {
             try
@@ -90,9 +98,9 @@ namespace ImageProcessor.Services
                 {
                     var responseNumber = Cp5200External.CP5200_Net_Init(dwIPAddr, nIPPort, dwIDCode, TimeOut);
                     if (responseNumber == 0)
-                        return string.Format("Communication established with {0} ", ipAddress);
+                        return $"Communication established with {ipAddress}";
                 }
-                return string.Format("Communication failed with Sign ");
+                return $"Communication failed with Sign {ipAddress} ";
             }
             catch (Exception ex)
             {
