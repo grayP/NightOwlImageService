@@ -1,33 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using ImageProcessor.CP5200;
 using ImageProcessor.Enums;
-using Serilog;
+using Logger;
+
 
 namespace ImageProcessor.Services
 {
     public class PlayBillFiles
     {
-        private IntPtr ProgramPointer; // { get; set; }
-        private IntPtr PlaybillPointer; // { get; set; }
         private readonly int _screenWidth;
         private readonly int _screenHeight;
         private readonly int _displayTime;
         private readonly byte _colourMode;
-        private readonly ILogger _logger;
         private int _playWindowNumber;
-        public PlayBillFiles(int width, int height, int displayTime, byte colourMode)
+        private mLogger _logger;
+        public PlayBillFiles(int width, int height, int displayTime, byte colourMode, mLogger logger)
         {
             _screenWidth = width;
             _screenHeight = height;
             _displayTime = displayTime;
             _colourMode = colourMode;
+            _logger = logger;
         }
-
 
         public IntPtr Program_Create()
         {
@@ -37,7 +33,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Program create threw an error");
+                _logger.WriteLog($"PlayBillFiles - Program_create - Program create threw an error: {ex.Message}");
                 return IntPtr.Zero;
             }
         }
@@ -79,7 +75,6 @@ namespace ImageProcessor.Services
                 nSpeed, nStay, nCompress);
         }
 
-
         public int Program_SaveFile(IntPtr programPointer, string filePathAndName)
         {
             System.IO.File.Delete(filePathAndName);
@@ -90,7 +85,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Program save threw error");
+                _logger.WriteLog($"PlayBillFiles - SaveFile - Program save threw error; {ex.Message}");
                 throw;
             }
         }
@@ -104,7 +99,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "PlayBill create threw an error");
+                _logger.WriteLog($"PlayBillFiles - playBill_Create - PlayBill create threw an error: {ex.Message}");
                 return IntPtr.Zero;
             }
         }
@@ -117,7 +112,6 @@ namespace ImageProcessor.Services
         public int Playbill_AddFile(IntPtr playBillPointer, string path)
         {
             return Cp5200External.CP5200_Playbill_AddFile(playBillPointer, Marshal.StringToHGlobalAnsi(path));
-
         }
 
         public int Playbill_SaveToFile(IntPtr playBillPointer, string filePathAndName)
@@ -129,7 +123,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Program save threw error");
+                _logger.WriteLog($"playBillFiles - SavetoFile - Program save to file threw error: {ex.Message}");
                 throw;
             }
         }

@@ -25,27 +25,24 @@ namespace ImageProcessor.Services
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpp";
-        private mLogger Logger = new mLogger();
 
-
-        public List<string> ProgramFiles { get; set; }
         public string PlaybillFileName { get; set; }
+        public bool Successfull { get; set; }
 
         private readonly Sign _signSizeForSchedule;
         private List<ImageSelect> _imagesToSend;
-        private readonly SignManager sm = new SignManager();
         private string _scheduleName;
         private StoreAndSign _storeAndSign;
+        private mLogger _logger;
 
-        public string DebugString { get; set; }
-
-        public CreateFilesToSend(StoreAndSign storeAndSign)
+        public CreateFilesToSend(StoreAndSign storeAndSign, mLogger logger)
         {
             _storeAndSign = storeAndSign;
             _signSizeForSchedule = storeAndSign.Sign;
+            _logger = logger;
         }
 
-        public void Run()
+        public bool Run()
         {
             try
             {
@@ -56,12 +53,13 @@ namespace ImageProcessor.Services
                 WriteImagesToDisk(_imagesToSend);
                 GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
                 GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
-                SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory, Logger);
-                senderCommunicator.Run();
-            }
+                SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory, _logger);
+                return senderCommunicator.Run();
+           }
             catch (Exception ex)
             {
-                Logger.WriteLog(ex.Message);
+                _logger.WriteLog($"CreateFilesToSend - Run - {ex.Message}");
+                return false;
             }
         }
 
@@ -98,11 +96,11 @@ namespace ImageProcessor.Services
             var PlayItemNo = -1;
             var PeriodToShowImage = 0xA; //Seconds
             byte colourMode = 0x77;
-            ProgramFiles = new List<string>();
+            // ProgramFiles = new List<string>();
 
             ushort screenWidth = (ushort)(_signSizeForSchedule.Width ?? 100);
             ushort screenHeight = (ushort)(_signSizeForSchedule.Height ?? 100);
-            _cp5200 = new PlayBillFiles(screenWidth, screenHeight, PeriodToShowImage, colourMode);
+            _cp5200 = new PlayBillFiles(screenWidth, screenHeight, PeriodToShowImage, colourMode,_logger);
 
             var counter = 1;
             foreach (

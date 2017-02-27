@@ -71,18 +71,14 @@ namespace ImageProcessor.CP5200
         public static extern int CP5200_Playbill_SaveToFile(IntPtr hObj,
            [MarshalAs(UnmanagedType.LPStr)] string pFileName);
 
-
-        //Network 
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Net_Init(uint dwIP, int nIPPort, uint dwIDCode, int nTimeOut);
-
 
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Net_UploadFile(int nCardID, IntPtr pSourceFilename, IntPtr pTargetFilename);
 
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Net_RestartApp(byte nCardID);
-
 
         public Cp5200External(ushort width, ushort height, ushort displayTime, byte colourMode)
         {

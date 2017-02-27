@@ -1,13 +1,10 @@
 ﻿using ImageProcessor.CP5200;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using nightowlsign.data.Models.StoreSignDto;
 using System.IO;
-using System.Web;
+using System.Runtime.CompilerServices;
 using nightowlsign.data;
-using Serilog;
 using Logger;
 
 namespace ImageProcessor.Services
@@ -16,7 +13,7 @@ namespace ImageProcessor.Services
     {
         private int TimeOut = 3600;
         private readonly StoreAndSign _storeAndSign;
-        private string _programFileDirectory;
+        private readonly string _programFileDirectory;
         private mLogger _logger;
 
         public SendCommunicator()
@@ -32,9 +29,9 @@ namespace ImageProcessor.Services
         }
 
 
-        internal void Run()
+        internal bool Run()
         {
-            _logger.WriteLog(SendFiletoSign(_storeAndSign));
+            return SendFiletoSign(_storeAndSign);
         }
 
         private string FindPlaybillFile()
@@ -43,18 +40,17 @@ namespace ImageProcessor.Services
             var lppFile = di.EnumerateFiles().Select(f => f.Name)
                       .FirstOrDefault(f=>f.Contains(".lpp"));
             return string.Concat(_programFileDirectory,lppFile);
-
         }
 
-        public string SendFiletoSign(StoreAndSign storeAndSign)
+        public bool SendFiletoSign(StoreAndSign storeAndSign)
         {
-            string logMessage = string.Empty;
-            logMessage = string.Format(InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port), Environment.NewLine);
-            logMessage += string.Format(SendFiletoSign(), Environment.NewLine);
-            return logMessage;
+           _logger.WriteLog($"SendCommunicator - sendFiletoSign - {InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port)}{Environment.NewLine}");
+            return SendFiletoSign();
+
         }
-        public string SendFiletoSign()
+        public bool SendFiletoSign()
         {
+            var success = false;
             try
             {
                 int uploadCount = 0;
@@ -77,15 +73,17 @@ namespace ImageProcessor.Services
                 if (uploadCount > 0)
                 {
                     restartSuccess = Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
+                    success = restartSuccess >= 0;
                 }
-                return string.Format("Successfully uploaded {0} files and Restarted:{1} {2}", uploadCount, restartSuccess, Environment.NewLine);
+                _logger.WriteLog($"SendComm - SendFileToSign - Successfully uploaded {uploadCount} files and Restarted:{restartSuccess} {Environment.NewLine}");
+                return success;
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                _logger.WriteLog($"SendComm - SendFileToSign - Error in Sendfile to sign: {ex.Message}");
+                return false;
             }
         }
-
 
         public string InitComm(string ipAddress, string idCode, string port)
         {
