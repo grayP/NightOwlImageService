@@ -37,7 +37,6 @@ namespace nightowlsign.data.Models.StoreScheduleLog
 
         public bool Insert()
         {
-            var ret = false;
             try
             {
                 using (nightowlsign_Entities db = new nightowlsign_Entities())
@@ -50,17 +49,15 @@ namespace nightowlsign.data.Models.StoreScheduleLog
                         InstalledOk = true,
                         ScheduleId = entity.ScheduleId
                     };
-
                     db.StoreScheduleLogs.Add(newStoreScheduleLog);
                     db.SaveChanges();
-                    ret = true;
                 }
-                return ret;
+                return true;
             }
             catch (Exception ex)
             {
-                errorMessage=ex.Message;
-                return ret;
+                errorMessage = ex.Message;
+                return false;
             }
         }
 
@@ -79,4 +76,4 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         }
     }
 
- }
+}

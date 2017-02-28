@@ -44,7 +44,7 @@ namespace ImageProcessor.Services
 
         public bool SendFiletoSign(StoreAndSign storeAndSign)
         {
-           _logger.WriteLog($"SendCommunicator - sendFiletoSign - {InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port)}{Environment.NewLine}");
+           _logger.WriteLog($"SendCommunicator - sendFiletoSign - {InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port)}");
             return SendFiletoSign();
 
         }
@@ -75,7 +75,7 @@ namespace ImageProcessor.Services
                     restartSuccess = Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
                     success = restartSuccess >= 0;
                 }
-                _logger.WriteLog($"SendComm - SendFileToSign - Successfully uploaded {uploadCount} files and Restarted:{restartSuccess} {Environment.NewLine}");
+                _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - Successfully uploaded {uploadCount} files and Restarted:{restartSuccess} ");
                 return success;
             }
             catch (Exception ex)
@@ -102,7 +102,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return $"IP: {ipAddress} ,idCode: {idCode}, Port: {port} - {ex.Message}";
             }
         }
         private uint GetIP(string strIp)
