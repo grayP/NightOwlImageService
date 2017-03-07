@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mime;
 using System.Timers;
 using Autofac;
 using ConfigInjector;
@@ -8,7 +9,6 @@ using nightowlsign.data;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
 using NightOwlImageService.Configuration;
-using Serilog;
 
 namespace NightOwlImageService.Services
 {
@@ -17,8 +17,17 @@ namespace NightOwlImageService.Services
         readonly Timer _timer;
         private mLogger _logger;
         private RunnerCycleTime runCycleTime;
-        public void Start() { _timer.Start(); }
-        public void Stop() { _timer.Stop(); }
+
+        public void Start()
+        {
+            DoTheWork();
+            _timer.Start();
+        }
+
+        public void Stop()
+        {
+            _timer.Stop();
+        }
 
 
         public ServiceRunner()
@@ -42,7 +51,6 @@ namespace NightOwlImageService.Services
                 {
                     Console.WriteLine($"Starting on store {storeAndSign.Name} - {DateTime.Now}");
                     _logger.WriteLog($"Starting on store {storeAndSign.Name} - {DateTime.Now}");
-                    Log.Information($"Starting on store {storeAndSign.Name} - {DateTime.Now}");
                     if (SendTheScheduleToSign(storeAndSign, _logger))
                     {
 
@@ -69,6 +77,16 @@ namespace NightOwlImageService.Services
                     this._logger.WriteLog(
                         $"ServiceRunner - doTheWork - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
                 }
+            }
+            CheckIfTimeToClose();
+        }
+
+        private void CheckIfTimeToClose()
+        {
+            var TimeNow = DateTime.Now.Hour;
+            if (TimeNow >= 23)
+            {
+                Environment.Exit(0);
             }
         }
 

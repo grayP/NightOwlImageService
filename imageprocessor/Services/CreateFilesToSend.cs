@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.IO;
 using ImageProcessor.CP5200;
 using ImageProcessor.Enums;
@@ -46,16 +47,25 @@ namespace ImageProcessor.Services
         {
             try
             {
-                _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
-                DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
-                DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-                DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
-                WriteImagesToDisk(_imagesToSend);
-                GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
-                GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
-                SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory, _logger);
-                return senderCommunicator.Run();
-           }
+                if (_storeAndSign.IpAddress != null)
+                {
+                    _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
+                    DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
+                    DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
+                    DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
+                    WriteImagesToDisk(_imagesToSend);
+                    GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
+                    GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
+                    SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory,
+                        _logger);
+                    return senderCommunicator.Run();
+                }
+                else
+                {
+                    _logger.WriteLog($"CreateFilesToSend - Run - Null IpAddress for {_storeAndSign.Name}");
+                    return false;
+                }
+            }
             catch (Exception ex)
             {
                 _logger.WriteLog($"CreateFilesToSend - Run - {ex.Message}");
@@ -100,7 +110,7 @@ namespace ImageProcessor.Services
 
             ushort screenWidth = (ushort)(_signSizeForSchedule.Width ?? 100);
             ushort screenHeight = (ushort)(_signSizeForSchedule.Height ?? 100);
-            _cp5200 = new PlayBillFiles(screenWidth, screenHeight, PeriodToShowImage, colourMode,_logger);
+            _cp5200 = new PlayBillFiles(screenWidth, screenHeight, PeriodToShowImage, colourMode, _logger);
 
             var counter = 1;
             foreach (
@@ -141,10 +151,8 @@ namespace ImageProcessor.Services
 
             if (playBillPointer.ToInt32() > 0)
             {
-                if (playBillPointer.ToInt32() > 0)
-                    _cp5200.Playbill_SetProperty(playBillPointer, 0, 1);
-                foreach (
-                    string programFileName in
+                _cp5200.Playbill_SetProperty(playBillPointer, 0, 1);
+                foreach (string programFileName in
                     Directory.GetFiles(ProgramFileDirectory, AddStar(ProgramFileExtension)))
                 {
                     _cp5200.Playbill_AddFile(playBillPointer, programFileName);

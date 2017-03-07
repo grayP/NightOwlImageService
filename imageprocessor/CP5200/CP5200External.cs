@@ -1,16 +1,7 @@
-﻿using ImageProcessor.Enums;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.SessionState;
-using Serilog;
+
+
 
 namespace ImageProcessor.CP5200
 {
@@ -73,6 +64,12 @@ namespace ImageProcessor.CP5200
 
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Net_Init(uint dwIP, int nIPPort, uint dwIDCode, int nTimeOut);
+
+        [DllImport(DllPath, CharSet = CharSet.Auto)]
+        public static extern int CP5200_Net_Connect();
+
+        [DllImport(DllPath, CharSet = CharSet.Auto)]
+        public static extern int CP5200_Net_IsConnected();
 
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Net_UploadFile(int nCardID, IntPtr pSourceFilename, IntPtr pTargetFilename);

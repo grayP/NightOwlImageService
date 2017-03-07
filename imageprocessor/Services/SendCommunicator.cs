@@ -58,9 +58,11 @@ namespace ImageProcessor.Services
                     string programFileName in
                     Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
-                    if (0 ==
-                      Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1), GetPointerFromFileName(programFileName),
-                          GetPointerFromFileName(programFileName)))
+                    var uploadSuccess = Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
+                        GetPointerFromFileName(programFileName),
+                        GetPointerFromFileName(programFileName));
+                    _logger.WriteLog( $"UploadSuccess for {programFileName}={uploadSuccess}");
+                    if (0 == uploadSuccess)
                         uploadCount++;
                 }
 
@@ -70,7 +72,7 @@ namespace ImageProcessor.Services
                     uploadCount++;
 
                 int restartSuccess = -1;
-                if (uploadCount > 0)
+                if (uploadCount >= 0)
                 {
                     restartSuccess = Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
                     success = restartSuccess >= 0;
@@ -96,7 +98,11 @@ namespace ImageProcessor.Services
                 {
                     var responseNumber = Cp5200External.CP5200_Net_Init(dwIPAddr, nIPPort, dwIDCode, TimeOut);
                     if (responseNumber == 0)
+                    {
+                        var result = Cp5200External.CP5200_Net_Connect();
+                        var result2 = Cp5200External.CP5200_Net_IsConnected();
                         return $"Communication established with {ipAddress}";
+                    }
                 }
                 return $"Communication failed with Sign {ipAddress} ";
             }
@@ -108,7 +114,7 @@ namespace ImageProcessor.Services
         private uint GetIP(string strIp)
         {
             System.Net.IPAddress ipaddress = System.Net.IPAddress.Parse(strIp);
-            uint lIp = (uint)ipaddress.Address;
+            uint lIp = (uint)ipaddress?.Address;
             lIp = ((lIp & 0xFF000000) >> 24) + ((lIp & 0x00FF0000) >> 8) + ((lIp & 0x0000FF00) << 8) + ((lIp & 0x000000FF) << 24);
             return (lIp);
         }

@@ -10,6 +10,8 @@ namespace NightOwlImageService
     {
        public  static void Main()
         {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
             HostFactory.Run(x =>                                 //1
             {
                 x.Service<ServiceRunner>(s =>                        //2
@@ -20,7 +22,7 @@ namespace NightOwlImageService
                 });
                 x.RunAsLocalSystem();                            //6
 
-                x.SetDescription("Send Images to NightOwlSigns");        //7
+                x.SetDescription( $"Send Images to NightOwlSigns {assembly}");        //7
                 x.SetDisplayName("NightOwlImageSend");                       
                 x.SetServiceName("NightOwlImageSend");                       
             });
