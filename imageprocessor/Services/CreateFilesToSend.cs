@@ -25,7 +25,7 @@ namespace ImageProcessor.Services
         private const string ProgramFileDirectory = "c:/playBillFiles/";
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
-        private const string PlaybillFileExtension = ".lpp";
+        private const string PlaybillFileExtension = ".lpl";
 
         public string PlaybillFileName { get; set; }
         public bool Successfull { get; set; }
@@ -49,16 +49,13 @@ namespace ImageProcessor.Services
             {
                 if (_storeAndSign.IpAddress != null)
                 {
-                    _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
-                    DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
-                    DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-                    DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
+                    GetTheImagesForSchedule();
+                    DeleteOldFiles();
                     WriteImagesToDisk(_imagesToSend);
-                    GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
-                    GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
+                    GenerateFiles(_storeAndSign.CurrentSchedule.Name);
                     SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory,
-                        _logger);
-                    return senderCommunicator.Run();
+                        PlaybillFileExtension, _logger);
+                    return senderCommunicator.FilesUploadedOk();
                 }
                 else
                 {
@@ -71,6 +68,24 @@ namespace ImageProcessor.Services
                 _logger.WriteLog($"CreateFilesToSend - Run - {ex.Message}");
                 return false;
             }
+        }
+
+        private void GenerateFiles(string scheduleName)
+        {
+            GeneratetheProgramFiles(scheduleName);
+            GeneratethePlayBillFile(scheduleName);
+        }
+
+        private void GetTheImagesForSchedule()
+        {
+            _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
+        }
+
+        private void DeleteOldFiles()
+        {
+            DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
+            DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
+            DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
         }
 
         private List<ImageSelect> GetImages(int scheduleId)
@@ -175,7 +190,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException?.ToString());
+                _logger.WriteLog($"Error save image to disk - {ex.InnerException?.ToString()}");
             }
         }
 

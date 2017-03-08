@@ -49,8 +49,8 @@ namespace NightOwlImageService.Services
             {
                 if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule.Id != 0)
                 {
-                    Console.WriteLine($"Starting on store {storeAndSign.Name} - {DateTime.Now}");
-                    _logger.WriteLog($"Starting on store {storeAndSign.Name} - {DateTime.Now}");
+                    Console.WriteLine($"Starting on store {storeAndSign.Name} ");
+                    _logger.WriteLog($"Starting on store {storeAndSign.Name} ");
                     if (SendTheScheduleToSign(storeAndSign, _logger))
                     {
 
@@ -65,13 +65,14 @@ namespace NightOwlImageService.Services
                                 StoreId = storeAndSign.id
                             }
                         };
+
                         if (sslm.Insert())
                         {
-                            _logger.WriteLog($"Updated {storeAndSign.id}-{DateTime.Now}");
+                            _logger.WriteLog($"Updated {storeAndSign.id}");
                         }
                         else
                         {
-                            _logger.WriteLog($"sslm.errorMessage -{DateTime.Now}");
+                            _logger.WriteLog($"{sslm.errorMessage} ");
                         }
                     };
                     this._logger.WriteLog(

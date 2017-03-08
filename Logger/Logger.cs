@@ -8,7 +8,7 @@ namespace Logger
 {
     public class mLogger : IDisposable
     {
-        private string _fileName;
+        private readonly string _fileName;
 
         public mLogger()
         {
@@ -20,7 +20,7 @@ namespace Logger
             using (System.IO.StreamWriter file =
             new System.IO.StreamWriter($"c:\\logging\\{_fileName}", true))
             {
-                file.WriteLine(lines);
+                file.WriteLine($"{lines} - {DateTime.Now}");
                 file.Close();
             }
         }
