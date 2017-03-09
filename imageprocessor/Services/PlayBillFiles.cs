@@ -95,7 +95,7 @@ namespace ImageProcessor.Services
         {
             try
             {
-                return Cp5200External.CP5200_Playbill_Create(Convert.ToInt32(_screenWidth), Convert.ToInt32(_screenHeight), 0x77);
+                return Cp5200External.CP5200_Playbill_Create(_screenWidth, _screenHeight, 0x77);
             }
             catch (Exception ex)
             {

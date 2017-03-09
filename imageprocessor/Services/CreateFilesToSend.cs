@@ -21,8 +21,8 @@ namespace ImageProcessor.Services
     {
         private readonly SendToSignManager _sendToSignManager = new SendToSignManager();
         private PlayBillFiles _cp5200;
-        private const string ImageDirectory = "c:/playBillFiles/Images/";
-        private const string ProgramFileDirectory = "c:/playBillFiles/";
+        private string ImageDirectory = string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); // "c:/playBillFiles/Images/";
+        private string ProgramFileDirectory = string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); // "c:/playBillFiles/";
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpl";
@@ -127,31 +127,32 @@ namespace ImageProcessor.Services
             ushort screenHeight = (ushort)(_signSizeForSchedule.Height ?? 100);
             _cp5200 = new PlayBillFiles(screenWidth, screenHeight, PeriodToShowImage, colourMode, _logger);
 
-            var counter = 1;
-            foreach (
-                string fileName in Directory.GetFiles(ImageDirectory, AddStar(ImageExtension)))
+            var programPointer = _cp5200.Program_Create();
+            if (programPointer.ToInt32() > 0)
             {
-                var programPointer = _cp5200.Program_Create();
-                if (programPointer.ToInt32() > 0)
+                var windowNo = _cp5200.AddPlayWindow(programPointer);
+                if (windowNo >= 0)
                 {
-                    var windowNo = _cp5200.AddPlayWindow(programPointer);
-                    if (windowNo >= 0)
+                   // var counter = 1;
+                    foreach (
+                        string fileName in Directory.GetFiles(ImageDirectory, AddStar(ImageExtension)))
                     {
 
                         PlayItemNo = _cp5200.Program_Add_Image(programPointer, windowNo,
                             Marshal.StringToHGlobalAnsi(fileName), (int)RenderMode.Stretch_to_fit_the_window,
                            0, 100, PeriodToShowImage, 0);
 
-                        var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", counter));
-                        DeleteOldProgramFile(programFileName);
-                        if (
-                            _cp5200.Program_SaveFile(programPointer, programFileName) > 1)
-                        {
-                            _cp5200.DestroyProgram(programPointer);
-                        }
                     }
+                    //counter += 1;
                 }
-                counter += 1;
+                var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", "1"));
+                DeleteOldProgramFile(programFileName);
+                if (
+                    _cp5200.Program_SaveFile(programPointer, programFileName) > 1)
+                {
+                    _cp5200.DestroyProgram(programPointer);
+                }
+
             }
         }
 
