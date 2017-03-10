@@ -21,11 +21,11 @@ namespace ImageProcessor.Services
     {
         private readonly SendToSignManager _sendToSignManager = new SendToSignManager();
         private PlayBillFiles _cp5200;
-        private string ImageDirectory = string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); // "c:/playBillFiles/Images/";
-        private string ProgramFileDirectory = string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); // "c:/playBillFiles/";
+        private string ImageDirectory = "c:\\playBillFiles\\Images\\";  // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); // "c:/playBillFiles/Images/";
+        private string ProgramFileDirectory = "c:\\playBillFiles\\"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); // "c:/playBillFiles/";
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
-        private const string PlaybillFileExtension = ".lpl";
+        private const string PlaybillFileExtension = ".lpp";
 
         public string PlaybillFileName { get; set; }
         public bool Successfull { get; set; }
@@ -145,7 +145,8 @@ namespace ImageProcessor.Services
                     }
                     //counter += 1;
                 }
-                var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", "1"));
+               // var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", "1"));
+                var programFileName = GenerateProgramFileName("10000");
                 DeleteOldProgramFile(programFileName);
                 if (
                     _cp5200.Program_SaveFile(programPointer, programFileName) > 1)
@@ -197,7 +198,7 @@ namespace ImageProcessor.Services
 
         private string GeneratePlayBillFileName(string scheduleName)
         {
-            var newName = StripCharacters.Strip(scheduleName);
+            var newName = "playbill"; //StripCharacters.Strip(scheduleName);
             return PlaybillFileName = string.Concat(ProgramFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
         }
 
