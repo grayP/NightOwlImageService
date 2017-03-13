@@ -198,7 +198,7 @@ namespace ImageProcessor.Services
 
         private string GeneratePlayBillFileName(string scheduleName)
         {
-            var newName = StripCharacters.Strip(scheduleName);
+            var newName = "playbill"; //StripCharacters.Strip(scheduleName);
             return PlaybillFileName = string.Concat(ProgramFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
         }
 
