@@ -16,7 +16,7 @@ namespace NightOwlImageService.Services
     {
         readonly Timer _timer;
         private mLogger _logger;
-        private RunnerCycleTime runCycleTime;
+      //  private RunnerCycleTime runCycleTime;
 
         public void Start()
         {
@@ -33,7 +33,7 @@ namespace NightOwlImageService.Services
         public ServiceRunner()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<RunnerCycleTime>().As<ConfigInjector.IConfigurationSetting>();
+           // builder.RegisterType<RunnerCycleTime>().As<ConfigInjector.IConfigurationSetting>();
 
             _logger = new mLogger();
             _timer = new Timer { AutoReset = true };
@@ -47,7 +47,7 @@ namespace NightOwlImageService.Services
             svm.HandleRequest();
             foreach (StoreAndSign storeAndSign in svm.StoresAndSigns)
             {
-                if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule.Id != 0)
+                if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule.Id != 0 || storeAndSign?.CurrentSchedule.LastUpdated>storeAndSign?.LastInstalled?.LastUpdated)
                 {
                     Console.WriteLine($"Starting on store {storeAndSign.Name} ");
                     _logger.WriteLog($"Starting on store {storeAndSign.Name} ");

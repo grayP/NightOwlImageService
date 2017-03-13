@@ -57,6 +57,9 @@
     <Compile Include="FindCurrentPlayList_Result.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="FindCurrentPlayList_Result1.cs">
+      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GetCurrentPlayList_Result.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>

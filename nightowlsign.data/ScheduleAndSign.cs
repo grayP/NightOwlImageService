@@ -31,5 +31,6 @@ namespace nightowlsign.data
         public bool DefaultPlayList { get; set; }
         public Nullable<int> SignId { get; set; }
         public string Model { get; set; }
+        public Nullable<System.DateTime> LastUpdated { get; set; }
     }
 }

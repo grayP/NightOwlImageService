@@ -11,7 +11,7 @@ namespace nightowlsign.data
 {
     using System;
     
-    public partial class FindCurrentPlayList_Result
+    public partial class FindCurrentPlayList_Result1
     {
         public int ScheduleId { get; set; }
         public Nullable<int> SignId { get; set; }

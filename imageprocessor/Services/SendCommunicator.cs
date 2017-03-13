@@ -19,7 +19,7 @@ namespace ImageProcessor.Services
 
         public SendCommunicator()
         {
-           //  this._playbillFile = FindPlaybillFile();
+            //  this._playbillFile = FindPlaybillFile();
         }
 
         public SendCommunicator(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, mLogger logger)
@@ -29,18 +29,15 @@ namespace ImageProcessor.Services
             _playBillExtension = playbillextension;
             _logger = logger;
         }
-
-
         internal bool FilesUploadedOk()
         {
             return SendFiletoSign(_storeAndSign);
         }
-
         private string FindPlaybillFile()
         {
             DirectoryInfo di = new DirectoryInfo(_programFileDirectory);
             var lppFile = di.EnumerateFiles().Select(f => f.Name)
-                      .FirstOrDefault(f=>f.Contains(_playBillExtension));
+                      .FirstOrDefault(f => f.Contains(_playBillExtension));
             return string.Concat(_programFileDirectory, lppFile);
         }
 
@@ -48,8 +45,8 @@ namespace ImageProcessor.Services
         {
             if (InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
             {
-             _logger.WriteLog($"SendCommunicator - sendFiletoSign - {storeAndSign.Name}");
-              return SendFiletoSign();
+                _logger.WriteLog($"SendCommunicator - sendFiletoSign - {storeAndSign.Name}");
+                return SendFiletoSign();
             }
             _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}");
             return false;
@@ -68,23 +65,25 @@ namespace ImageProcessor.Services
                     var uploadSuccess = Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
                         GetPointerFromFileName(programFileName),
                         GetPointerFromFileName(programFileName));
-                    _logger.WriteLog( $"UploadSuccess for {programFileName}={uploadSuccess}");
+
+                    _logger.WriteLog($"UploadSuccess for {programFileName}={uploadSuccess}");
                     if (0 == uploadSuccess)
                         uploadCount++;
                 }
 
-                if (0 ==
-                    Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1), GetPointerFromFileName(FindPlaybillFile()),
-                        GetPointerFromFileName(FindPlaybillFile())))
-                    uploadCount++;
+                //if (0 ==
+                //    Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1), GetPointerFromFileName(FindPlaybillFile()),
+                //        GetPointerFromFileName(FindPlaybillFile())))
+                //    uploadCount++;
 
                 int restartSuccess = -1;
-                if (uploadCount > 1)
+                if (uploadCount >= 1)
                 {
+                    _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - Successfully uploaded {uploadCount} files and Restarted:{restartSuccess} ");
                     restartSuccess = Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
                     success = restartSuccess >= 0;
                 }
-                _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - Successfully uploaded {uploadCount} files and Restarted:{restartSuccess} ");
+                _logger.WriteLog($"Restart of sign - {success}");
                 return success;
             }
             catch (Exception ex)
@@ -96,7 +95,7 @@ namespace ImageProcessor.Services
 
         public bool InitComm(string ipAddress, string idCode, string port)
         {
-            var signOnLine=false;
+            var signOnLine = false;
             try
             {
                 uint dwIPAddr = GetIP(ipAddress);
@@ -134,7 +133,8 @@ namespace ImageProcessor.Services
         }
         IntPtr GetPointerFromFileName(string fileName)
         {
-            return Marshal.StringToHGlobalAnsi(fileName);
+             // return Marshal.StringToHGlobalAnsi(fileName);
+            return Marshal.StringToHGlobalAnsi("00010000.lpb");
         }
 
     }

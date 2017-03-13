@@ -29,7 +29,7 @@ namespace ImageProcessor.Services
         {
             try
             {
-                return Cp5200External.CP5200_Program_Create(_screenWidth, _screenHeight, 0x77);
+                return Cp5200External.CP5200_Program_Create(Convert.ToInt32(_screenWidth), Convert.ToInt32(_screenHeight), 0x77);
             }
             catch (Exception ex)
             {
@@ -40,9 +40,10 @@ namespace ImageProcessor.Services
 
         public int AddPlayWindow(IntPtr programPointer)
         {
-            if (Program_SetProperty(programPointer, _displayTime, (uint)Set_Program_Property.ProgramPlayTime) > 0)
-            {
-                _playWindowNumber = Program_AddPlayWindow(programPointer);
+            if (Program_SetProperty(programPointer, 0xFFFF, 1) > 0)
+              //  if (Program_SetProperty(programPointer, _displayTime, (uint)Set_Program_Property.ProgramPlayTime) > 0)
+                {
+                    _playWindowNumber = Program_AddPlayWindow(programPointer);
                 return _playWindowNumber;
             }
             return -1;
