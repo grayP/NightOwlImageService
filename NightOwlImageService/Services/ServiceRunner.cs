@@ -58,7 +58,7 @@ namespace NightOwlImageService.Services
 
                         StoreScheduleLogManager sslm = new StoreScheduleLogManager()
                         {
-                            entity = new StoreScheduleLog()
+                            Entity = new StoreScheduleLog()
                             {
                                 DateInstalled = DateTime.Now,
                                 ScheduleName = storeAndSign.CurrentSchedule.Name,
@@ -74,7 +74,7 @@ namespace NightOwlImageService.Services
                         }
                         else
                         {
-                            _logger.WriteLog($"{sslm.errorMessage} ");
+                            _logger.WriteLog($"{sslm.ErrorMessage} ");
                         }
                     };
                     this._logger.WriteLog(
