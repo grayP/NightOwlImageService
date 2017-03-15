@@ -39,7 +39,7 @@ namespace NightOwlImageService.Services
 
             _logger = new MLogger(_assembly.FullName);
             _timer = new Timer { AutoReset = true };
-            _timer.Interval = 120000;
+            _timer.Interval = 600000;
             _timer.Elapsed += (sender, eventArgs) => DoTheWork();
         }
 
