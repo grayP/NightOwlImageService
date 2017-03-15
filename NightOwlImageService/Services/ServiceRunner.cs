@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mime;
 using System.Timers;
 using Autofac;
 using ConfigInjector;
@@ -15,20 +16,32 @@ namespace NightOwlImageService.Services
     public class ServiceRunner
     {
         readonly Timer _timer;
-        private mLogger _logger;
+        private MLogger _logger;
         private RunnerCycleTime runCycleTime;
-        public void Start() { _timer.Start(); }
-        public void Stop() { _timer.Stop(); }
+        private System.Reflection.Assembly _assembly;
 
 
-        public ServiceRunner()
+        public void Start()
         {
+            DoTheWork();
+            _timer.Start();
+        }
+
+        public void Stop()
+        {
+            _timer.Stop();
+        }
+
+
+        public ServiceRunner(System.Reflection.Assembly assembly)
+        {
+            _assembly = assembly;
             var builder = new ContainerBuilder();
             builder.RegisterType<RunnerCycleTime>().As<ConfigInjector.IConfigurationSetting>();
 
-            _logger = new mLogger();
+            _logger = new MLogger(_assembly.FullName);
             _timer = new Timer { AutoReset = true };
-            _timer.Interval = 1800000;
+            _timer.Interval = 120000;
             _timer.Elapsed += (sender, eventArgs) => DoTheWork();
         }
 
@@ -70,9 +83,19 @@ namespace NightOwlImageService.Services
                         $"ServiceRunner - doTheWork - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
                 }
             }
+            CheckIfTimeToClose();
         }
 
-        private bool SendTheScheduleToSign(StoreAndSign storeAndSign, mLogger logger)
+        private void CheckIfTimeToClose()
+        {
+            var TimeNow = DateTime.Now.Hour;
+            if (TimeNow >= 23)
+            {
+                Environment.Exit(0);
+            }
+        }
+
+        private bool SendTheScheduleToSign(StoreAndSign storeAndSign, MLogger logger)
         {
             CreateFilesToSend createFilesToSend = new CreateFilesToSend(storeAndSign, logger);
             return createFilesToSend.Run();

@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Logger
 {
-    public class mLogger : IDisposable
+    public class MLogger : IDisposable
     {
-        private string _fileName;
+        private readonly string _fileName;
 
-        public mLogger()
+        public MLogger(string assemblyName)
         {
             _fileName = $"{DateTime.Today.ToString("yy-MM-dd")}.txt";
+            WriteLog($"Version: {assemblyName}");
         }
 
         public void WriteLog(string lines)
