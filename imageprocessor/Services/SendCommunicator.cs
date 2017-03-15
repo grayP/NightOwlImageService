@@ -14,8 +14,7 @@ namespace ImageProcessor.Services
         private int TimeOut = 3600;
         private readonly StoreAndSign _storeAndSign;
         private readonly string _programFileDirectory;
-        private MLogger _logger;
-        private readonly mLogger _logger;
+        private readonly MLogger _logger;
         private readonly string _playBillExtension;
 
         public SendCommunicator()
@@ -23,7 +22,7 @@ namespace ImageProcessor.Services
            //  this._playbillFile = FindPlaybillFile();
         }
 
-        public SendCommunicator(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, mLogger logger)
+        public SendCommunicator(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, MLogger logger)
         {
             _storeAndSign = storeAndSign;
             _programFileDirectory = programFileDirectory;

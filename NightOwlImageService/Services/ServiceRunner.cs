@@ -25,12 +25,6 @@ namespace NightOwlImageService.Services
             _timer.Start();
         }
 
-        public void Start()
-        {
-            DoTheWork();
-            _timer.Start();
-        }
-
         public void Stop()
         {
             _timer.Stop();
