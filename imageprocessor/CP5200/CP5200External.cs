@@ -1,16 +1,7 @@
-﻿using ImageProcessor.Enums;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.SessionState;
-using Serilog;
+
+
 
 namespace ImageProcessor.CP5200
 {

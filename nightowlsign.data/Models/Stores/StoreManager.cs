@@ -80,6 +80,7 @@ namespace nightowlsign.data.Models.Stores
                     {
                         Id = x.ScheduleId ?? 0,
                         Name = x.ScheduleName,
+                        LastUpdated = x.DateInstalled
                     }).FirstOrDefault();
 
                 return ret;
@@ -99,7 +100,8 @@ namespace nightowlsign.data.Models.Stores
                 data.Schedule getCurrentSchedule = new data.Schedule()
                 {
                     Id = playListResult?.ScheduleId ?? 0,
-                    Name = playListResult?.ScheduleName
+                    Name = playListResult?.ScheduleName,
+                    LastUpdated = playListResult?.LastUpdated ?? DateTime.Now
                 };
                 return getCurrentSchedule;
             }

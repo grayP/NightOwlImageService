@@ -21,7 +21,7 @@ namespace Logger
             using (System.IO.StreamWriter file =
             new System.IO.StreamWriter($"c:\\logging\\{_fileName}", true))
             {
-                file.WriteLine(lines);
+                file.WriteLine($"{lines} - {DateTime.Now}");
                 file.Close();
             }
         }

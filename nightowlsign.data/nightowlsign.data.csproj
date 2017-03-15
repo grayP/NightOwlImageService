@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>nightowlsign.data</RootNamespace>
     <AssemblyName>nightowlsign.data</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -39,14 +39,6 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Seq.Apps, Version=1.6.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Seq.Apps.1.6.4\lib\net45\Seq.Apps.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.2.4.0\lib\net46\Serilog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -63,6 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FindCurrentPlayList_Result.cs">
+      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FindCurrentPlayList_Result1.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
     <Compile Include="GetCurrentPlayList_Result.cs">

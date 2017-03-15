@@ -9,7 +9,6 @@ using nightowlsign.data;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
 using NightOwlImageService.Configuration;
-using Serilog;
 
 namespace NightOwlImageService.Services
 {
@@ -20,6 +19,11 @@ namespace NightOwlImageService.Services
         private RunnerCycleTime runCycleTime;
         private System.Reflection.Assembly _assembly;
 
+        public void Start()
+        {
+            DoTheWork();
+            _timer.Start();
+        }
 
         public void Start()
         {
@@ -37,7 +41,7 @@ namespace NightOwlImageService.Services
         {
             _assembly = assembly;
             var builder = new ContainerBuilder();
-            builder.RegisterType<RunnerCycleTime>().As<ConfigInjector.IConfigurationSetting>();
+           // builder.RegisterType<RunnerCycleTime>().As<ConfigInjector.IConfigurationSetting>();
 
             _logger = new MLogger(_assembly.FullName);
             _timer = new Timer { AutoReset = true };
@@ -51,11 +55,10 @@ namespace NightOwlImageService.Services
             svm.HandleRequest();
             foreach (StoreAndSign storeAndSign in svm.StoresAndSigns)
             {
-                if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule.Id != 0)
+                if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule.Id != 0 || storeAndSign?.CurrentSchedule.LastUpdated>storeAndSign?.LastInstalled?.LastUpdated)
                 {
-                    Console.WriteLine($"Starting on store {storeAndSign.Name} - {DateTime.Now}");
-                    _logger.WriteLog($"Starting on store {storeAndSign.Name} - {DateTime.Now}");
-                    Log.Information($"Starting on store {storeAndSign.Name} - {DateTime.Now}");
+                    Console.WriteLine($"Starting on store {storeAndSign.Name} ");
+                    _logger.WriteLog($"Starting on store {storeAndSign.Name} ");
                     if (SendTheScheduleToSign(storeAndSign, _logger))
                     {
 
@@ -70,13 +73,14 @@ namespace NightOwlImageService.Services
                                 StoreId = storeAndSign.id
                             }
                         };
+
                         if (sslm.Insert())
                         {
-                            _logger.WriteLog($"Updated {storeAndSign.id}-{DateTime.Now}");
+                            _logger.WriteLog($"Updated {storeAndSign.id}");
                         }
                         else
                         {
-                            _logger.WriteLog($"sslm.errorMessage -{DateTime.Now}");
+                            _logger.WriteLog($"{sslm.errorMessage} ");
                         }
                     };
                     this._logger.WriteLog(

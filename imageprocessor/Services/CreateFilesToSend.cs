@@ -21,8 +21,8 @@ namespace ImageProcessor.Services
     {
         private readonly SendToSignManager _sendToSignManager = new SendToSignManager();
         private PlayBillFiles _cp5200;
-        private const string ImageDirectory = "c:/playBillFiles/Images/";
-        private const string ProgramFileDirectory = "c:/playBillFiles/";
+        private string ImageDirectory =  "c:/playBillFiles/Images/";    //string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); //
+        private string ProgramFileDirectory = string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); // "c:/playBillFiles/";    
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpp";
@@ -42,24 +42,20 @@ namespace ImageProcessor.Services
             _signSizeForSchedule = storeAndSign.Sign;
             _logger = logger;
         }
-
         public bool Run()
         {
             try
             {
-                if (_storeAndSign.IpAddress != null)
-                {
-                    _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
-                    DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
-                    DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-                    DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
-                    WriteImagesToDisk(_imagesToSend);
-                    GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
-                    GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
-                    SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory,
-                        _logger);
-                    return senderCommunicator.Run();
-                }
+                _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
+                DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
+                DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
+                DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
+                WriteImagesToDisk(_imagesToSend);
+                GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
+                GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
+                SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory, _logger);
+                return senderCommunicator.Run();
+           }
                 else
                 {
                     _logger.WriteLog($"CreateFilesToSend - Run - Null IpAddress for {_storeAndSign.Name}");
@@ -71,6 +67,24 @@ namespace ImageProcessor.Services
                 _logger.WriteLog($"CreateFilesToSend - Run - {ex.Message}");
                 return false;
             }
+        }
+
+        private void GenerateFiles(string scheduleName)
+        {
+            GeneratetheProgramFiles(scheduleName);
+            //GeneratethePlayBillFile(scheduleName);
+        }
+
+        private void GetTheImagesForSchedule()
+        {
+            _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
+        }
+
+        private void DeleteOldFiles()
+        {
+            DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
+            DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
+          //  DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
         }
 
         private List<ImageSelect> GetImages(int scheduleId)
@@ -94,10 +108,12 @@ namespace ImageProcessor.Services
 
         private void WriteImagesToDisk(List<ImageSelect> images)
         {
+            var counter = 1;
             foreach (var image in images)
             {
-                SaveImageToFile(string.Format("{0:0000}0000", RandomNumber.GenerateRandomNo()), image);
+                SaveImageToFile(string.Format("{0:0000}0000", counter), image);
                 image.Dispose();
+                counter++;
             }
         }
 
@@ -112,22 +128,26 @@ namespace ImageProcessor.Services
             ushort screenHeight = (ushort)(_signSizeForSchedule.Height ?? 100);
             _cp5200 = new PlayBillFiles(screenWidth, screenHeight, PeriodToShowImage, colourMode, _logger);
 
-            var counter = 1;
-            foreach (
-                string fileName in Directory.GetFiles(ImageDirectory, AddStar(ImageExtension)))
-            {
                 var programPointer = _cp5200.Program_Create();
                 if (programPointer.ToInt32() > 0)
                 {
                     var windowNo = _cp5200.AddPlayWindow(programPointer);
                     if (windowNo >= 0)
                     {
+                   // var counter = 1;
+                    foreach (
+                        string fileName in Directory.GetFiles(ImageDirectory, AddStar(ImageExtension)))
+                    {
 
                         PlayItemNo = _cp5200.Program_Add_Image(programPointer, windowNo,
                             Marshal.StringToHGlobalAnsi(fileName), (int)RenderMode.Stretch_to_fit_the_window,
                            0, 100, PeriodToShowImage, 0);
 
-                        var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", counter));
+                    }
+                    //counter += 1;
+                }
+               // var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", "1"));
+                var programFileName = GenerateProgramFileName("00010000");
                         DeleteOldProgramFile(programFileName);
                         if (
                             _cp5200.Program_SaveFile(programPointer, programFileName) > 1)
@@ -136,9 +156,6 @@ namespace ImageProcessor.Services
                         }
                     }
                 }
-                counter += 1;
-            }
-        }
 
         private void DeleteOldProgramFile(string fileAndPath)
         {
@@ -151,7 +168,7 @@ namespace ImageProcessor.Services
 
             if (playBillPointer.ToInt32() > 0)
             {
-                _cp5200.Playbill_SetProperty(playBillPointer, 0, 1);
+                    _cp5200.Playbill_SetProperty(playBillPointer, 0, 1);
                 foreach (string programFileName in
                     Directory.GetFiles(ProgramFileDirectory, AddStar(ProgramFileExtension)))
                 {
@@ -175,19 +192,20 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException?.ToString());
+                _logger.WriteLog($"Error save image to disk - {ex.InnerException?.ToString()}");
             }
         }
 
         private string GeneratePlayBillFileName(string scheduleName)
         {
-            var newName = StripCharacters.Strip(scheduleName);
+            var newName = "playbill"; //StripCharacters.Strip(scheduleName);
             return PlaybillFileName = string.Concat(ProgramFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
         }
 
         private string GenerateProgramFileName(string sCounter)
         {
-            return string.Concat(ProgramFileDirectory, sCounter, ProgramFileExtension);
+             return string.Concat(ProgramFileDirectory, ("00010000.lpb"));
+           // return "00010000.lpb";
         }
     }
 }

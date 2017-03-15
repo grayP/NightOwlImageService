@@ -28,7 +28,6 @@ namespace nightowlsign.data.Models
                              select c.ImageID);
                 return query.ToList();
             }
-
         }
 
         public List<ImageSelect> GetImagesForThisSchedule(int scheduleId)
@@ -135,7 +134,6 @@ namespace nightowlsign.data.Models
                         db.ScheduleImages.Remove(scheduleImage);
                         db.SaveChanges();
                     }
-
                 }
             }
         }

@@ -11,7 +11,7 @@ namespace NightOwlImageService
        public  static void Main()
         {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            
+
             HostFactory.Run(x =>                                 //1
             {
                 x.Service<ServiceRunner>(s =>                        //2

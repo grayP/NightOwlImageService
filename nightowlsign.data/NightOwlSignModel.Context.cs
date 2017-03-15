@@ -40,11 +40,6 @@ namespace nightowlsign.data
         public virtual DbSet<ScheduleAndSign> ScheduleAndSigns { get; set; }
         public virtual DbSet<StoreScheduleLog> StoreScheduleLogs { get; set; }
     
-        public virtual ObjectResult<GetCurrentPlayList_Result> GetCurrentPlayList()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetCurrentPlayList_Result>("GetCurrentPlayList");
-        }
-    
         public virtual ObjectResult<FindCurrentPlayList_Result> FindCurrentPlayList()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FindCurrentPlayList_Result>("FindCurrentPlayList");
