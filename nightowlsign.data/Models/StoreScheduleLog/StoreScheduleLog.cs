@@ -8,8 +8,8 @@ namespace nightowlsign.data.Models.StoreScheduleLog
 {
     public class StoreScheduleLogManager
     {
-        public string errorMessage { get; set; }
-        public data.StoreScheduleLog entity { get; set; }
+        public string ErrorMessage { get; set; }
+        public data.StoreScheduleLog Entity { get; set; }
         public StoreScheduleLogManager()
         {
         }
@@ -34,7 +34,6 @@ namespace nightowlsign.data.Models.StoreScheduleLog
             }
         }
 
-
         public bool Insert()
         {
             try
@@ -43,11 +42,11 @@ namespace nightowlsign.data.Models.StoreScheduleLog
                 {
                     data.StoreScheduleLog newStoreScheduleLog = new data.StoreScheduleLog()
                     {
-                        ScheduleName = entity.ScheduleName.Trim(),
+                        ScheduleName = Entity.ScheduleName.Trim(),
                         DateInstalled = DateTime.Now,
-                        StoreId = entity.StoreId,
+                        StoreId = Entity.StoreId,
                         InstalledOk = true,
-                        ScheduleId = entity.ScheduleId
+                        ScheduleId = Entity.ScheduleId
                     };
                     db.StoreScheduleLogs.Add(newStoreScheduleLog);
                     db.SaveChanges();
@@ -56,7 +55,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
+                ErrorMessage = ex.Message;
                 return false;
             }
         }
