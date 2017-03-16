@@ -11,7 +11,9 @@ namespace nightowlsign.data.Models.Stores
     {
         public StoreViewModel() : base()
         {
+            sm = new StoreManager();
         }
+        private StoreManager sm;
         public List<Store> Stores { get; set; }
         public List<StoreAndSign> StoresAndSigns { get; set; }
         public Store SearchEntity { get; set; }
@@ -61,13 +63,15 @@ namespace nightowlsign.data.Models.Stores
         }
         protected override void Get()
         {
-            StoreManager sm = new StoreManager();
             StoresAndSigns = sm.Get(SearchEntity);
+        }
 
+        public data.Schedule GetCurrentSchedule(StoreAndSign store)
+        {
+            return sm.GetCurrentschedule(store);
         }
         protected override void Edit()
         {
-            StoreManager sm = new StoreManager();
             Entity = sm.Find(Convert.ToInt32(EventArgument));
             base.Edit();
         }
@@ -80,7 +84,6 @@ namespace nightowlsign.data.Models.Stores
         }
         protected override void Save()
         {
-            StoreManager sm = new StoreManager();
             if (Mode == "Add")
             {
                 sm.Insert(Entity);
@@ -94,7 +97,6 @@ namespace nightowlsign.data.Models.Stores
         }
         protected override void Delete()
         {
-            StoreManager sm = new StoreManager();
             Entity = sm.Find(Convert.ToInt32(EventArgument));
             sm.Delete(Entity);
             Get();

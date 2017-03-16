@@ -190,6 +190,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="Model" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Function Name="FindCurrentPlayList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="FindCurrentPlayListForStore" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="ModelsStoreContainer">
           <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule" EntityType="Self.Schedule" Schema="dbo" store:Type="Tables" />
@@ -285,6 +286,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySet Name="ScheduleAndSigns" EntityType="Models.ScheduleAndSign" />
           <EntitySet Name="StoreScheduleLogs" EntityType="Models.StoreScheduleLog" />
           <FunctionImport Name="FindCurrentPlayList" ReturnType="Collection(Models.FindCurrentPlayList_Result)" />
+          <FunctionImport Name="FindCurrentPlayListForStore" ReturnType="Collection(Models.FindCurrentPlayListForStore_Result)" />
         </EntityContainer>
         <EntityType Name="Store">
           <Key>
@@ -470,6 +472,14 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Type="String" Name="ScheduleName" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="Importance" Nullable="false" />
           <Property Type="DateTime" Name="LastUpdated" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="FindCurrentPlayListForStore_Result">
+          <Property Type="Int32" Name="ScheduleId" Nullable="false" />
+          <Property Type="Int32" Name="SignId" Nullable="true" />
+          <Property Type="String" Name="ScheduleName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="Importance" Nullable="false" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="StoreId" Nullable="true" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -667,6 +677,18 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
                 <ScalarProperty Name="ScheduleName" ColumnName="ScheduleName" />
                 <ScalarProperty Name="Importance" ColumnName="Importance" />
                 <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="FindCurrentPlayListForStore" FunctionName="Models.Store.FindCurrentPlayListForStore">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Models.FindCurrentPlayListForStore_Result">
+                <ScalarProperty Name="ScheduleId" ColumnName="ScheduleId" />
+                <ScalarProperty Name="SignId" ColumnName="SignId" />
+                <ScalarProperty Name="ScheduleName" ColumnName="ScheduleName" />
+                <ScalarProperty Name="Importance" ColumnName="Importance" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

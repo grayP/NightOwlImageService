@@ -44,5 +44,10 @@ namespace nightowlsign.data
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FindCurrentPlayList_Result>("FindCurrentPlayList");
         }
+    
+        public virtual ObjectResult<FindCurrentPlayListForStore_Result> FindCurrentPlayListForStore()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FindCurrentPlayListForStore_Result>("FindCurrentPlayListForStore");
+        }
     }
 }

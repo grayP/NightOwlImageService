@@ -12,17 +12,16 @@ namespace ImageProcessor.Services
     public class SendCommunicator
     {
         private int TimeOut = 3600;
-        private readonly StoreAndSign _storeAndSign;
-        private readonly string _programFileDirectory;
-        private readonly MLogger _logger;
-        private readonly string _playBillExtension;
+        private StoreAndSign _storeAndSign;
+        private string _programFileDirectory;
+        private MLogger _logger;
+        private string _playBillExtension;
 
         public SendCommunicator()
         {
-           //  this._playbillFile = FindPlaybillFile();
         }
 
-        public SendCommunicator(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, MLogger logger)
+        public void Init(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, MLogger logger)
         {
             _storeAndSign = storeAndSign;
             _programFileDirectory = programFileDirectory;
@@ -46,7 +45,7 @@ namespace ImageProcessor.Services
             if (InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
             {
                 _logger.WriteLog($"SendCommunicator - sendFiletoSign - {storeAndSign.Name}");
-            return SendFiletoSign();
+                return SendFiletoSign();
             }
             _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}");
             return false;
@@ -93,6 +92,8 @@ namespace ImageProcessor.Services
             }
         }
 
+
+
         public bool InitComm(string ipAddress, string idCode, string port)
         {
             var signOnLine = false;
@@ -133,7 +134,7 @@ namespace ImageProcessor.Services
         }
         IntPtr GetPointerFromFileName(string fileName)
         {
-             // return Marshal.StringToHGlobalAnsi(fileName);
+            // return Marshal.StringToHGlobalAnsi(fileName);
             return Marshal.StringToHGlobalAnsi("00010000.lpb");
         }
 

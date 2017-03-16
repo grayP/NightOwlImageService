@@ -12,6 +12,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         public data.StoreScheduleLog Entity { get; set; }
         public StoreScheduleLogManager()
         {
+            Entity= new data.StoreScheduleLog();
         }
 
 
@@ -72,6 +73,15 @@ namespace nightowlsign.data.Models.StoreScheduleLog
                 ret = true;
             }
             return ret;
+        }
+
+        public void SetValues(string name, int scheduleId, int storeId)
+        {
+            Entity.DateInstalled = DateTime.Now;
+            Entity.ScheduleName = name;
+            Entity.ScheduleId = scheduleId;
+            Entity.InstalledOk = true;
+            Entity.StoreId = storeId  ;
         }
     }
 

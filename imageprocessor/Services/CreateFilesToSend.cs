@@ -36,13 +36,16 @@ namespace ImageProcessor.Services
         public string PlaybillFileName { get; set; }
         public bool Successfull { get; set; }
 
-        private readonly Sign _signSizeForSchedule;
+        private  Sign _signSizeForSchedule;
         private List<ImageSelect> _imagesToSend;
         //private string _scheduleName;
-        private readonly StoreAndSign _storeAndSign;
-        private readonly MLogger _logger;
+        private  StoreAndSign _storeAndSign;
+        private  MLogger _logger;
 
-        public CreateFilesToSend(StoreAndSign storeAndSign, MLogger logger, SendCommunicator sendCommunicator)
+        public CreateFilesToSend()
+        {
+        }
+        public void  Init(StoreAndSign storeAndSign, MLogger logger, SendCommunicator sendCommunicator)
         {
             _storeAndSign = storeAndSign;
             _signSizeForSchedule = storeAndSign.Sign;
@@ -65,9 +68,9 @@ namespace ImageProcessor.Services
                 GenerateFiles(_storeAndSign.CurrentSchedule.Name);
                 // GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
                 //GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);          
-                //Sendommincat .init       .
-                SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory, PlaybillFileExtension, _logger);
-                return senderCommunicator.FilesUploadedOk();
+
+                 _sendCommunicator.Init(_storeAndSign, ProgramFileDirectory, PlaybillFileExtension, _logger);
+                return _sendCommunicator.FilesUploadedOk();
           }
             catch (Exception ex)
             {

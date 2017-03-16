@@ -53,10 +53,15 @@ namespace nightowlsign.data.Models.Stores
         {
             foreach (var store in storeList)
             {
-                store.CurrentSchedule = GetCurrentSchedule(store.SignId ?? 0);
+               // store.CurrentSchedule = GetCurrentSchedule(store.SignId ?? 0, store.id);
                 store.LastInstalled = GetInstalledSchedule(store.id);
                 store.Sign = GetSign(store.SignId ?? 0);
             }
+        }
+
+        public data.Schedule GetCurrentschedule(StoreAndSign entity)
+        {
+            return GetCurrentSchedule(entity.SignId ?? 0, entity.id);
         }
 
         private Sign GetSign(int signId)
@@ -88,22 +93,22 @@ namespace nightowlsign.data.Models.Stores
         }
 
 
-        private data.Schedule GetCurrentSchedule(int signId)
+        private data.Schedule GetCurrentSchedule(int signId, int storeId)
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 var playListResult = db.Database
-                    .SqlQuery<FindCurrentPlayList_Result>("FindCurrentPlayList")
+                    .SqlQuery<FindCurrentPlayListForStore_Result>("FindCurrentPlayListForStore")
                     .OrderBy(x => x.Importance)
-                    .FirstOrDefault(x => x.SignId == signId);
+                    .FirstOrDefault(x => x.SignId == signId && x.StoreId == storeId) ;
 
-                data.Schedule getCurrentSchedule = new data.Schedule()
+                data.Schedule currentSchedule = new data.Schedule()
                 {
                     Id = playListResult?.ScheduleId ?? 0,
                     Name = playListResult?.ScheduleName,
                     LastUpdated = playListResult?.LastUpdated ?? DateTime.Now
                 };
-                return getCurrentSchedule;
+                return currentSchedule;
             }
         }
 
