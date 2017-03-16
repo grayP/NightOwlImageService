@@ -81,6 +81,7 @@
     <Compile Include="Models\ScheduleStore\ScheduleStoreManager.cs" />
     <Compile Include="Models\ScheduleStore\ScheduleStoreViewModel.cs" />
     <Compile Include="Models\ScheduleStore\StoreSelect.cs" />
+    <Compile Include="Models\Schedule\IScheduleManager.cs" />
     <Compile Include="Models\Schedule\ScheduleManager.cs" />
     <Compile Include="Models\Schedule\ScheduleViewModel.cs" />
     <Compile Include="Models\SendToSign\SendToSignViewModel.cs" />

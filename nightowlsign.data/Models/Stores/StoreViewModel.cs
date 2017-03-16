@@ -78,8 +78,7 @@ namespace nightowlsign.data.Models.Stores
         protected override void Add()
         {
             IsValid = true;
-            Entity = new Store();
-            Entity.Name = "";
+            Entity = new Store {Name = ""};
             base.Add();
         }
         protected override void Save()

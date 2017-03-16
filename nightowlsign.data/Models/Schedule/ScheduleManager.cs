@@ -6,7 +6,7 @@ using nightowlsign.data;
 
 namespace nightowlsign.data.Models.Schedule
 {
-    public class ScheduleManager
+    public class ScheduleManager : IScheduleManager
     {
         public ScheduleManager()
         {
