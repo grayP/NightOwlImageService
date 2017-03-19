@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using nightowlsign.data;
 
 
-namespace nightowlsign.data.Models.Image
+namespace nightowlsign.data.Models.StoreSign.Image
 {
     public class ImageManager
     {

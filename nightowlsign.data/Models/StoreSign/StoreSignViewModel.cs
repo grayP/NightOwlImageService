@@ -1,11 +1,8 @@
-﻿using nightowlsign.data;
-using System;
+﻿using nightowlsign.data.Models.Signs;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace nightowlsign.data.Models
+
+namespace nightowlsign.data.Models.StoreSign
 {
     public class StoreSignViewModel : BaseModel.ViewModelBase
     {
@@ -51,7 +48,7 @@ namespace nightowlsign.data.Models
             AllSigns = sm.GetAllSigns(store.id);
             foreach (SelectListItem ss in AllSigns )
             {
-               StoreSign selected=sm.GetValues(ss);
+               data.StoreSign selected=sm.GetValues(ss);
                 if (selected != null)
                 {
                     ss.selected = true;

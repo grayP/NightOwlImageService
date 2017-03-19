@@ -4,6 +4,8 @@ using System.Web;
 using System.Threading.Tasks;
 using System.Linq;
 using nightowlsign.data.Models.Signs;
+using nightowlsign.data.Models.StoreSign;
+using nightowlsign.data.Models.StoreSign.Image;
 
 namespace nightowlsign.data.Models.Image
 {

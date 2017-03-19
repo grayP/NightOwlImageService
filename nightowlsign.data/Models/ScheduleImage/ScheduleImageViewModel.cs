@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-namespace nightowlsign.data.Models
+namespace nightowlsign.data.Models.StoreSign
 {
     public class ScheduleImageViewModel : BaseModel.ViewModelBase
     {

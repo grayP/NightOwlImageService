@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using nightowlsign.data;
+using nightowlsign.data.Models.Signs;
 
 
-namespace nightowlsign.data.Models
+namespace nightowlsign.data.Models.StoreSign
 {
     public class StoreSignManager
     {
@@ -77,10 +78,10 @@ namespace nightowlsign.data.Models
                 }
                 else
                 {
-                    List<StoreSign> storeSigns =
+                    List<data.StoreSign> storeSigns =
                     db.StoreSigns.Where(
                         x => x.SignId.Value == storeSign.SignId.Value && x.StoreId == storeSign.StoreId).ToList();
-                    foreach (StoreSign sign in storeSigns)
+                    foreach (data.StoreSign sign in storeSigns)
                     {
                         db.StoreSigns.Attach(sign);
                         db.StoreSigns.Remove(sign);
@@ -100,9 +101,9 @@ namespace nightowlsign.data.Models
             return ret;
         }
 
-        internal StoreSign GetValues(SelectListItem signSelect)
+        internal data.StoreSign GetValues(SelectListItem signSelect)
         {
-            StoreSign storeSign = null;
+            data.StoreSign storeSign = null;
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 storeSign =
@@ -113,7 +114,7 @@ namespace nightowlsign.data.Models
 
         internal string GetIpAddress(int? signId, int storeId)
         {
-            StoreSign storeSign = null;
+            data.StoreSign storeSign = null;
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 storeSign = db.StoreSigns.FirstOrDefault(x => x.StoreId == storeId && x.SignId == signId);

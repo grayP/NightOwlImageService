@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace nightowlsign.data.Models
+namespace nightowlsign.data.Models.Signs
 {
     public class SelectListItem
     {

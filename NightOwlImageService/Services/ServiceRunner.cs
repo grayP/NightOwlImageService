@@ -6,6 +6,7 @@ using ConfigInjector;
 using ImageProcessor.Services;
 using Logger;
 using nightowlsign.data;
+using nightowlsign.data.Models.SendToSign;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
 using NightOwlImageService.Configuration;
@@ -17,10 +18,11 @@ namespace NightOwlImageService.Services
         readonly Timer _timer;
         private MLogger _logger;
         private RunnerCycleTime runCycleTime;
-      //  private System.Reflection.Assembly _assembly;
-        private readonly SendCommunicator _sendCommunicator;
-        private readonly StoreScheduleLogManager _storeScheduleLogManager;
-        private CreateFilesToSend _createFilesToSend;
+        //  private System.Reflection.Assembly _assembly;
+        private ISendCommunicator _sendCommunicator;
+        private IStoreScheduleLogManager _storeScheduleLogManager;
+        private ICreateFilesToSend _createFilesToSend;
+        private ISendToSignManager _sendToSignManager;
 
 
 
@@ -37,16 +39,15 @@ namespace NightOwlImageService.Services
         }
 
 
-        public ServiceRunner(System.Reflection.Assembly assembly)
+        public ServiceRunner(ISendCommunicator sendCommunicator, ICreateFilesToSend createFilesToSend, IStoreScheduleLogManager storeScheduleLogManager, ISendToSignManager sendToSignManager)
         {
-           
-            var builder = new ContainerBuilder();
-            // builder.RegisterType<RunnerCycleTime>().As<ConfigInjector.IConfigurationSetting>();
-
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+          
             _logger = new MLogger(assembly.FullName);
-            _sendCommunicator = new SendCommunicator();
-            _storeScheduleLogManager = new StoreScheduleLogManager();
-            _createFilesToSend = new CreateFilesToSend();
+            _sendCommunicator = sendCommunicator;
+            _storeScheduleLogManager = storeScheduleLogManager;
+            _createFilesToSend = createFilesToSend;
+            _sendToSignManager = sendToSignManager;
 
             _timer = new Timer { AutoReset = true };
             _timer.Interval = 300000;
@@ -70,7 +71,7 @@ namespace NightOwlImageService.Services
                     {
                         Console.WriteLine($"Starting on store {storeAndSign.Name} ");
                         _logger.WriteLog($"Starting on store {storeAndSign.Name} ");
-                        if (SendTheScheduleToSign(storeAndSign, _logger))
+                        if (SendTheScheduleToSign(storeAndSign, _logger, _sendCommunicator, _sendToSignManager))
                         {
                             _storeScheduleLogManager.SetValues(storeAndSign.CurrentSchedule.Name, storeAndSign.CurrentSchedule.Id, storeAndSign.id);
                             _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated {storeAndSign.id}" : $"{_storeScheduleLogManager.ErrorMessage} ");
@@ -90,16 +91,16 @@ namespace NightOwlImageService.Services
 
         private void CheckIfTimeToClose()
         {
-            var TimeNow = DateTime.Now.Hour;
-            if (TimeNow >= 23)
+            var timeNow = DateTime.Now.Hour;
+            if (timeNow >= 23)
             {
                 Environment.Exit(0);
             }
         }
 
-        private bool SendTheScheduleToSign(StoreAndSign storeAndSign, MLogger logger)
+        private bool SendTheScheduleToSign(StoreAndSign storeAndSign, MLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager)
         {
-            _createFilesToSend.Init(storeAndSign, logger, _sendCommunicator);
+            _createFilesToSend.Init(storeAndSign, logger, sendCommunicator, sendToSignManager);
             return _createFilesToSend.Run();
         }
     }

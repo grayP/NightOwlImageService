@@ -9,7 +9,18 @@ using Logger;
 
 namespace ImageProcessor.Services
 {
-    public class SendCommunicator
+    public interface ISendCommunicator
+    {
+        void Init(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, MLogger logger);
+        bool FilesUploadedOk();
+        bool SendFiletoSign(StoreAndSign storeAndSign);
+        bool SendFiletoSign();
+        bool InitComm(string ipAddress, string idCode, string port);
+        uint GetIP(string strIp);
+        IntPtr GetPointerFromFileName(string fileName);
+    }
+
+    public class SendCommunicator : ISendCommunicator
     {
         private int TimeOut = 3600;
         private StoreAndSign _storeAndSign;
@@ -28,7 +39,8 @@ namespace ImageProcessor.Services
             _playBillExtension = playbillextension;
             _logger = logger;
         }
-        internal bool FilesUploadedOk()
+
+        public bool FilesUploadedOk()
         {
             return SendFiletoSign(_storeAndSign);
         }
@@ -125,14 +137,16 @@ namespace ImageProcessor.Services
                 return false;
             }
         }
-        private uint GetIP(string strIp)
+
+        public uint GetIP(string strIp)
         {
             System.Net.IPAddress ipaddress = System.Net.IPAddress.Parse(strIp);
             uint lIp = (uint)ipaddress?.Address;
             lIp = ((lIp & 0xFF000000) >> 24) + ((lIp & 0x00FF0000) >> 8) + ((lIp & 0x0000FF00) << 8) + ((lIp & 0x000000FF) << 24);
             return (lIp);
         }
-        IntPtr GetPointerFromFileName(string fileName)
+
+        public IntPtr GetPointerFromFileName(string fileName)
         {
             // return Marshal.StringToHGlobalAnsi(fileName);
             return Marshal.StringToHGlobalAnsi("00010000.lpb");

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using nightowlsign.data.Models.Signs;
-using nightowlsign.data.Models.StoreSignDto;
+using nightowlsign.data.Models.StoreSign;
 
 
-namespace nightowlsign.data.Models
+
+namespace nightowlsign.data.Models.SendToSign
 {
     public class SendToSignViewModel : BaseModel.ViewModelBase
     {
@@ -20,7 +20,7 @@ namespace nightowlsign.data.Models
         public data.Schedule Schedule { get; set; }
         public List<ImageSelect> AllImagesInSchedule { get; set; }
         public List<SignDto> SignsForSchedule { get; set; }
-        public List<StoreSignDTO> StoresForSchedule { get; set; }
+        public List<StoreSignDto.StoreSignDto> StoresForSchedule { get; set; }
         public SignParameters SignParameter { get; set; }
 
         public string DisplayMessage { get; set; }

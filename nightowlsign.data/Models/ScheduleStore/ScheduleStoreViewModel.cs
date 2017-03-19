@@ -1,11 +1,11 @@
-﻿using nightowlsign.data.Models;
+﻿using nightowlsign.data.Models.StoreSign;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace nightowlsign.data.Models
+namespace nightowlsign.data.Models.StoreSign
 {
     public class ScheduleStoreViewModel : BaseModel.ViewModelBase
     {

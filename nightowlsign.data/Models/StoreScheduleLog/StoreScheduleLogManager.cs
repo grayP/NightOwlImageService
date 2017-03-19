@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 
 
 namespace nightowlsign.data.Models.StoreScheduleLog
 {
-    public class StoreScheduleLogManager
+    public class StoreScheduleLogManager : IStoreScheduleLogManager
     {
-        public string ErrorMessage { get; set; }
+        public object ErrorMessage { get; set; }
         public data.StoreScheduleLog Entity { get; set; }
         public StoreScheduleLogManager()
         {
@@ -27,7 +26,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         }
 
 
-        private data.StoreScheduleLog GetStoreScheduleLog(int scheduleStoreLogId)
+        public data.StoreScheduleLog GetStoreScheduleLog(int scheduleStoreLogId)
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {

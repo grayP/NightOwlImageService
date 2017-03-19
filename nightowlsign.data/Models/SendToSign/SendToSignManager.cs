@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using nightowlsign.data;
+using nightowlsign.data.Models.StoreSign;
 using nightowlsign.data.Models.Signs;
-using nightowlsign.data.Models.StoreSignDto;
 
 
-namespace nightowlsign.data.Models
+namespace nightowlsign.data.Models.SendToSign
 {
-    public class SendToSignManager
+    public class SendToSignManager : ISendToSignManager
     {
         public SendToSignManager()
         {
@@ -49,7 +48,7 @@ namespace nightowlsign.data.Models
             }
         }
 
-        internal List<SignDto> GetSignsForSchedule(int scheduleId)
+        public List<SignDto> GetSignsForSchedule(int scheduleId)
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
@@ -66,14 +65,14 @@ namespace nightowlsign.data.Models
             }
         }
 
-        internal List<StoreSignDTO> GetStoresWithThisSign(int scheduleId)
+        public List<StoreSignDto.StoreSignDto> GetStoresWithThisSign(int scheduleId)
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 var query = (from ss in db.ScheduleSigns.Where(ss => ss.ScheduleID == scheduleId)
                              join s in db.StoreSigns on ss.SignId equals s.SignId
                              join stores in db.Store on s.StoreId equals stores.id
-                             select new StoreSignDTO()
+                             select new StoreSignDto.StoreSignDto()
                              {
                                  StoreId = s.StoreId ?? 0,
                                  StoreName = stores.Name,
@@ -138,7 +137,7 @@ namespace nightowlsign.data.Models
             }
         }
 
-        internal ScheduleImage GetValues(ImageSelect imageSelect)
+        public ScheduleImage GetValues(ImageSelect imageSelect)
         {
             ScheduleImage scheduleImage = null;
             using (nightowlsign_Entities db = new nightowlsign_Entities())
@@ -149,7 +148,7 @@ namespace nightowlsign.data.Models
             return scheduleImage;
         }
 
-        internal bool IsSelected(int ScheduleId, int ImageID)
+        public bool IsSelected(int ScheduleId, int ImageID)
         {
             bool ret = false;
             using (nightowlsign_Entities db = new nightowlsign_Entities())

@@ -1,4 +1,4 @@
-﻿namespace nightowlsign.data.Models
+﻿namespace nightowlsign.data.Models.StoreSign
 {
     public class StoreSelect
     {
