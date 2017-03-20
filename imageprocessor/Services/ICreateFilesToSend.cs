@@ -9,13 +9,11 @@ namespace ImageProcessor.Services
 {
     public interface ICreateFilesToSend
     {
-        bool Run();
-
+        bool UploadFileToSign();
         void GetTheImagesForSchedule();
         void DeleteOldFiles();
-
         void WriteImagesToDisk(List<ImageSelect> images);
-        void GenerateFiles(string currentScheduleName);
-        void Init(StoreAndSign storeAndSign, MLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager);
+        void GenerateFiles();
+        void Init(StoreAndSign storeAndSign, IMLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager);
     }
 }

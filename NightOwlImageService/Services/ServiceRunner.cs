@@ -16,16 +16,12 @@ namespace NightOwlImageService.Services
     public class ServiceRunner
     {
         readonly Timer _timer;
-        private MLogger _logger;
+        private IMLogger _logger;
         private RunnerCycleTime runCycleTime;
-        //  private System.Reflection.Assembly _assembly;
         private ISendCommunicator _sendCommunicator;
         private IStoreScheduleLogManager _storeScheduleLogManager;
         private ICreateFilesToSend _createFilesToSend;
         private ISendToSignManager _sendToSignManager;
-
-
-
 
         public void Start()
         {
@@ -39,15 +35,15 @@ namespace NightOwlImageService.Services
         }
 
 
-        public ServiceRunner(ISendCommunicator sendCommunicator, ICreateFilesToSend createFilesToSend, IStoreScheduleLogManager storeScheduleLogManager, ISendToSignManager sendToSignManager)
+        public ServiceRunner(ISendCommunicator sendCommunicator, ICreateFilesToSend createFilesToSend, IStoreScheduleLogManager storeScheduleLogManager, ISendToSignManager sendToSignManager, IMLogger logger)
         {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-          
-            _logger = new MLogger(assembly.FullName);
+            _logger = logger;
             _sendCommunicator = sendCommunicator;
             _storeScheduleLogManager = storeScheduleLogManager;
             _createFilesToSend = createFilesToSend;
             _sendToSignManager = sendToSignManager;
+
+            _logger.init(System.Reflection.Assembly.GetExecutingAssembly().FullName);
 
             _timer = new Timer { AutoReset = true };
             _timer.Interval = 300000;
@@ -60,20 +56,21 @@ namespace NightOwlImageService.Services
             svm.HandleRequest();
             foreach (StoreAndSign storeAndSign in svm.StoresAndSigns)
             {
-                Console.WriteLine($"Checking store {storeAndSign.Name}");
                 _logger.WriteLog($"Checking store: {storeAndSign.Name}");
                 if (storeAndSign.IpAddress != null)
                 {
                     storeAndSign.CurrentSchedule = svm.GetCurrentSchedule(storeAndSign);
+                    _logger.WriteLog($"Current: {storeAndSign?.CurrentSchedule.Name}, LastInstalled: {storeAndSign?.LastInstalled.Name}");
                     if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id &&
                         storeAndSign.CurrentSchedule.Id != 0 ||
                         storeAndSign?.CurrentSchedule.LastUpdated > storeAndSign?.LastInstalled?.LastUpdated)
                     {
-                        Console.WriteLine($"Starting on store {storeAndSign.Name} ");
                         _logger.WriteLog($"Starting on store {storeAndSign.Name} ");
-                        if (SendTheScheduleToSign(storeAndSign, _logger, _sendCommunicator, _sendToSignManager))
+                        _createFilesToSend.Init(storeAndSign, _logger, _sendCommunicator, _sendToSignManager);
+
+                        if (SendTheScheduleToSign())
                         {
-                            _storeScheduleLogManager.SetValues(storeAndSign.CurrentSchedule.Name, storeAndSign.CurrentSchedule.Id, storeAndSign.id);
+                            _storeScheduleLogManager.SetValues(storeAndSign);
                             _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated {storeAndSign.id}" : $"{_storeScheduleLogManager.ErrorMessage} ");
                         }
                         ;
@@ -98,10 +95,9 @@ namespace NightOwlImageService.Services
             }
         }
 
-        private bool SendTheScheduleToSign(StoreAndSign storeAndSign, MLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager)
+        private bool SendTheScheduleToSign()
         {
-            _createFilesToSend.Init(storeAndSign, logger, sendCommunicator, sendToSignManager);
-            return _createFilesToSend.Run();
+            return _createFilesToSend.UploadFileToSign();
         }
     }
 }

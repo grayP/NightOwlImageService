@@ -10,5 +10,6 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         bool Insert();
         bool Delete(data.StoreScheduleLog entity);
         void SetValues(string name, int scheduleId, int storeId);
+        void SetValues(StoreAndSign storeandSign);
     }
 }

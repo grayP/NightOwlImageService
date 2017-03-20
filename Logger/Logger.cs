@@ -1,21 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Logger
 {
-    public class MLogger : IDisposable
+    public interface IMLogger
+    {
+        void init(string assemblyName);
+        void WriteLog(string lines);
+    }
+
+    public class MLogger : IDisposable, IMLogger
     {
         private readonly string _fileName;
+      
 
-        public MLogger(string assemblyName)
+        public MLogger()
         {
             _fileName = $"{DateTime.Today.ToString("yy-MM-dd")}.txt";
-            WriteLog($"Version: {assemblyName}");
         }
 
+        public void init(string assemblyName)
+        {
+            WriteLog($"Version: {assemblyName}");
+
+        }
         public void WriteLog(string lines)
         {
             using (System.IO.StreamWriter file =
@@ -24,6 +37,7 @@ namespace Logger
                 file.WriteLine($"{DateTime.Now.TimeOfDay} - {lines}");
                 file.Close();
             }
+            Console.WriteLine(lines);
         }
 
         #region IDisposable Support

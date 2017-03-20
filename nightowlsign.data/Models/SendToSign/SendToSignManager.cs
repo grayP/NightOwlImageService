@@ -17,13 +17,13 @@ namespace nightowlsign.data.Models.SendToSign
         //Properties
         public List<KeyValuePair<string, string>> ValidationErrors { get; set; }
 
-        public List<int?> Get(data.Schedule Entity)
+        public List<int?> Get(data.Schedule entity)
         {
-            int scheduleID = Entity.Id;
+            int scheduleId = entity.Id;
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 var query = (from c in db.ScheduleImages
-                             where c.ScheduleID == scheduleID
+                             where c.ScheduleID == scheduleId
                              select c.ImageID);
                 return query.ToList();
             }

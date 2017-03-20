@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using nightowlsign.data;
 using nightowlsign.data.Models.Signs;
+using nightowlsign.data;
 
 
 namespace nightowlsign.data.Models.StoreSign
@@ -20,9 +18,9 @@ namespace nightowlsign.data.Models.StoreSign
         //Properties
         public List<KeyValuePair<string, string>> ValidationErrors { get; set; }
 
-        public List<int?> Get(Store Entity)
+        public List<int?> Get(Store entity)
         {
-            int storeId = Entity.id;
+            int storeId = entity.id;
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 var query = (from c in db.StoreSigns
@@ -93,34 +91,22 @@ namespace nightowlsign.data.Models.StoreSign
 
         internal bool IsSelected(int? signId, int storeId)
         {
-            bool ret = false;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
-                ret = db.StoreSigns.Any(x => x.StoreId == storeId && x.SignId == signId);
+                return db.StoreSigns.Any(x => x.StoreId == storeId && x.SignId == signId);
             }
-            return ret;
+
         }
 
         internal data.StoreSign GetValues(SelectListItem signSelect)
         {
-            data.StoreSign storeSign = null;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            //var storeSign = null;
+            using (var db = new nightowlsign_Entities())
             {
-                storeSign =
-                    db.StoreSigns.FirstOrDefault(x => x.StoreId == signSelect.StoreId && x.SignId == signSelect.SignId);
+                 return  db.StoreSigns.FirstOrDefault(x => x.StoreId == signSelect.StoreId && x.SignId == signSelect.SignId);
             }
-            return storeSign;
-        }
+          }
 
-        internal string GetIpAddress(int? signId, int storeId)
-        {
-            data.StoreSign storeSign = null;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
-            {
-                storeSign = db.StoreSigns.FirstOrDefault(x => x.StoreId == storeId && x.SignId == signId);
-            }
-            return (storeSign != null) ? storeSign.IPAddress : "";
-        }
     }
 
 }

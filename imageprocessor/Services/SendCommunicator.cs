@@ -11,7 +11,7 @@ namespace ImageProcessor.Services
 {
     public interface ISendCommunicator
     {
-        void Init(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, MLogger logger);
+        void Init(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, IMLogger logger);
         bool FilesUploadedOk();
         bool SendFiletoSign(StoreAndSign storeAndSign);
         bool SendFiletoSign();
@@ -25,14 +25,14 @@ namespace ImageProcessor.Services
         private int TimeOut = 3600;
         private StoreAndSign _storeAndSign;
         private string _programFileDirectory;
-        private MLogger _logger;
+        private IMLogger _logger;
         private string _playBillExtension;
 
         public SendCommunicator()
         {
         }
 
-        public void Init(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, MLogger logger)
+        public void Init(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, IMLogger logger)
         {
             _storeAndSign = storeAndSign;
             _programFileDirectory = programFileDirectory;
