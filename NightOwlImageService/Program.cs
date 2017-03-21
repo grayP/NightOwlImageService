@@ -17,14 +17,7 @@ namespace NightOwlImageService
     {
         public static void Main(string[] args)
         {
-            //var builder = new ContainerBuilder();
-            //builder.RegisterType<SendCommunicator>().As<ISendCommunicator>().InstancePerLifetimeScope();
-            //builder.RegisterType<CreateFilesToSend>().As<ICreateFilesToSend>().InstancePerLifetimeScope();
-            //builder.RegisterType<StoreScheduleLogManager>().As<IStoreScheduleLogManager>().InstancePerLifetimeScope();
-            //builder.RegisterType<SendToSignManager>().As<ISendToSignManager>().InstancePerLifetimeScope();
-            //builder.RegisterType<MLogger>().As<IMLogger>().InstancePerLifetimeScope();
-            //builder.RegisterType<ServiceRunner>().InstancePerLifetimeScope();
-            var container = ioc.LetThereBeIoc();
+             var container = ioc.LetThereBeIoc();
 
             HostFactory.Run(x => //1
             {

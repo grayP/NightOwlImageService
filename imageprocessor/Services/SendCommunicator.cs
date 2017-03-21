@@ -1,25 +1,13 @@
 ﻿using ImageProcessor.CP5200;
+using Logger;
+using nightowlsign.data;
 using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.IO;
-using System.Runtime.CompilerServices;
-using nightowlsign.data;
-using Logger;
 
 namespace ImageProcessor.Services
 {
-    public interface ISendCommunicator
-    {
-        void Init(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, IMLogger logger);
-        bool FilesUploadedOk();
-        bool SendFiletoSign(StoreAndSign storeAndSign);
-        bool SendFiletoSign();
-        bool InitComm(string ipAddress, string idCode, string port);
-        uint GetIP(string strIp);
-        IntPtr GetPointerFromFileName(string fileName);
-    }
-
     public class SendCommunicator : ISendCommunicator
     {
         private int TimeOut = 3600;
@@ -27,10 +15,10 @@ namespace ImageProcessor.Services
         private string _programFileDirectory;
         private IMLogger _logger;
         private string _playBillExtension;
+        private string _programFileName;
 
-        public SendCommunicator()
-        {
-        }
+        public int UpLoadSuccess { get; set; }
+        public int RestartSuccess { get; set; }
 
         public void Init(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, IMLogger logger)
         {
@@ -40,8 +28,9 @@ namespace ImageProcessor.Services
             _logger = logger;
         }
 
-        public bool FilesUploadedOk()
+        public bool FilesUploadedOk(string programFileName)
         {
+            _programFileName = programFileName;
             return SendFiletoSign(_storeAndSign);
         }
         private string FindPlaybillFile()
@@ -65,37 +54,19 @@ namespace ImageProcessor.Services
         }
         public bool SendFiletoSign()
         {
-            var success = false;
-            try
+             try
             {
-                int uploadCount = 0;
-                foreach (
-                    string programFileName in
-                    Directory.GetFiles(_programFileDirectory, "*.lpb"))
-                {
-                    var uploadSuccess = Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
-                        GetPointerFromFileName(programFileName),
-                        GetPointerFromFileName(programFileName));
+                    UpLoadSuccess = Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
+                        GetPointerFromFileName(_programFileName),
+                        GetPointerFromFileName(_programFileName));
 
-                    _logger.WriteLog($"UploadSuccess for {programFileName}={uploadSuccess}");
-                    if (0 == uploadSuccess)
-                        uploadCount++;
-                }
-
-                //if (0 ==
-                //    Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1), GetPointerFromFileName(FindPlaybillFile()),
-                //        GetPointerFromFileName(FindPlaybillFile())))
-                //    uploadCount++;
-
-                int restartSuccess = -1;
-                if (uploadCount >= 1)
-                {
-                    _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - Successfully uploaded {uploadCount} files and Restarted:{restartSuccess} ");
-                    restartSuccess = Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
-                    success = restartSuccess >= 0;
-                }
-                _logger.WriteLog($"Restart of sign - {success}");
-                return success;
+                    _logger.WriteLog($"UploadSuccess for {_programFileName}={UpLoadSuccess}");
+                    if (UpLoadSuccess>=0)
+                    {
+                        _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - Successfully uploaded {_programFileName} file and Restarted:{RestartSuccess} ");
+                        RestartSuccess = Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
+                    }
+                return UpLoadSuccess>=0;
             }
             catch (Exception ex)
             {
@@ -103,9 +74,7 @@ namespace ImageProcessor.Services
                 return false;
             }
         }
-
-
-
+ 
         public bool InitComm(string ipAddress, string idCode, string port)
         {
             var signOnLine = false;
@@ -148,8 +117,7 @@ namespace ImageProcessor.Services
 
         public IntPtr GetPointerFromFileName(string fileName)
         {
-            // return Marshal.StringToHGlobalAnsi(fileName);
-            return Marshal.StringToHGlobalAnsi("00010000.lpb");
+            return Marshal.StringToHGlobalAnsi(_programFileName);
         }
 
     }

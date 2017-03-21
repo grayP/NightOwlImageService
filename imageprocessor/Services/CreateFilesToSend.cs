@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ImageProcessor.Enums;
 using nightowlsign.data;
 using nightowlsign.data.Models.StoreSign;
@@ -24,6 +25,7 @@ namespace ImageProcessor.Services
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpp";
+        private const string ProgramFileName="00010000.lpb";
 
         public string PlaybillFileName { get; set; }
         public bool Successfull { get; set; }
@@ -51,7 +53,7 @@ namespace ImageProcessor.Services
                 DeleteOldFiles();
                 WriteImagesToDisk(_imagesToSend);
                 GenerateFiles();
-                return _sendCommunicator.FilesUploadedOk();
+                return _sendCommunicator.FilesUploadedOk(ProgramFileName);
             }
             catch (Exception ex)
             {
@@ -70,7 +72,6 @@ namespace ImageProcessor.Services
         {
             DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
             DeleteOldFiles(_programFileDirectory, AddStar(ProgramFileExtension));
-            //  DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
         }
         public void WriteImagesToDisk(List<ImageSelect> images)
         {
@@ -97,7 +98,7 @@ namespace ImageProcessor.Services
             foreach (
                 string fileName in Directory.GetFiles(directoryName, extension))
             {
-                System.IO.File.Delete(fileName);
+               File.Delete(fileName);
             }
         }
         private List<ImageSelect> GetImages(int scheduleId)
@@ -125,16 +126,15 @@ namespace ImageProcessor.Services
                     foreach (
                         string fileName in Directory.GetFiles(ImageDirectory, AddStar(ImageExtension)))
                     {
-
                         PlayItemNo = _cp5200.Program_Add_Image(programPointer, windowNo,
                             Marshal.StringToHGlobalAnsi(fileName), (int)RenderMode.Stretch_to_fit_the_window,
                            0, 100, PeriodToShowImage, 0);
                     }
                 }
-                var programFileName = GenerateProgramFileName("00010000");
-                DeleteOldProgramFile(programFileName);
+               // ProgramFileName = GenerateProgramFileName("00010000");
+                DeleteOldProgramFile(ProgramFileName);
                 if (
-                    _cp5200.Program_SaveFile(programPointer, programFileName) > 1)
+                    _cp5200.Program_SaveFile(programPointer, ProgramFileName) > 1)
                 {
                     _cp5200.DestroyProgram(programPointer);
                 }
@@ -143,7 +143,7 @@ namespace ImageProcessor.Services
 
         private void DeleteOldProgramFile(string fileAndPath)
         {
-            System.IO.File.Delete(fileAndPath);
+            File.Delete(fileAndPath);
         }
 
         public void GeneratethePlayBillFile(string scheduleName)

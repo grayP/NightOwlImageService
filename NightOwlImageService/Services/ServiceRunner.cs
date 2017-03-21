@@ -67,15 +67,17 @@ namespace NightOwlImageService.Services
                     {
                         _logger.WriteLog($"Starting on store {storeAndSign.Name} ");
                         _createFilesToSend.Init(storeAndSign, _logger, _sendCommunicator, _sendToSignManager);
-
-                        if (SendTheScheduleToSign())
+                        var filesUploadedOk = SendTheScheduleToSign();
+                        if (filesUploadedOk)
                         {
+                            _logger.WriteLog($"ServiceRunner - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
                             _storeScheduleLogManager.SetValues(storeAndSign);
                             _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated {storeAndSign.id}" : $"{_storeScheduleLogManager.ErrorMessage} ");
                         }
-                        ;
-                        this._logger.WriteLog(
-                            $"ServiceRunner - doTheWork - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
+                        else
+                        {
+                            _logger.WriteLog($"ServiceRunner - Uploaded images failed for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
+                        }
                     }
                 }
                 else
