@@ -26,7 +26,7 @@ namespace ImageProcessor.Services
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpp";
-        private const string ProgramFileName="00010000.lpb";
+        private const string ProgramFileName = "00010000.lpb";
 
         public string PlaybillFileName { get; set; }
         public bool Successfull { get; set; }
@@ -46,14 +46,28 @@ namespace ImageProcessor.Services
             _sendCommunicator.Init(_storeAndSign, _programFileDirectory, PlaybillFileExtension, _logger);
         }
 
-        public bool UploadFileToSign()
+        public bool CreateTheNewProgramFiles()
         {
             try
             {
                 GetTheImagesForSchedule();
                 DeleteOldFiles();
                 WriteImagesToDisk(_imagesToSend);
-                GenerateFiles();
+                GenerateProgramFiles();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteLog($"CreateFilesToSend - UploadFileToSign - {ex.Message}");
+                return false;
+            }
+
+        }
+        public bool UploadFileToSign()
+        {
+            try
+            {
+
                 return _sendCommunicator.FilesUploadedOk(ProgramFileName);
             }
             catch (Exception ex)
@@ -84,7 +98,7 @@ namespace ImageProcessor.Services
                 counter++;
             }
         }
-        public void GenerateFiles()
+        public void GenerateProgramFiles()
         {
             GeneratetheProgramFiles();
         }
@@ -99,7 +113,7 @@ namespace ImageProcessor.Services
             foreach (
                 string fileName in Directory.GetFiles(directoryName, extension))
             {
-               File.Delete(fileName);
+                File.Delete(fileName);
             }
         }
         private List<ImageSelect> GetImages(int scheduleId)
@@ -132,7 +146,7 @@ namespace ImageProcessor.Services
                            0, 100, PeriodToShowImage, 0);
                     }
                 }
-               // ProgramFileName = GenerateProgramFileName("00010000");
+                // ProgramFileName = GenerateProgramFileName("00010000");
                 DeleteOldProgramFile(ProgramFileName);
                 if (
                     _cp5200.Program_SaveFile(programPointer, ProgramFileName) > 1)

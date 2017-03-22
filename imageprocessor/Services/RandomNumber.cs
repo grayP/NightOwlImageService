@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
-namespace nightowlsign.Services
+namespace ImageProcessor.Services
 {
     public static class RandomNumber
     {
         internal static int GenerateRandomNo()
         {
-            int _min = 1000;
-            int _max = 9999;
-            Random _rdm = new Random();
-            return _rdm.Next(_min, _max);
+            const int min = 1000;
+            const int max = 9999;
+            var rdm = new Random();
+            return rdm.Next(min, max);
         }
         }
 }

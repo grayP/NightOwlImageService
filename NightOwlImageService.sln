@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NightOwlImageService", "NightOwlImageService\NightOwlImageService.csproj", "{6B4827E4-6F87-4DC7-B1EB-65C9551344E1}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nightowlsign.data", "nightowlsign.data\nightowlsign.data.csproj", "{E006FAC5-FA56-4A62-921C-2E0CC550AE5F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{F9B051E0-4837-4197-BD0D-8D943DB2A964}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NightOwlSignTest", "NightOwlSignTest\NightOwlSignTest.csproj", "{82AF3DC4-E3C0-4266-8C01-0C237823A59D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{F9B051E0-4837-4197-BD0D-8D943DB2A964}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9B051E0-4837-4197-BD0D-8D943DB2A964}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9B051E0-4837-4197-BD0D-8D943DB2A964}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82AF3DC4-E3C0-4266-8C01-0C237823A59D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82AF3DC4-E3C0-4266-8C01-0C237823A59D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82AF3DC4-E3C0-4266-8C01-0C237823A59D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82AF3DC4-E3C0-4266-8C01-0C237823A59D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

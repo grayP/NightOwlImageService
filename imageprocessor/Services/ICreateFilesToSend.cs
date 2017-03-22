@@ -10,10 +10,11 @@ namespace ImageProcessor.Services
     public interface ICreateFilesToSend
     {
         bool UploadFileToSign();
+        bool CreateTheNewProgramFiles();
         void GetTheImagesForSchedule();
         void DeleteOldFiles();
         void WriteImagesToDisk(List<ImageSelect> images);
-        void GenerateFiles();
+        void GenerateProgramFiles();
         void Init(StoreAndSign storeAndSign, IMLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager);
     }
 }

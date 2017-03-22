@@ -11,7 +11,7 @@ namespace ImageProcessor.Services
         bool SendFiletoSign(StoreAndSign storeAndSign);
         bool SendFiletoSign();
         bool InitComm(string ipAddress, string idCode, string port);
-        uint GetIP(string strIp);
+        uint GetIP(string signIpAddress);
         IntPtr GetPointerFromFileName(string fileName);
     }
 }

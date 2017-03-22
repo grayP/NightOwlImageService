@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace ImageProcessor.Services
 {
-   public static class StripCharacters
+    public static class StripCharacters
     {
         internal static string Strip(string scheduleName)
         {

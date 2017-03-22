@@ -2,6 +2,7 @@
 using Logger;
 using nightowlsign.data;
 using System;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -35,7 +36,7 @@ namespace ImageProcessor.Services
         }
         private string FindPlaybillFile()
         {
-            DirectoryInfo di = new DirectoryInfo(_programFileDirectory);
+            var di = new DirectoryInfo(_programFileDirectory);
             var lppFile = di.EnumerateFiles().Select(f => f.Name)
                       .FirstOrDefault(f => f.Contains(_playBillExtension));
             return string.Concat(_programFileDirectory, lppFile);
@@ -77,28 +78,17 @@ namespace ImageProcessor.Services
  
         public bool InitComm(string ipAddress, string idCode, string port)
         {
-            var signOnLine = false;
-            try
+             try
             {
-                uint dwIPAddr = GetIP(ipAddress);
-                uint dwIDCode = GetIP(idCode);
-                int nIPPort = Convert.ToInt32(port);
-                if (dwIPAddr != 0 && dwIDCode != 0)
-                {
-                    var responseNumber = Cp5200External.CP5200_Net_Init(dwIPAddr, nIPPort, dwIDCode, TimeOut);
-                    if (responseNumber == 0)
-                    {
-                        signOnLine = true;
-                        var result = Cp5200External.CP5200_Net_Connect();
-                        var result2 = Cp5200External.CP5200_Net_IsConnected();
-                        _logger.WriteLog($"Communication established with {ipAddress}");
-                    }
-                    else
-                    {
-                        _logger.WriteLog($"Communication failed with Sign {ipAddress} ");
-                    }
-                }
-                return signOnLine;
+                var dwIpAddr = GetIP(ipAddress);
+                var dwIdCode = GetIP(idCode);
+                var nIpPort = Convert.ToInt32(port);
+                if (dwIpAddr == 0 || dwIdCode == 0) return false;
+                var responseNumber = Cp5200External.CP5200_Net_Init(dwIpAddr, nIpPort, dwIdCode, TimeOut);
+                _logger.WriteLog(responseNumber==0 ? $"Communication established with {ipAddress}" : $"Communication failed with Sign {ipAddress} - Response: {responseNumber}");
+
+                return responseNumber == 0;
+              
             }
             catch (Exception ex)
             {
@@ -107,10 +97,10 @@ namespace ImageProcessor.Services
             }
         }
 
-        public uint GetIP(string strIp)
+        public uint GetIP(string signIpAddress)
         {
-            System.Net.IPAddress ipaddress = System.Net.IPAddress.Parse(strIp);
-            uint lIp = (uint)ipaddress?.Address;
+            var ipaddress = System.Net.IPAddress.Parse(signIpAddress);
+            var lIp = (uint)ipaddress?.Address;
             lIp = ((lIp & 0xFF000000) >> 24) + ((lIp & 0x00FF0000) >> 8) + ((lIp & 0x0000FF00) << 8) + ((lIp & 0x000000FF) << 24);
             return (lIp);
         }

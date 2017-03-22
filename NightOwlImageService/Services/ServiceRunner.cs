@@ -52,11 +52,11 @@ namespace NightOwlImageService.Services
             _timer.Elapsed += (sender, eventArgs) => DoTheWork();
         }
 
-        public void DoTheWork()
+        public void DoTheWork()                  
         {
             _storeViewModel.Setup();
             _storeViewModel.HandleRequest();
-            foreach (StoreAndSign storeAndSign in _storeViewModel.StoresAndSigns)
+            foreach (var storeAndSign in _storeViewModel.StoresAndSigns)
             {
                 _logger.WriteLog($"Checking store: {storeAndSign.Name}");
                 if (storeAndSign.AddressOk())
@@ -69,8 +69,8 @@ namespace NightOwlImageService.Services
                     {
                         _logger.WriteLog($"Starting on store {storeAndSign.Name} ");
                         _createFilesToSend.Init(storeAndSign, _logger, _sendCommunicator, _sendToSignManager);
-                        var filesUploadedOk = SendTheScheduleToSign();
-                        if (filesUploadedOk)
+
+                         if (CreateTheProgramFiles() && SendTheScheduleToSign())
                         {
                             _logger.WriteLog($"ServiceRunner - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
                             _storeScheduleLogManager.UpdateInstallLog(storeAndSign);
@@ -97,6 +97,11 @@ namespace NightOwlImageService.Services
             {
                 Environment.Exit(0);
             }
+        }
+
+        private bool CreateTheProgramFiles()
+        {
+            return _createFilesToSend.CreateTheNewProgramFiles();
         }
 
         private bool SendTheScheduleToSign()
