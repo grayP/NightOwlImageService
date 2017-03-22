@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using nightowlsign.data;
 
-
-namespace nightowlsign.data.Models.StoreSign.Image
+namespace nightowlsign.data.Models.Image
 {
     public class ImageManager
     {

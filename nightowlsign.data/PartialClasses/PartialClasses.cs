@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using nightowlsign.data.MetaData;
 
 
 namespace nightowlsign.data

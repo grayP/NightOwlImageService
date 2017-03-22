@@ -1,4 +1,4 @@
-﻿namespace nightowlsign.data.Models.StoreSignDto
+﻿namespace nightowlsign.data
 {
     public class StoreSignDto
     {

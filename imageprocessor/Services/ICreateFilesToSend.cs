@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Logger;
 using nightowlsign.data;
+using nightowlsign.data.Models.Image;
 using nightowlsign.data.Models.SendToSign;
-using nightowlsign.data.Models.StoreSign;
 
 namespace ImageProcessor.Services
 {

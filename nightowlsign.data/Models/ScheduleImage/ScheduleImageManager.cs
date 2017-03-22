@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using nightowlsign.data;
+using nightowlsign.data.Models.Image;
 
-
-namespace nightowlsign.data.Models.StoreSign
+namespace nightowlsign.data.Models.ScheduleImage
 {
     public class ScheduleImageManager
     {
@@ -69,7 +67,7 @@ namespace nightowlsign.data.Models.StoreSign
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
-                ScheduleImage imageSelected = new ScheduleImage
+                data.ScheduleImage imageSelected = new data.ScheduleImage
                 {
                     ImageID = imageSelect.ImageId,
                     ScheduleID = schedule.Id,
@@ -77,12 +75,12 @@ namespace nightowlsign.data.Models.StoreSign
                 };
                 if (imageSelect.Selected)
                 {
-                    db.Set<ScheduleImage>().AddOrUpdate(imageSelected);
+                    db.Set<data.ScheduleImage>().AddOrUpdate(imageSelected);
                     db.SaveChanges();
                 }
                 else
                 {
-                    ScheduleImage scheduleImage =
+                    data.ScheduleImage scheduleImage =
                         db.ScheduleImages.Find(imageSelect.Id);
                     if (scheduleImage != null)
                     {
@@ -94,9 +92,9 @@ namespace nightowlsign.data.Models.StoreSign
             }
         }
 
-        internal ScheduleImage GetValues(ImageSelect imageSelect)
+        internal data.ScheduleImage GetValues(ImageSelect imageSelect)
         {
-            ScheduleImage scheduleImage = null;
+            data.ScheduleImage scheduleImage = null;
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 scheduleImage =

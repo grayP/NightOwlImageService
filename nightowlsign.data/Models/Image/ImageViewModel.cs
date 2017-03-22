@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web;
-using System.Threading.Tasks;
-using System.Linq;
+﻿using nightowlsign.data.Models.ScheduleImage;
 using nightowlsign.data.Models.Signs;
-using nightowlsign.data.Models.StoreSign;
-using nightowlsign.data.Models.StoreSign.Image;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace nightowlsign.data.Models.Image
 {
     public class ImageViewModel : BaseModel.ViewModelBase
     {
         private readonly SignManager _signManager;
+        private readonly ImageManager _imageManager;
+        private readonly ScheduleImageManager _scheduleImageManager;
+
+
         public bool Selected { get; set; }
 
         public ImageViewModel() : base()
         {
             _signManager = new SignManager();
+            _imageManager  = new ImageManager();
+            _scheduleImageManager = new ScheduleImageManager();
         }
 
         //Properties--------------
@@ -33,7 +37,7 @@ namespace nightowlsign.data.Models.Image
         {
             get
             {
-                using (nightowlsign_Entities db = new nightowlsign_Entities())
+                using (var db = new nightowlsign_Entities())
                 {
                     var selectList = new List<SelectListItem>()
                     {
@@ -101,10 +105,8 @@ namespace nightowlsign.data.Models.Image
 
         protected override void Get()
         {
-            ImageManager cmm = new ImageManager();
-            //SearchEntity.Caption = SearchEntity.Caption;
             SearchEntity.SignSize = SearchSignId;
-            Images = cmm.Get(SearchEntity);
+            Images = _imageManager.Get(SearchEntity);
         }
 
  protected override void Delete()
@@ -114,7 +116,6 @@ namespace nightowlsign.data.Models.Image
                 if (image.Selected)
                 {
                     DeleteTheImage(image);
-                    //ToDo add in image delete
                 }
             }
             Get();
@@ -129,15 +130,13 @@ namespace nightowlsign.data.Models.Image
   
         private void DeleteFromScheduleImage(int id)
         {
-            ScheduleImageManager sim = new ScheduleImageManager();
-            sim.RemoveImagesFromScheduleImage(id);
+            _scheduleImageManager.RemoveImagesFromScheduleImage(id);
         }
 
         private void DeleteImage(int imageId)
         {
-            ImageManager imm = new ImageManager();
-            Entity = imm.Find(imageId);
-            imm.Delete(Entity);
+            var imagetoDelete = _imageManager.Find(imageId);
+            _imageManager.Delete(imagetoDelete);
             base.Delete();
         }
     }

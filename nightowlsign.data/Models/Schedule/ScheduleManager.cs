@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using nightowlsign.data;
 
 
 namespace nightowlsign.data.Models.Schedule
@@ -15,14 +14,14 @@ namespace nightowlsign.data.Models.Schedule
         //Properties
         public List<KeyValuePair<string, string>> ValidationErrors { get; set; }
 
-        public List<data.ScheduleAndSign> Get(data.Schedule Entity)
+        public List<ScheduleAndSign> Get(data.Schedule Entity)
         {
-            List<data.ScheduleAndSign> ret = new List<data.ScheduleAndSign>();
+            List<ScheduleAndSign> ret = new List<ScheduleAndSign>();
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
-                ret = db.ScheduleAndSigns.OrderBy(x => x.Id).ToList<data.ScheduleAndSign>();
+                ret = db.ScheduleAndSigns.OrderBy(x => x.Id).ToList<ScheduleAndSign>();
             }
-            if (Entity.SignId>0)
+            if (Entity.SignId > 0)
             {
                 ret = ret.FindAll(p => p.SignId.Equals(Entity.SignId));
             }
@@ -33,15 +32,12 @@ namespace nightowlsign.data.Models.Schedule
             return ret;
         }
 
-        public data.Schedule Find(int ScheduleId)
+        public data.Schedule Find(int scheduleId)
         {
-            data.Schedule ret = null;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
-                ret = db.Schedules.Find(ScheduleId);
+                return db.Schedules.Find(scheduleId);
             }
-            return ret;
-
         }
 
         public bool Validate(data.Schedule entity)
@@ -51,7 +47,7 @@ namespace nightowlsign.data.Models.Schedule
             {
                 if (entity.Name.ToLower() == entity.Name)
                 {
-                   // ValidationErrors.Add(new KeyValuePair<string, string>("Schedule Name", "Schedule Name cannot be all lower case"));
+                    // ValidationErrors.Add(new KeyValuePair<string, string>("Schedule Name", "Schedule Name cannot be all lower case"));
                 }
             }
             return (ValidationErrors.Count == 0);

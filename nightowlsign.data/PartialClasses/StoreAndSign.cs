@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace nightowlsign.data
 {
    public partial class StoreAndSign

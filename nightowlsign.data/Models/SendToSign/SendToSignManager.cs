@@ -1,9 +1,8 @@
-﻿using System;
+﻿using nightowlsign.data.Models.Image;
+using nightowlsign.data.Models.Signs;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using nightowlsign.data.Models.StoreSign;
-using nightowlsign.data.Models.Signs;
 
 
 namespace nightowlsign.data.Models.SendToSign
@@ -65,14 +64,14 @@ namespace nightowlsign.data.Models.SendToSign
             }
         }
 
-        public List<StoreSignDto.StoreSignDto> GetStoresWithThisSign(int scheduleId)
+        public List<StoreSignDto> GetStoresWithThisSign(int scheduleId)
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 var query = (from ss in db.ScheduleSigns.Where(ss => ss.ScheduleID == scheduleId)
                              join s in db.StoreSigns on ss.SignId equals s.SignId
                              join stores in db.Store on s.StoreId equals stores.id
-                             select new StoreSignDto.StoreSignDto()
+                             select new StoreSignDto()
                              {
                                  StoreId = s.StoreId ?? 0,
                                  StoreName = stores.Name,
@@ -112,7 +111,7 @@ namespace nightowlsign.data.Models.SendToSign
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
-                ScheduleImage imageSelected = new ScheduleImage
+                data.ScheduleImage imageSelected = new data.ScheduleImage
                 {
                     ImageID = imageSelect.ImageId,
                     ScheduleID = schedule.Id,
@@ -120,12 +119,12 @@ namespace nightowlsign.data.Models.SendToSign
                 };
                 if (imageSelect.Selected)
                 {
-                    db.Set<ScheduleImage>().AddOrUpdate(imageSelected);
+                    db.Set<data.ScheduleImage>().AddOrUpdate(imageSelected);
                     db.SaveChanges();
                 }
                 else
                 {
-                    ScheduleImage scheduleImage =
+                    data.ScheduleImage scheduleImage =
                         db.ScheduleImages.Find(imageSelect.Id);
                     if (scheduleImage != null)
                     {
@@ -137,9 +136,9 @@ namespace nightowlsign.data.Models.SendToSign
             }
         }
 
-        public ScheduleImage GetValues(ImageSelect imageSelect)
+        public data.ScheduleImage GetValues(ImageSelect imageSelect)
         {
-            ScheduleImage scheduleImage = null;
+            data.ScheduleImage scheduleImage = null;
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 scheduleImage =

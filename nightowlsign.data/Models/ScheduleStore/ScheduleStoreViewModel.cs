@@ -1,11 +1,6 @@
-﻿using nightowlsign.data.Models.StoreSign;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace nightowlsign.data.Models.StoreSign
+namespace nightowlsign.data.Models.ScheduleStore
 {
     public class ScheduleStoreViewModel : BaseModel.ViewModelBase
     {
@@ -48,7 +43,7 @@ namespace nightowlsign.data.Models.StoreSign
             foreach (StoreSelect ss in AllStores)
             {
                 ss.ScheduleId = Schedule.Id;
-                ScheduleStore selected = sm.GetValues(ss);
+                data.ScheduleStore selected = sm.GetValues(ss);
                 if (selected != null)
                 {
                     ss.Selected = true;

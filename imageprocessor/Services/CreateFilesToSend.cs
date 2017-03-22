@@ -8,6 +8,7 @@ using nightowlsign.data.Models.StoreSign;
 using System.Net;
 using System.Runtime.InteropServices;
 using Logger;
+using nightowlsign.data.Models.Image;
 using nightowlsign.data.Models.SendToSign;
 
 

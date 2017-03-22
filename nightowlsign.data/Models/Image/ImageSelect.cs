@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace nightowlsign.data.Models.StoreSign
+namespace nightowlsign.data.Models.Image
 {
     public class ImageSelect : IDisposable
     {
