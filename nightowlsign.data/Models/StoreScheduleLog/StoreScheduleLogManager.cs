@@ -74,7 +74,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
             return ret;
         }
 
-        public void SetValues(StoreAndSign storeAndSign)
+        public void UpdateInstallLog(StoreAndSign storeAndSign)
         {
             Entity.DateInstalled=DateTime.Now.ToLocalTime();
             Entity.ScheduleName = storeAndSign.CurrentSchedule.Name;
@@ -82,14 +82,6 @@ namespace nightowlsign.data.Models.StoreScheduleLog
             Entity.StoreId = storeAndSign.id;
             Entity.InstalledOk = true;
 
-        }
-        public void SetValues(string name, int scheduleId, int storeId)
-        {
-            Entity.DateInstalled = DateTime.Now;
-            Entity.ScheduleName = name;
-            Entity.ScheduleId = scheduleId;
-            Entity.InstalledOk = true;
-            Entity.StoreId = storeId  ;
         }
     }
 

@@ -8,13 +8,12 @@ using nightowlsign.data.Models.Signs;
 
 namespace nightowlsign.data.Models.Stores
 {
-    public class StoreViewModel : BaseModel.ViewModelBase
+    public class StoreViewModel : BaseModel.ViewModelBase, IStoreViewModel
     {
         public StoreViewModel() : base()
         {
-            sm = new StoreManager();
         }
-        private StoreManager sm;
+        private StoreManager _storeManager;
         public List<Store> Stores { get; set; }
         public List<StoreAndSign> StoresAndSigns { get; set; }
         public Store SearchEntity { get; set; }
@@ -23,7 +22,7 @@ namespace nightowlsign.data.Models.Stores
         {
             get
             {
-                using (nightowlsign_Entities db = new nightowlsign_Entities())
+                using (var db = new nightowlsign_Entities())
                 {
                     var selectList = new List<SelectListItem>()
                     {
@@ -47,8 +46,9 @@ namespace nightowlsign.data.Models.Stores
         }
 
 
-        protected override void Init()
+        public  void Setup()
         {
+            _storeManager = new StoreManager();
             Stores = new List<Store>();
             SearchEntity = new Store();
             Entity = new Store();
@@ -64,16 +64,16 @@ namespace nightowlsign.data.Models.Stores
         }
         protected override void Get()
         {
-            StoresAndSigns = sm.Get(SearchEntity);
+            StoresAndSigns = _storeManager.Get(SearchEntity);
         }
 
         public data.Schedule GetCurrentSchedule(StoreAndSign store)
         {
-            return sm.GetCurrentschedule(store);
+            return _storeManager.GetCurrentschedule(store);
         }
         protected override void Edit()
         {
-            Entity = sm.Find(Convert.ToInt32(EventArgument));
+            Entity = _storeManager.Find(Convert.ToInt32(EventArgument));
             base.Edit();
         }
         protected override void Add()
@@ -86,19 +86,19 @@ namespace nightowlsign.data.Models.Stores
         {
             if (Mode == "Add")
             {
-                sm.Insert(Entity);
+                _storeManager.Insert(Entity);
             }
             else
             {
-                sm.Update(Entity);
+                _storeManager.Update(Entity);
             }
-            ValidationErrors = sm.ValidationErrors;
+            ValidationErrors = _storeManager.ValidationErrors;
             base.Save();
         }
         protected override void Delete()
         {
-            Entity = sm.Find(Convert.ToInt32(EventArgument));
-            sm.Delete(Entity);
+            Entity = _storeManager.Find(Convert.ToInt32(EventArgument));
+            _storeManager.Delete(Entity);
             Get();
             base.Delete();
         }

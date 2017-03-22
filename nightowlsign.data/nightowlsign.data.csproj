@@ -97,6 +97,7 @@
     <Compile Include="Models\StoreSignDto\StoreSignDto.cs" />
     <Compile Include="Models\StoreSign\StoreSignManager.cs" />
     <Compile Include="Models\StoreSign\StoreSignViewModel.cs" />
+    <Compile Include="Models\Stores\IStoreViewModel.cs" />
     <Compile Include="PartialClasses\StoreAndSign.cs" />
     <Compile Include="Models\Stores\StoreManager.cs" />
     <Compile Include="Models\Stores\StoreViewModel.cs" />

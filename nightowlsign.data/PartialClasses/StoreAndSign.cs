@@ -16,6 +16,10 @@ namespace nightowlsign.data
         {
             throw new NotImplementedException();
         }
+        public bool AddressOk()
+        {
+            return IpAddress != null && SubMask != null && Port != null;
+        }
     }
 
 }

@@ -2,16 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace nightowlsign.data.Models.Schedule
 {
     public class ScheduleViewModel : BaseModel.ViewModelBase
     {
+        private readonly ScheduleManager _scheduleManager;
 
         public ScheduleViewModel() : base()
         {
+            _scheduleManager = new ScheduleManager();
 
         }
         public List<data.ScheduleAndSign> Schedules { get; set; }
@@ -61,14 +61,12 @@ namespace nightowlsign.data.Models.Schedule
 
         protected override void Get()
         {
-            ScheduleManager sm = new ScheduleManager();
-            Schedules = sm.Get(SearchEntity);
+            Schedules = _scheduleManager.Get(SearchEntity);
         }
 
         protected override void Edit()
         {
-            ScheduleManager sm = new ScheduleManager();
-            Entity = sm.Find(Convert.ToInt32(EventArgument));
+            Entity = _scheduleManager.Find(Convert.ToInt32(EventArgument));
             base.Edit();
         }
 
@@ -80,24 +78,22 @@ namespace nightowlsign.data.Models.Schedule
         }
         protected override void Save()
         {
-            ScheduleManager sm = new ScheduleManager();
             if (Mode == "Add")
             {
-                sm.Insert(Entity);
+                _scheduleManager.Insert(Entity);
             }
             else
             {
-                sm.Update(Entity);
+                _scheduleManager.Update(Entity);
             }
-            ValidationErrors = sm.ValidationErrors;
+            ValidationErrors = _scheduleManager.ValidationErrors;
             base.Save();
         }
 
         protected override void Delete()
         {
-            ScheduleManager sm = new ScheduleManager();
-            Entity = sm.Find(Convert.ToInt32(EventArgument));
-            sm.Delete(Entity);
+            Entity = _scheduleManager.Find(Convert.ToInt32(EventArgument));
+            _scheduleManager.Delete(Entity);
             Get();
             base.Delete();
         }

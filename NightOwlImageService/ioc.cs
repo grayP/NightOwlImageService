@@ -10,6 +10,7 @@ using ConfigInjector.Configuration;
 using ImageProcessor.Services;
 using Logger;
 using nightowlsign.data.Models.SendToSign;
+using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
 using NightOwlImageService.Configuration;
 using NightOwlImageService.Services;
@@ -27,6 +28,7 @@ namespace NightOwlImageService
             builder.RegisterType<SendToSignManager>().As<ISendToSignManager>().InstancePerLifetimeScope();
             builder.RegisterType<CreateFilesToSend>().As<ICreateFilesToSend>().InstancePerLifetimeScope();
             builder.RegisterType<StoreScheduleLogManager>().As<IStoreScheduleLogManager>().InstancePerLifetimeScope();
+            builder.RegisterType<StoreViewModel>().As<IStoreViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<MLogger>().As<IMLogger>().InstancePerLifetimeScope();
         
 

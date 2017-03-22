@@ -9,7 +9,6 @@ namespace nightowlsign.data.Models.Image
 {
     public class ImageViewModel : BaseModel.ViewModelBase
     {
-        private readonly SignManager _signManager;
         private readonly ImageManager _imageManager;
         private readonly ScheduleImageManager _scheduleImageManager;
 
@@ -18,7 +17,6 @@ namespace nightowlsign.data.Models.Image
 
         public ImageViewModel() : base()
         {
-            _signManager = new SignManager();
             _imageManager  = new ImageManager();
             _scheduleImageManager = new ScheduleImageManager();
         }
@@ -80,8 +78,7 @@ namespace nightowlsign.data.Models.Image
             {
                 EventCommand = "delete";
             }
-
-            switch (EventCommand.ToLower())
+           switch (EventCommand.ToLower())
             {
                 case "edit":
                 case "save":

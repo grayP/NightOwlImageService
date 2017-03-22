@@ -14,20 +14,20 @@ namespace nightowlsign.data.Models.Schedule
         //Properties
         public List<KeyValuePair<string, string>> ValidationErrors { get; set; }
 
-        public List<ScheduleAndSign> Get(data.Schedule Entity)
+        public List<ScheduleAndSign> Get(data.Schedule entity)
         {
-            List<ScheduleAndSign> ret = new List<ScheduleAndSign>();
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            var ret = new List<ScheduleAndSign>();
+            using (var db = new nightowlsign_Entities())
             {
                 ret = db.ScheduleAndSigns.OrderBy(x => x.Id).ToList<ScheduleAndSign>();
             }
-            if (Entity.SignId > 0)
+            if (entity.SignId > 0)
             {
-                ret = ret.FindAll(p => p.SignId.Equals(Entity.SignId));
+                ret = ret.FindAll(p => p.SignId.Equals(entity.SignId));
             }
-            if (!string.IsNullOrEmpty(Entity.Name))
+            if (!string.IsNullOrEmpty(entity.Name))
             {
-                ret = ret.FindAll(p => p.Name.ToLower().StartsWith(Entity.Name));
+                ret = ret.FindAll(p => p.Name.ToLower().StartsWith(entity.Name));
             }
             return ret;
         }
@@ -54,14 +54,13 @@ namespace nightowlsign.data.Models.Schedule
         }
 
 
-        public Boolean Update(data.Schedule entity)
+        public bool Update(data.Schedule entity)
         {
-            bool ret = false;
             if (Validate(entity))
             {
                 try
                 {
-                    using (nightowlsign_Entities db = new nightowlsign_Entities())
+                    using (var db = new nightowlsign_Entities())
                     {
                         db.Schedules.Attach(entity);
                         var modifiedSchedule = db.Entry(entity);
@@ -82,27 +81,25 @@ namespace nightowlsign.data.Models.Schedule
                         modifiedSchedule.Property(e => e.SignId).IsModified = true;
 
                         db.SaveChanges();
-                        ret = true;
+                        return true;
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.InnerException);
-                    ret = false;
+                    return false;
                 }
             }
-            return ret;
+            return false;
         }
 
-        public Boolean Insert(data.Schedule entity)
+        public bool Insert(data.Schedule entity)
         {
-            bool ret = false;
             try
             {
-                ret = Validate(entity);
-                if (ret)
+                if (Validate(entity))
                 {
-                    using (nightowlsign_Entities db = new nightowlsign_Entities())
+                    using (var db = new nightowlsign_Entities())
                     {
                         data.Schedule newSchedule = new data.Schedule()
                         {
@@ -120,35 +117,34 @@ namespace nightowlsign.data.Models.Schedule
                             StartTime = entity.StartTime,
                             EndTime = entity.EndTime,
                             Valid = entity.Valid,
-                            SignId = entity.SignId
+                            SignId = entity.SignId,
+                            LastUpdated = DateTime.Now.ToLocalTime()
                         };
 
                         db.Schedules.Add(newSchedule);
                         db.SaveChanges();
-                        ret = true;
+                        return true;
                     }
                 }
-                return ret;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.InnerException);
-                return ret;
+                return false;
             }
+            return false;
         }
 
 
         public bool Delete(data.Schedule entity)
         {
-            bool ret = false;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
                 db.Schedules.Attach(entity);
                 db.Schedules.Remove(entity);
                 db.SaveChanges();
-                ret = true;
+                return true;
             }
-            return ret;
         }
     }
 

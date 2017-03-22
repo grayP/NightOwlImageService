@@ -1,15 +1,12 @@
-﻿using System;
-using System.Net.Mime;
-using System.Timers;
-using Autofac;
-using ConfigInjector;
-using ImageProcessor.Services;
+﻿using ImageProcessor.Services;
 using Logger;
+using NightOwlImageService.Configuration;
 using nightowlsign.data;
 using nightowlsign.data.Models.SendToSign;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
-using NightOwlImageService.Configuration;
+using System;
+using System.Timers;
 
 namespace NightOwlImageService.Services
 {
@@ -22,6 +19,7 @@ namespace NightOwlImageService.Services
         private IStoreScheduleLogManager _storeScheduleLogManager;
         private ICreateFilesToSend _createFilesToSend;
         private ISendToSignManager _sendToSignManager;
+        private IStoreViewModel _storeViewModel;
 
         public void Start()
         {
@@ -35,31 +33,35 @@ namespace NightOwlImageService.Services
         }
 
 
-        public ServiceRunner(ISendCommunicator sendCommunicator, ICreateFilesToSend createFilesToSend, IStoreScheduleLogManager storeScheduleLogManager, ISendToSignManager sendToSignManager, IMLogger logger)
+        public ServiceRunner(ISendCommunicator sendCommunicator, ICreateFilesToSend createFilesToSend, IStoreScheduleLogManager storeScheduleLogManager, ISendToSignManager sendToSignManager,IStoreViewModel storeViewModel, IMLogger logger)
         {
             _logger = logger;
             _sendCommunicator = sendCommunicator;
             _storeScheduleLogManager = storeScheduleLogManager;
             _createFilesToSend = createFilesToSend;
             _sendToSignManager = sendToSignManager;
+            _storeViewModel = storeViewModel;
 
             _logger.init(System.Reflection.Assembly.GetExecutingAssembly().FullName);
 
-            _timer = new Timer { AutoReset = true };
-            _timer.Interval = 300000;
+            _timer = new Timer
+            {
+                AutoReset = true,
+                Interval = 300000
+            };
             _timer.Elapsed += (sender, eventArgs) => DoTheWork();
         }
 
         public void DoTheWork()
         {
-            StoreViewModel svm = new StoreViewModel { EventCommand = "List" };
-            svm.HandleRequest();
-            foreach (StoreAndSign storeAndSign in svm.StoresAndSigns)
+            _storeViewModel.Setup();
+            _storeViewModel.HandleRequest();
+            foreach (StoreAndSign storeAndSign in _storeViewModel.StoresAndSigns)
             {
                 _logger.WriteLog($"Checking store: {storeAndSign.Name}");
-                if (storeAndSign.IpAddress != null)
+                if (storeAndSign.AddressOk())
                 {
-                    storeAndSign.CurrentSchedule = svm.GetCurrentSchedule(storeAndSign);
+                    storeAndSign.CurrentSchedule = _storeViewModel.GetCurrentSchedule(storeAndSign);
                     _logger.WriteLog($"Current: {storeAndSign?.CurrentSchedule.Name}, LastInstalled: {storeAndSign?.LastInstalled.Name}");
                     if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id &&
                         storeAndSign.CurrentSchedule.Id != 0 ||
@@ -71,7 +73,7 @@ namespace NightOwlImageService.Services
                         if (filesUploadedOk)
                         {
                             _logger.WriteLog($"ServiceRunner - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
-                            _storeScheduleLogManager.SetValues(storeAndSign);
+                            _storeScheduleLogManager.UpdateInstallLog(storeAndSign);
                             _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated {storeAndSign.id}" : $"{_storeScheduleLogManager.ErrorMessage} ");
                         }
                         else
