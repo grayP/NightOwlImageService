@@ -56,9 +56,8 @@ namespace ImageProcessor.Services
                 _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
                 DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
                 DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-               // DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
                 WriteImagesToDisk(_imagesToSend);
-                GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name);
+                GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name, _storeAndSign.ProgramFile);
                 GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
                 SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory,  PlaybillFileExtension, _logger);
                 return senderCommunicator.FilesUploadedOk();
@@ -73,23 +72,6 @@ namespace ImageProcessor.Services
     }
 
 
-    private void GenerateFiles(string scheduleName)
-{
-    GeneratetheProgramFiles(scheduleName);
-    //GeneratethePlayBillFile(scheduleName);
-}
-
-private void GetTheImagesForSchedule()
-{
-    _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
-}
-
-private void DeleteOldFiles()
-{
-    DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
-    DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-    //  DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
-}
 
 private List<ImageSelect> GetImages(int scheduleId)
 {
@@ -121,7 +103,7 @@ private void WriteImagesToDisk(List<ImageSelect> images)
     }
 }
 
-public void GeneratetheProgramFiles(string scheduleName)
+public void GeneratetheProgramFiles(string scheduleName, string programFile)
 {
     var PlayItemNo = -1;
     var PeriodToShowImage = 0xA; //Seconds
@@ -151,7 +133,7 @@ public void GeneratetheProgramFiles(string scheduleName)
             //counter += 1;
         }
         // var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", "1"));
-        var programFileName = GenerateProgramFileName("00010000");
+        var programFileName = GenerateProgramFileName(programFile);
         DeleteOldProgramFile(programFileName);
         if (
             _cp5200.Program_SaveFile(programPointer, programFileName) > 1)
@@ -206,9 +188,13 @@ private string GeneratePlayBillFileName(string scheduleName)
     return PlaybillFileName = string.Concat(ProgramFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
 }
 
-private string GenerateProgramFileName(string sCounter)
+private string GenerateProgramFileName(string programFile)
 {
-    return string.Concat(ProgramFileDirectory, ("00010000.lpb"));
+    if (String.IsNullOrEmpty(programFile))
+    {
+        programFile = "0001000";
+    } 
+    return string.Concat(ProgramFileDirectory, programFile,".lpb");
     // return "00010000.lpb";
 }
     }

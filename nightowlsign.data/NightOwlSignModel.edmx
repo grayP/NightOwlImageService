@@ -92,6 +92,7 @@
           <Property Name="IpAddress" Type="nvarchar" MaxLength="50" />
           <Property Name="SubMask" Type="nvarchar" MaxLength="50" />
           <Property Name="Port" Type="nvarchar" MaxLength="10" />
+          <Property Name="ProgramFile" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="StoreScheduleLog">
           <Key>
@@ -187,6 +188,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="IpAddress" Type="nvarchar" MaxLength="50" />
           <Property Name="SubMask" Type="nvarchar" MaxLength="50" />
           <Property Name="Port" Type="nvarchar" MaxLength="10" />
+          <Property Name="ProgramFile" Type="nvarchar" MaxLength="50" />
           <Property Name="Model" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Function Name="FindCurrentPlayList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -251,6 +253,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
     [StoreAndSign].[IpAddress] AS [IpAddress], 
     [StoreAndSign].[SubMask] AS [SubMask], 
     [StoreAndSign].[Port] AS [Port], 
+    [StoreAndSign].[ProgramFile] AS [ProgramFile], 
     [StoreAndSign].[Model] AS [Model]
     FROM [dbo].[StoreAndSign] AS [StoreAndSign]</DefiningQuery>
           </EntitySet>
@@ -303,6 +306,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="IpAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SubMask" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Port" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ProgramFile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="StoreSign">
           <Key>
@@ -409,6 +413,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="SubMask" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Port" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProgramFile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ScheduleAndSign">
           <Key>
@@ -493,6 +498,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySetMapping Name="Store">
             <EntityTypeMapping TypeName="Models.Store">
               <MappingFragment StoreEntitySet="Store">
+                <ScalarProperty Name="ProgramFile" ColumnName="ProgramFile" />
                 <ScalarProperty Name="Port" ColumnName="Port" />
                 <ScalarProperty Name="SubMask" ColumnName="SubMask" />
                 <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
@@ -606,6 +612,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySetMapping Name="StoreAndSigns">
             <EntityTypeMapping TypeName="Models.StoreAndSign">
               <MappingFragment StoreEntitySet="StoreAndSign">
+                <ScalarProperty Name="ProgramFile" ColumnName="ProgramFile" />
                 <ScalarProperty Name="Model" ColumnName="Model" />
                 <ScalarProperty Name="Port" ColumnName="Port" />
                 <ScalarProperty Name="SubMask" ColumnName="SubMask" />

@@ -27,5 +27,6 @@ namespace nightowlsign.data
         public string IpAddress { get; set; }
         public string SubMask { get; set; }
         public string Port { get; set; }
+        public string ProgramFile { get; set; }
     }
 }
