@@ -133,8 +133,7 @@ namespace ImageProcessor.Services
         }
         IntPtr GetPointerFromFileName(string fileName)
         {
-             // return Marshal.StringToHGlobalAnsi(fileName);
-            return Marshal.StringToHGlobalAnsi("00010000.lpb");
+            return Marshal.StringToHGlobalAnsi(fileName);
         }
 
     }
