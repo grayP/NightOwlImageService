@@ -49,7 +49,7 @@ namespace NightOwlImageService.Services
             svm.HandleRequest();
             foreach (StoreAndSign storeAndSign in svm.StoresAndSigns)
             {
-                if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule.Id != 0 || storeAndSign?.CurrentSchedule.LastUpdated>storeAndSign?.LastInstalled?.LastUpdated)
+                if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule?.Id != 0 || storeAndSign?.CurrentSchedule.LastUpdated>storeAndSign?.LastInstalled?.LastUpdated)
                 {
                     Console.WriteLine($"Starting on store {storeAndSign.Name} ");
                     _logger.WriteLog($"Starting on store {storeAndSign.Name} ");

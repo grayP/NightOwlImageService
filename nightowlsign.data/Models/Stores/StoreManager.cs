@@ -53,7 +53,7 @@ namespace nightowlsign.data.Models.Stores
         {
             foreach (var store in storeList)
             {
-                store.CurrentSchedule = GetCurrentSchedule(store.SignId ?? 0);
+                store.CurrentSchedule = GetCurrentSchedule(store.id);
                 store.LastInstalled = GetInstalledSchedule(store.id);
                 store.Sign = GetSign(store.SignId ?? 0);
             }
@@ -88,14 +88,14 @@ namespace nightowlsign.data.Models.Stores
         }
 
 
-        private data.Schedule GetCurrentSchedule(int signId)
+        private data.Schedule GetCurrentSchedule(int storeId)
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 var playListResult = db.Database
-                    .SqlQuery<FindCurrentPlayList_Result>("FindCurrentPlayList")
+                    .SqlQuery<FindCurrentPlayListForStore_Result>("FindCurrentPlayListForStore")
                     .OrderBy(x => x.Importance)
-                    .FirstOrDefault(x => x.SignId == signId);
+                    .FirstOrDefault(x => x.StoreId == storeId);
 
                 data.Schedule getCurrentSchedule = new data.Schedule()
                 {
