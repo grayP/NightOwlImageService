@@ -46,13 +46,13 @@ namespace ImageProcessor.Services
             if (InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
             {
                 _logger.WriteLog($"SendCommunicator - sendFiletoSign - {storeAndSign.Name}");
-            return SendFiletoSign();
+            return SendFiletoSign(storeAndSign.ProgramFile);
             }
             _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}");
             return false;
 
         }
-        public bool SendFiletoSign()
+        public bool SendFiletoSign(string programFile)
         {
             var success = false;
             try
@@ -64,17 +64,12 @@ namespace ImageProcessor.Services
                 {
                     var uploadSuccess = Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
                         GetPointerFromFileName(programFileName),
-                        GetPointerFromFileName(programFileName));
+                        GetPointerFromFileName($"{programFile}.lpb"));
 
                     _logger.WriteLog($"UploadSuccess for {programFileName}={uploadSuccess}");
                     if (0 == uploadSuccess)
                         uploadCount++;
                 }
-
-                //if (0 ==
-                //    Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1), GetPointerFromFileName(FindPlaybillFile()),
-                //        GetPointerFromFileName(FindPlaybillFile())))
-                //    uploadCount++;
 
                 int restartSuccess = -1;
                 if (uploadCount >= 1)
@@ -133,8 +128,8 @@ namespace ImageProcessor.Services
         }
         IntPtr GetPointerFromFileName(string fileName)
         {
-             // return Marshal.StringToHGlobalAnsi(fileName);
-            return Marshal.StringToHGlobalAnsi("00010000.lpb");
+            return Marshal.StringToHGlobalAnsi(fileName);
+            //return Marshal.StringToHGlobalAnsi("00010000.lpb");
         }
 
     }
