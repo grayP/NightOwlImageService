@@ -56,10 +56,9 @@ namespace ImageProcessor.Services
                 _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
                 DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
                 DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-                // DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
                 WriteImagesToDisk(_imagesToSend);
                 GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name, _storeAndSign.ProgramFile);
-                GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
+             //   GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
                 SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory, PlaybillFileExtension, _logger);
                 return senderCommunicator.FilesUploadedOk();
 
@@ -72,8 +71,6 @@ namespace ImageProcessor.Services
             }
         }
 
-
-
         private void GetTheImagesForSchedule()
         {
             _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
@@ -83,7 +80,6 @@ namespace ImageProcessor.Services
         {
             DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
             DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-            //  DeleteOldFiles(ProgramFileDirectory, AddStar(PlaybillFileExtension));
         }
 
         private List<ImageSelect> GetImages(int scheduleId)
@@ -133,7 +129,6 @@ namespace ImageProcessor.Services
                 var windowNo = _cp5200.AddPlayWindow(programPointer);
                 if (windowNo >= 0)
                 {
-                    // var counter = 1;
                     foreach (
                         string fileName in Directory.GetFiles(ImageDirectory, AddStar(ImageExtension)))
                     {
@@ -141,11 +136,8 @@ namespace ImageProcessor.Services
                         PlayItemNo = _cp5200.Program_Add_Image(programPointer, windowNo,
                             Marshal.StringToHGlobalAnsi(fileName), (int)RenderMode.Stretch_to_fit_the_window,
                            0, 100, PeriodToShowImage, 0);
-
                     }
-                    //counter += 1;
                 }
-                // var programFileName = GenerateProgramFileName(string.Format("{0:0000}0000", "1"));
                 var programFileName = GenerateProgramFileName(programFile);
                 DeleteOldProgramFile(programFileName);
                 if (
@@ -208,8 +200,7 @@ namespace ImageProcessor.Services
                 programFile = "00010000";
             }
             return string.Concat(ProgramFileDirectory, programFile,".lpb");
-            // return "00010000.lpb";
-        }
+         }
     }
 }
 
