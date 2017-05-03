@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.IO;
-using System.Runtime.CompilerServices;
 using nightowlsign.data;
 using Logger;
 
@@ -11,7 +10,7 @@ namespace ImageProcessor.Services
 {
     public class SendCommunicator
     {
-        private int TimeOut = 3600;
+        private readonly int TimeOut = 3600;
         private readonly StoreAndSign _storeAndSign;
         private readonly string _programFileDirectory;
         private readonly MLogger _logger;
@@ -19,7 +18,6 @@ namespace ImageProcessor.Services
 
         public SendCommunicator()
         {
-           //  this._playbillFile = FindPlaybillFile();
         }
 
         public SendCommunicator(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, MLogger logger)
@@ -33,20 +31,13 @@ namespace ImageProcessor.Services
         {
             return SendFiletoSign(_storeAndSign);
         }
-        private string FindPlaybillFile()
-        {
-            DirectoryInfo di = new DirectoryInfo(_programFileDirectory);
-            var lppFile = di.EnumerateFiles().Select(f => f.Name)
-                      .FirstOrDefault(f => f.Contains(_playBillExtension));
-            return string.Concat(_programFileDirectory, lppFile);
-        }
 
         public bool SendFiletoSign(StoreAndSign storeAndSign)
         {
             if (InitComm(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
             {
                 _logger.WriteLog($"SendCommunicator - sendFiletoSign - {storeAndSign.Name}");
-            return SendFiletoSign(storeAndSign.ProgramFile);
+                return SendFiletoSign(storeAndSign.ProgramFile);
             }
             _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}");
             return false;
@@ -57,9 +48,9 @@ namespace ImageProcessor.Services
             var success = false;
             try
             {
-                int uploadCount = 0;
+                var uploadCount = 0;
                 foreach (
-                    string programFileName in
+                    var programFileName in
                     Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
                     var uploadSuccess = Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
@@ -67,11 +58,11 @@ namespace ImageProcessor.Services
                         GetPointerFromFileName($"{programFile}.lpb"));
 
                     _logger.WriteLog($"UploadSuccess for {programFileName}={uploadSuccess}");
-                    if (0 == uploadSuccess)
+                    if (0 == uploadSuccess || -10 == uploadSuccess)
                         uploadCount++;
                 }
 
-                int restartSuccess = -1;
+                var restartSuccess = -1;
                 if (uploadCount >= 1)
                 {
                     _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - Successfully uploaded {uploadCount} files and Restarted:{restartSuccess} ");
@@ -93,12 +84,12 @@ namespace ImageProcessor.Services
             var signOnLine = false;
             try
             {
-                uint dwIPAddr = GetIP(ipAddress);
-                uint dwIDCode = GetIP(idCode);
-                int nIPPort = Convert.ToInt32(port);
-                if (dwIPAddr != 0 && dwIDCode != 0)
+                var dwIpAddr = GetIp(ipAddress);
+                var dwIdCode = GetIp(idCode);
+                var nIpPort = Convert.ToInt32(port);
+                if (dwIpAddr != 0 && dwIdCode != 0)
                 {
-                    var responseNumber = Cp5200External.CP5200_Net_Init(dwIPAddr, nIPPort, dwIDCode, TimeOut);
+                    var responseNumber = Cp5200External.CP5200_Net_Init(dwIpAddr, nIpPort, dwIdCode, TimeOut);
                     if (responseNumber == 0)
                     {
                         signOnLine = true;
@@ -119,17 +110,16 @@ namespace ImageProcessor.Services
                 return false;
             }
         }
-        private uint GetIP(string strIp)
+        private static uint GetIp(string strIp)
         {
             System.Net.IPAddress ipaddress = System.Net.IPAddress.Parse(strIp);
-            uint lIp = (uint)ipaddress?.Address;
+            var lIp = (uint)ipaddress?.Address;
             lIp = ((lIp & 0xFF000000) >> 24) + ((lIp & 0x00FF0000) >> 8) + ((lIp & 0x0000FF00) << 8) + ((lIp & 0x000000FF) << 24);
             return (lIp);
         }
-        IntPtr GetPointerFromFileName(string fileName)
+        private static IntPtr GetPointerFromFileName(string fileName)
         {
             return Marshal.StringToHGlobalAnsi(fileName);
-            //return Marshal.StringToHGlobalAnsi("00010000.lpb");
         }
 
     }
