@@ -29,5 +29,7 @@ namespace nightowlsign.data
         public string Port { get; set; }
         public string Model { get; set; }
         public string ProgramFile { get; set; }
+        public Nullable<int> LastUpdateStatus { get; set; }
+        public Nullable<System.DateTime> LastUpdateTime { get; set; }
     }
 }

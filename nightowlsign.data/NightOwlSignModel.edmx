@@ -191,6 +191,8 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="SubMask" Type="nvarchar" MaxLength="50" />
           <Property Name="Port" Type="nvarchar" MaxLength="10" />
           <Property Name="ProgramFile" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastUpdateStatus" Type="int" />
+          <Property Name="LastUpdateTime" Type="datetime" />
           <Property Name="Model" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Function Name="FindCurrentPlayList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -257,6 +259,8 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
     [StoreAndSign].[SubMask] AS [SubMask], 
     [StoreAndSign].[Port] AS [Port], 
     [StoreAndSign].[ProgramFile] AS [ProgramFile], 
+    [StoreAndSign].[LastUpdateStatus] AS [LastUpdateStatus], 
+    [StoreAndSign].[LastUpdateTime] AS [LastUpdateTime], 
     [StoreAndSign].[Model] AS [Model]
     FROM [dbo].[StoreAndSign] AS [StoreAndSign]</DefiningQuery>
           </EntitySet>
@@ -420,6 +424,8 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="Port" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProgramFile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastUpdateStatus" Type="Int32" />
+          <Property Name="LastUpdateTime" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="ScheduleAndSign">
           <Key>
@@ -628,6 +634,8 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySetMapping Name="StoreAndSigns">
             <EntityTypeMapping TypeName="Models.StoreAndSign">
               <MappingFragment StoreEntitySet="StoreAndSign">
+                <ScalarProperty Name="LastUpdateTime" ColumnName="LastUpdateTime" />
+                <ScalarProperty Name="LastUpdateStatus" ColumnName="LastUpdateStatus" />
                 <ScalarProperty Name="ProgramFile" ColumnName="ProgramFile" />
                 <ScalarProperty Name="Model" ColumnName="Model" />
                 <ScalarProperty Name="Port" ColumnName="Port" />
