@@ -59,8 +59,8 @@ namespace ImageProcessor.Services
 
         public int Program_AddPlayWindow(IntPtr programPointer)
         {
-            ushort xStart = 0;
-            ushort yStart = 0;
+            const ushort xStart = 0;
+            const ushort yStart = 0;
             var result = Cp5200External.CP5200_Program_AddPlayWindow(programPointer, xStart, yStart, _screenWidth, _screenHeight);
 
             return result;

@@ -56,7 +56,7 @@ namespace NightOwlImageService.Services
                     Console.WriteLine($"Starting on store {storeAndSign.Name} ");
                     _logger.WriteLog($"Starting on store {storeAndSign.Name} ");
 
-                    var successCode = SendTheScheduleToSign(storeAndSign, _logger);
+                    var successCode = SendTheScheduleToSign(storeAndSign);
                     UpdateTheDataBase(storeAndSign, successCode);
 
                     this._logger.WriteLog(
@@ -77,18 +77,17 @@ namespace NightOwlImageService.Services
             }
         }
 
-        private void CheckIfTimeToClose()
+        private int SendTheScheduleToSign(StoreAndSign storeAndSign)
         {
-            var TimeNow = DateTime.Now.Hour;
-            if (TimeNow >= 23)
+            return _imageManager.FileUploadResultCode(storeAndSign);
+        }
+        private static void CheckIfTimeToClose()
+        {
+            var timeNow = DateTime.Now.Hour;
+            if (timeNow >= 23)
             {
                 Environment.Exit(0);
             }
-        }
-
-        private int SendTheScheduleToSign(StoreAndSign storeAndSign, MLogger logger)
-        {
-            return _imageManager.FileUploadResultCode(storeAndSign);
         }
     }
 }
