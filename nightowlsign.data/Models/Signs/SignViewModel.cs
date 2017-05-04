@@ -9,7 +9,6 @@ namespace nightowlsign.data.Models.Signs
 {
     public class SignViewModel : BaseModel.ViewModelBase
     {
-
         public SignViewModel() : base()
         {
 

@@ -28,5 +28,7 @@ namespace nightowlsign.data
         public string SubMask { get; set; }
         public string Port { get; set; }
         public string ProgramFile { get; set; }
+        public Nullable<int> LastUpdateStatus { get; set; }
+        public Nullable<System.DateTime> LastUpdateTime { get; set; }
     }
 }

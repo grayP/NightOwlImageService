@@ -17,17 +17,13 @@ using nightowlsign.Services;
 namespace ImageProcessor.Services
 
 {
-    public class CreateFilesToSend
+    public class ImageManager
     {
         private readonly SendToSignManager _sendToSignManager = new SendToSignManager();
         private PlayBillFiles _cp5200;
 
         private string ImageDirectory = "c:/playBillFiles/Images/";
-        //string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\"); //
-
-        private string ProgramFileDirectory = string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
-        // "c:/playBillFiles/";    
-
+        private readonly string _programFileDirectory = string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpp";
@@ -35,53 +31,47 @@ namespace ImageProcessor.Services
         public string PlaybillFileName { get; set; }
         public bool Successfull { get; set; }
 
-        private readonly Sign _signSizeForSchedule;
         private List<ImageSelect> _imagesToSend;
-        //private string _scheduleName;
-        private readonly StoreAndSign _storeAndSign;
+        private StoreAndSign _storeAndSign;
+        private Sign _signSizeForSchedule;
         private readonly MLogger _logger;
 
-        public CreateFilesToSend(StoreAndSign storeAndSign, MLogger logger)
+        public StoreAndSign StoreAndSign { get; set; }
+
+
+        public ImageManager(MLogger logger)
         {
-            _storeAndSign = storeAndSign;
-            _signSizeForSchedule = storeAndSign.Sign;
             _logger = logger;
         }
 
-
-        public bool Run()
+        public int FileUploadResultCode(StoreAndSign storeAndSign)
         {
             try
             {
-                _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
+                _imagesToSend = GetImages(storeAndSign.CurrentSchedule.Id);
                 DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
-                DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
+                DeleteOldFiles(_programFileDirectory, AddStar(ProgramFileExtension));
                 WriteImagesToDisk(_imagesToSend);
-                GeneratetheProgramFiles(_storeAndSign.CurrentSchedule.Name, _storeAndSign.ProgramFile);
-             //   GeneratethePlayBillFile(_storeAndSign.CurrentSchedule.Name);
-                SendCommunicator senderCommunicator = new SendCommunicator(_storeAndSign, ProgramFileDirectory, PlaybillFileExtension, _logger);
-                return senderCommunicator.FilesUploadedOk();
-
+                GeneratetheProgramFiles(storeAndSign.CurrentSchedule.Name, storeAndSign.ProgramFile, storeAndSign.Sign);
+                using (var sender = new SendCommunicator(storeAndSign, _programFileDirectory, PlaybillFileExtension, _logger))
+                {
+                    if (sender.FilesUploadedOk())
+                    {
+                        sender.RestartSign();
+                    }
+                    sender.Disconnect();
+                    return sender.UpLoadSuccess;
+                }
             }
 
             catch (Exception ex)
             {
-                _logger.WriteLog($"CreateFilesToSend - Run - {ex.Message}");
-                return false;
+                _logger.WriteLog($"ImageManager - FileUploadResultCode - {ex.Message}");
+                return 99;
             }
         }
 
-        private void GetTheImagesForSchedule()
-        {
-            _imagesToSend = GetImages(_storeAndSign.CurrentSchedule.Id);
-        }
-
-        private void DeleteOldFiles()
-        {
-            DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
-            DeleteOldFiles(ProgramFileDirectory, AddStar(ProgramFileExtension));
-        }
-
+ 
         private List<ImageSelect> GetImages(int scheduleId)
         {
             return _sendToSignManager.GetImagesForThisSchedule(scheduleId);
@@ -112,15 +102,15 @@ namespace ImageProcessor.Services
             }
         }
 
-        public void GeneratetheProgramFiles(string scheduleName, string programFile)
+        public void GeneratetheProgramFiles(string scheduleName, string programFile, Sign sign)
         {
             var PlayItemNo = -1;
             var PeriodToShowImage = 0xA; //Seconds
             byte colourMode = 0x77;
             // ProgramFiles = new List<string>();
 
-            ushort screenWidth = (ushort)(_signSizeForSchedule.Width ?? 100);
-            ushort screenHeight = (ushort)(_signSizeForSchedule.Height ?? 100);
+            ushort screenWidth = (ushort)(sign.Width ?? 100);
+            ushort screenHeight = (ushort)(sign.Height ?? 100);
             _cp5200 = new PlayBillFiles(screenWidth, screenHeight, PeriodToShowImage, colourMode, _logger);
 
             var programPointer = _cp5200.Program_Create();
@@ -161,7 +151,7 @@ namespace ImageProcessor.Services
             {
                 _cp5200.Playbill_SetProperty(playBillPointer, 0, 1);
                 foreach (string programFileName in
-                    Directory.GetFiles(ProgramFileDirectory, AddStar(ProgramFileExtension)))
+                    Directory.GetFiles(_programFileDirectory, AddStar(ProgramFileExtension)))
                 {
                     _cp5200.Playbill_AddFile(playBillPointer, programFileName);
                 }
@@ -190,7 +180,7 @@ namespace ImageProcessor.Services
         private string GeneratePlayBillFileName(string scheduleName)
         {
             var newName = "playbill"; //StripCharacters.Strip(scheduleName);
-            return PlaybillFileName = string.Concat(ProgramFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
+            return PlaybillFileName = string.Concat(_programFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
         }
 
         private string GenerateProgramFileName(string programFile)
@@ -199,8 +189,8 @@ namespace ImageProcessor.Services
             {
                 programFile = "00010000";
             }
-            return string.Concat(ProgramFileDirectory, programFile,".lpb");
-         }
+            return string.Concat(_programFileDirectory, programFile, ".lpb");
+        }
     }
 }
 

@@ -14,10 +14,21 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         {
         }
 
+        public StoreScheduleLogManager(StoreAndSign storeAndSign)
+        {
+            Entity = new data.StoreScheduleLog()
+            {
+                DateInstalled = DateTime.Now,
+                ScheduleName = storeAndSign.CurrentSchedule.Name,
+                ScheduleId = storeAndSign.CurrentSchedule.Id,
+                InstalledOk = true,
+                StoreId = storeAndSign.id
+            };
+        }
 
         public List<data.StoreScheduleLog> Get(data.StoreScheduleLog storeScheduleLog)
         {
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
                 var ret = db.StoreScheduleLogs.OrderBy(x => x.ScheduleName).ToList<data.StoreScheduleLog>();
                 ret = ret.FindAll(p => p.ScheduleName.ToLower().StartsWith(storeScheduleLog.ScheduleName));
@@ -28,7 +39,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
 
         private data.StoreScheduleLog GetStoreScheduleLog(int scheduleStoreLogId)
         {
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
                 return db.StoreScheduleLogs.Find(scheduleStoreLogId);
             }
@@ -38,9 +49,9 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         {
             try
             {
-                using (nightowlsign_Entities db = new nightowlsign_Entities())
+                using (var db = new nightowlsign_Entities())
                 {
-                    data.StoreScheduleLog newStoreScheduleLog = new data.StoreScheduleLog()
+                    data.StoreScheduleLog storeScheduleLog = new data.StoreScheduleLog()
                     {
                         ScheduleName = Entity.ScheduleName.Trim(),
                         DateInstalled = DateTime.Now,
@@ -48,7 +59,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
                         InstalledOk = true,
                         ScheduleId = Entity.ScheduleId
                     };
-                    db.StoreScheduleLogs.Add(newStoreScheduleLog);
+                    db.StoreScheduleLogs.Add(storeScheduleLog);
                     db.SaveChanges();
                 }
                 return true;
@@ -63,15 +74,13 @@ namespace nightowlsign.data.Models.StoreScheduleLog
 
         public bool Delete(data.StoreScheduleLog entity)
         {
-            bool ret = false;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
                 db.StoreScheduleLogs.Attach(entity);
                 db.StoreScheduleLogs.Remove(entity);
                 db.SaveChanges();
-                ret = true;
+                return true;
             }
-            return ret;
         }
     }
 

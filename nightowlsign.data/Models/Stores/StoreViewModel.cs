@@ -20,7 +20,7 @@ namespace nightowlsign.data.Models.Stores
         {
             get
             {
-                using (nightowlsign_Entities db = new nightowlsign_Entities())
+                using (var db = new nightowlsign_Entities())
                 {
                     var selectList = new List<SelectListItem>()
                     {
@@ -67,15 +67,14 @@ namespace nightowlsign.data.Models.Stores
         }
         protected override void Edit()
         {
-            StoreManager sm = new StoreManager();
+            var sm = new StoreManager();
             Entity = sm.Find(Convert.ToInt32(EventArgument));
             base.Edit();
         }
         protected override void Add()
         {
             IsValid = true;
-            Entity = new Store();
-            Entity.Name = "";
+            Entity = new Store {Name = ""};
             base.Add();
         }
         protected override void Save()
@@ -94,7 +93,7 @@ namespace nightowlsign.data.Models.Stores
         }
         protected override void Delete()
         {
-            StoreManager sm = new StoreManager();
+            var sm = new StoreManager();
             Entity = sm.Find(Convert.ToInt32(EventArgument));
             sm.Delete(Entity);
             Get();

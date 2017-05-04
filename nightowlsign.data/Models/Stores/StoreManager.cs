@@ -35,14 +35,14 @@ namespace nightowlsign.data.Models.Stores
         //Properties
         public List<KeyValuePair<string, string>> ValidationErrors { get; set; }
 
-        public List<StoreAndSign> Get(Store Entity)
+        public List<StoreAndSign> Get(Store entity)
         {
             using (nightowlsign_Entities db = new nightowlsign_Entities())
             {
                 var ret = db.StoreAndSigns.OrderBy(x => x.Name).ToList<StoreAndSign>();
-                if (!string.IsNullOrEmpty(Entity.Name))
+                if (!string.IsNullOrEmpty(entity.Name))
                 {
-                    ret = ret.FindAll(p => p.Name.ToLower().StartsWith(Entity.Name));
+                    ret = ret.FindAll(p => p.Name.ToLower().StartsWith(entity.Name));
                 }
                 GetSchedulesAndSign(ret);
                 return ret;
@@ -61,7 +61,7 @@ namespace nightowlsign.data.Models.Stores
 
         private Sign GetSign(int signId)
         {
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
                 return db.Signs.Find(signId);
             }
@@ -69,7 +69,7 @@ namespace nightowlsign.data.Models.Stores
 
         private data.Schedule GetInstalledSchedule(int storeId)
         {
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
                 var ret = (from s in db.StoreScheduleLogs
                            where s.StoreId == storeId
@@ -133,7 +133,7 @@ namespace nightowlsign.data.Models.Stores
 
         private List<data.Schedule> GetAvailableSchedules(int storeId)
         {
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
                 var ret = (from s in db.Schedules
                            join st in db.Store on s.SignId equals st.SignId
@@ -156,74 +156,75 @@ namespace nightowlsign.data.Models.Stores
 
         public Store Find(int storeId)
         {
-            Store ret = null;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
-                ret = db.Store.Find(storeId);
+                return db.Store.Find(storeId);
             }
-            return ret;
-
         }
 
         public bool Validate(Store entity)
         {
             ValidationErrors.Clear();
-            if (!string.IsNullOrEmpty(entity.Name))
+            if (string.IsNullOrEmpty(entity.Name)) return (ValidationErrors.Count == 0);
+            if (entity.Name.ToLower() == entity.Name)
             {
-                if (entity.Name.ToLower() == entity.Name)
-                {
-                    ValidationErrors.Add(new KeyValuePair<string, string>("Store Name", "Store Name cannot be all lower case"));
-                }
+                ValidationErrors.Add(new KeyValuePair<string, string>("Store Name", "Store Name cannot be all lower case"));
             }
             return (ValidationErrors.Count == 0);
         }
 
-
-        public Boolean Update(Store entity)
+        public bool Update(StoreAndSign storeAndSign, int successCode)
         {
-            bool ret = false;
-            if (Validate(entity))
-            {
-                try
-                {
-                    using (nightowlsign_Entities db = new nightowlsign_Entities())
-                    {
-                        db.Store.Attach(entity);
-                        var modifiedStore = db.Entry(entity);
-                        modifiedStore.Property(e => e.Name).IsModified = true;
-                        modifiedStore.Property(e => e.Address).IsModified = true;
-                        modifiedStore.Property(e => e.Suburb).IsModified = true;
-                        modifiedStore.Property(e => e.State).IsModified = true;
-                        modifiedStore.Property(e => e.Manager).IsModified = true;
-                        modifiedStore.Property(e => e.Phone).IsModified = true;
-                        modifiedStore.Property(e => e.SignId).IsModified = true;
-                        modifiedStore.Property(e => e.IpAddress).IsModified = true;
-                        modifiedStore.Property(e => e.SubMask).IsModified = true;
-                        modifiedStore.Property(e => e.Port).IsModified = true;
-                        db.SaveChanges();
-                        ret = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.InnerException);
-                    ret = false;
-                }
-            }
-            return ret;
+            var store = Find(storeAndSign.id);
+            store.LastUpdateStatus = successCode;
+            store.LastUpdateTime = DateTime.Now;
+            return Update(store);
         }
 
-        public Boolean Insert(Store entity)
+        public bool Update(Store entity)
+        {
+            if (!Validate(entity)) return false;
+            try
+            {
+                using (var db = new nightowlsign_Entities())
+                {
+                    db.Store.Attach(entity);
+                    var modifiedStore = db.Entry(entity);
+                    modifiedStore.Property(e => e.Name).IsModified = true;
+                    modifiedStore.Property(e => e.Address).IsModified = true;
+                    modifiedStore.Property(e => e.Suburb).IsModified = true;
+                    modifiedStore.Property(e => e.State).IsModified = true;
+                    modifiedStore.Property(e => e.Manager).IsModified = true;
+                    modifiedStore.Property(e => e.Phone).IsModified = true;
+                    modifiedStore.Property(e => e.SignId).IsModified = true;
+                    modifiedStore.Property(e => e.IpAddress).IsModified = true;
+                    modifiedStore.Property(e => e.SubMask).IsModified = true;
+                    modifiedStore.Property(e => e.Port).IsModified = true;
+                    modifiedStore.Property(e => e.ProgramFile).IsModified = true;
+                    modifiedStore.Property(e => e.LastUpdateTime).IsModified = true;
+                    modifiedStore.Property(e => e.LastUpdateStatus).IsModified = true;
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException);
+                return false;
+            }
+        }
+
+        public bool Insert(Store entity)
         {
             bool ret = false;
             try
             {
                 ret = Validate(entity);
-                if (ret)
+                if (Validate(entity))
                 {
-                    using (nightowlsign_Entities db = new nightowlsign_Entities())
+                    using (var db = new nightowlsign_Entities())
                     {
-                        Store newStore = new Store()
+                        var newStore = new Store()
                         {
                             Name = entity.Name.Trim(),
                             Address = entity.Address,
@@ -234,7 +235,8 @@ namespace nightowlsign.data.Models.Stores
                             SignId = entity.SignId,
                             IpAddress = entity.IpAddress,
                             SubMask = entity.SubMask,
-                            Port = entity.Port
+                            Port = entity.Port,
+                            ProgramFile = entity.ProgramFile
                         };
 
                         db.Store.Add(newStore);
@@ -254,15 +256,21 @@ namespace nightowlsign.data.Models.Stores
 
         public bool Delete(Store entity)
         {
-            bool ret = false;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            try
             {
-                db.Store.Attach(entity);
-                db.Store.Remove(entity);
-                db.SaveChanges();
-                ret = true;
+                using (var db = new nightowlsign_Entities())
+                {
+                    db.Store.Attach(entity);
+                    db.Store.Remove(entity);
+                    db.SaveChanges();
+                    return true;
+                }
             }
-            return ret;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
     }
 
