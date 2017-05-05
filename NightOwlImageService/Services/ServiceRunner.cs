@@ -47,6 +47,7 @@ namespace NightOwlImageService.Services
 
         public void DoTheWork()
         {
+            _logger.WriteLog($"Starting Run: {DateTime.Now}");
             var svm = new StoreViewModel { EventCommand = "List" };
             svm.HandleRequest();
             foreach (var storeAndSign in svm.StoresAndSigns)
@@ -60,7 +61,7 @@ namespace NightOwlImageService.Services
                     UpdateTheDataBase(storeAndSign, successCode);
 
                     this._logger.WriteLog(
-                        $"ServiceRunner - doTheWork - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}");
+                        $"ServiceRunner - doTheWork - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}");
                 }
             }
             CheckIfTimeToClose();

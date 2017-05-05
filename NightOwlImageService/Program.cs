@@ -1,6 +1,4 @@
-﻿using System;
-using System.Timers;
-using NightOwlImageService.Services;
+﻿using NightOwlImageService.Services;
 using Topshelf;
 
 

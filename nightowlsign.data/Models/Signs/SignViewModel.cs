@@ -49,9 +49,11 @@ namespace nightowlsign.data.Models.Signs
         protected override void Add()
         {
             IsValid = true;
-            Entity = new Sign();
-            Entity.Model = "";
-            Entity.InstallDate = DateTime.Now;
+            Entity = new Sign
+            {
+                Model = "",
+                InstallDate = DateTime.Now
+            };
             base.Add();
         }
         protected override void Save()
