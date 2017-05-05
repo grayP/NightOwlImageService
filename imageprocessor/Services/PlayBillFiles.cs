@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using ImageProcessor.CP5200;
 using ImageProcessor.Enums;
 using Logger;
+using Logger.Logger;
 
 
 namespace ImageProcessor.Services

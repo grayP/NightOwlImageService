@@ -5,6 +5,7 @@ using Autofac;
 using ConfigInjector;
 using ImageProcessor.Services;
 using Logger;
+using Logger.Logger;
 using nightowlsign.data;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;

@@ -4,6 +4,7 @@ using nightowlsign.data;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using Logger.Logger;
 
 namespace ImageProcessor.Services
 {

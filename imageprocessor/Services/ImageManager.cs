@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using Logger;
+using Logger.Logger;
 using nightowlsign.Services;
 
 namespace ImageProcessor.Services
