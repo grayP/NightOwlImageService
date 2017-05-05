@@ -10,7 +10,11 @@ namespace NightOwlImageService
         {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-            HostFactory.Run(x =>                                 //1
+            var container = ioc.LetThereBeIoc();
+
+            HostFactory.Run(x => //1
+            {
+            x.UseAutofacContainer(container);
             {
                 x.Service<ServiceRunner>(s =>                        //2
                 {
