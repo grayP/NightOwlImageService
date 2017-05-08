@@ -47,14 +47,6 @@
           <Property Name="ScheduleID" Type="int" />
           <Property Name="ImageID" Type="int" />
         </EntityType>
-        <EntityType Name="ScheduleSign">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ScheduleID" Type="int" />
-          <Property Name="SignId" Type="int" />
-        </EntityType>
         <EntityType Name="ScheduleStore">
           <Key>
             <PropertyRef Name="Id" />
@@ -201,7 +193,6 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule" EntityType="Self.Schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ScheduleImage" EntityType="Self.ScheduleImage" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ScheduleSign" EntityType="Self.ScheduleSign" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ScheduleStore" EntityType="Self.ScheduleStore" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sign" EntityType="Self.Sign" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
@@ -289,7 +280,6 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySet Name="Schedules" EntityType="Models.Schedule" />
           <EntitySet Name="ScheduleStores" EntityType="Models.ScheduleStore" />
           <EntitySet Name="ScheduleImages" EntityType="Models.ScheduleImage" />
-          <EntitySet Name="ScheduleSigns" EntityType="Models.ScheduleSign" />
           <EntitySet Name="ImagesAndSigns" EntityType="Models.ImagesAndSign" />
           <EntitySet Name="StoreAndSigns" EntityType="Models.StoreAndSign" />
           <EntitySet Name="ScheduleAndSigns" EntityType="Models.ScheduleAndSign" />
@@ -381,14 +371,6 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ScheduleID" Type="Int32" />
           <Property Name="ImageID" Type="Int32" />
-        </EntityType>
-        <EntityType Name="ScheduleSign">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ScheduleID" Type="Int32" />
-          <Property Name="SignId" Type="Int32" />
         </EntityType>
         <EntityType Name="ImagesAndSign">
           <Key>
@@ -601,15 +583,6 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
             <EntityTypeMapping TypeName="Models.ScheduleImage">
               <MappingFragment StoreEntitySet="ScheduleImage">
                 <ScalarProperty Name="ImageID" ColumnName="ImageID" />
-                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ScheduleSigns">
-            <EntityTypeMapping TypeName="Models.ScheduleSign">
-              <MappingFragment StoreEntitySet="ScheduleSign">
-                <ScalarProperty Name="SignId" ColumnName="SignId" />
                 <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

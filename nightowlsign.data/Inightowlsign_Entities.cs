@@ -18,7 +18,6 @@ namespace nightowlsign.data
         DbSet<Schedule> Schedules { get; set; }
         DbSet<ScheduleStore> ScheduleStores { get; set; }
         DbSet<ScheduleImage> ScheduleImages { get; set; }
-        DbSet<ScheduleSign> ScheduleSigns { get; set; }
         DbSet<ImagesAndSign> ImagesAndSigns { get; set; }
         DbSet<StoreAndSign> StoreAndSigns { get; set; }
         DbSet<ScheduleAndSign> ScheduleAndSigns { get; set; }

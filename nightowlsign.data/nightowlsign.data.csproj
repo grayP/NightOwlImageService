@@ -131,9 +131,6 @@
     <Compile Include="ScheduleImage.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="ScheduleSign.cs">
-      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="ScheduleStore.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>

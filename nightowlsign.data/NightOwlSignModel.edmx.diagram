@@ -12,7 +12,6 @@
         <EntityTypeShape EntityType="Models.Schedule" Width="1.5" PointX="3.375" PointY="4.75" />
         <EntityTypeShape EntityType="Models.ScheduleStore" Width="1.5" PointX="5.375" PointY="4.75" />
         <EntityTypeShape EntityType="Models.ScheduleImage" Width="1.5" PointX="7.25" PointY="2.75" />
-        <EntityTypeShape EntityType="Models.ScheduleSign" Width="2" PointX="0.75" PointY="7.5" />
         <EntityTypeShape EntityType="Models.ImagesAndSign" Width="1.5" PointX="6.25" PointY="7.75" />
         <EntityTypeShape EntityType="Models.StoreAndSign" Width="1.5" PointX="9.375" PointY="7.75" />
         <EntityTypeShape EntityType="Models.ScheduleAndSign" Width="1.5" PointX="10.375" PointY="0.75" />
