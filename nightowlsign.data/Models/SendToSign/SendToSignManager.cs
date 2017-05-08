@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using nightowlsign.data.Models.Signs;
 using nightowlsign.data.Models.StoreSignDto;
 
@@ -18,9 +17,9 @@ namespace nightowlsign.data.Models.SendToSign
         //Properties
         public List<KeyValuePair<string, string>> ValidationErrors { get; set; }
 
-        public List<int?> Get(data.Schedule Entity)
+        public List<int?> Get(data.Schedule entity)
         {
-            int scheduleID = Entity.Id;
+            int scheduleID = entity.Id;
             var query = (from c in _context.ScheduleImages
                          where c.ScheduleID == scheduleID
                          select c.ImageID);
@@ -84,14 +83,14 @@ namespace nightowlsign.data.Models.SendToSign
             return query;
         }
 
-        public data.Image Find(int Id)
+        public data.Image Find(int id)
         {
-            return _context.Images.Find(Id);
+            return _context.Images.Find(id);
         }
 
         public void UpdateImageList(ImageSelect imageSelect, data.Schedule schedule)
         {
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            using (var db = new nightowlsign_Entities())
             {
                 ScheduleImage imageSelected = new ScheduleImage
                 {
@@ -120,23 +119,12 @@ namespace nightowlsign.data.Models.SendToSign
 
         public ScheduleImage GetValues(ImageSelect imageSelect)
         {
-            ScheduleImage scheduleImage = null;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
-            {
-                scheduleImage =
-                    db.ScheduleImages.FirstOrDefault(x => x.ImageID == imageSelect.ImageId && x.ScheduleID == imageSelect.ScheduleId);
-            }
-            return scheduleImage;
+            return _context.ScheduleImages.FirstOrDefault(x => x.ImageID == imageSelect.ImageId && x.ScheduleID == imageSelect.ScheduleId);
         }
 
-        public bool IsSelected(int ScheduleId, int ImageID)
+        public bool IsSelected(int scheduleId, int imageId)
         {
-            bool ret = false;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
-            {
-                ret = db.ScheduleImages.Any(x => x.ScheduleID == ScheduleId && x.ImageID == ImageID);
-            }
-            return ret;
+               return _context.ScheduleImages.Any(x => x.ScheduleID == scheduleId && x.ImageID == imageId);
         }
     }
 }
