@@ -7,25 +7,30 @@ using ImageProcessor.Services;
 using Logger;
 using Logger.Logger;
 using nightowlsign.data;
+using nightowlsign.data.Models.Image;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
 using NightOwlImageService.Configuration;
 
 namespace NightOwlImageService.Services
 {
-    public class ServiceRunner
+    public class ServiceRunner : IServiceRunner
     {
         private readonly Timer _timer;
-        private readonly MLogger _logger;
+        private readonly IMLogger _logger;
+        private readonly IStoreManager _storeManager;
+        private readonly IStoreViewModel _storeViewModel;
+        private readonly Inightowlsign_Entities _context;
+        private readonly IStoreScheduleLogManager _storeScheduleLogManager;
+        private readonly IScreenImageManager _screenImageManager;
         // private RunnerCycleTime runCycleTime;
-        private System.Reflection.Assembly _assembly;
-        private readonly ImageManager _imageManager;
 
         public void Start()
         {
-            DoTheWork();
+            DoTheWork(_storeViewModel);
             _timer.Start();
         }
+
 
         public void Stop()
         {
@@ -33,27 +38,33 @@ namespace NightOwlImageService.Services
         }
 
 
-        public ServiceRunner(System.Reflection.Assembly assembly)
+        public ServiceRunner(IScreenImageManager screenImageManager, IStoreManager storeManager, IStoreViewModel storeViewModel, Inightowlsign_Entities context, IStoreScheduleLogManager storeScheduleLogManager, IMLogger logger)
         {
-            _assembly = assembly;
-            var builder = new ContainerBuilder();
-            // builder.RegisterType<RunnerCycleTime>().As<ConfigInjector.IConfigurationSetting>();
+            _screenImageManager = screenImageManager;
+            _storeManager = storeManager;
+            _storeViewModel = storeViewModel;
+            _context = context;
+            _storeScheduleLogManager = storeScheduleLogManager;
 
-            _logger = new MLogger(_assembly.FullName);
-            _timer = new Timer { AutoReset = true };
-            _imageManager = new ImageManager(_logger);
-            _timer.Interval = 300000;
-            _timer.Elapsed += (sender, eventArgs) => DoTheWork();
+            _logger = logger; //new MLogger(System.Reflection.Assembly.GetExecutingAssembly().FullName);
+
+            _logger.Init(System.Reflection.Assembly.GetExecutingAssembly().FullName);
+            _timer = new Timer
+            {
+                AutoReset = true,
+                Interval = 300000
+            };
+            _timer.Elapsed += (sender, eventArgs) => DoTheWork(_storeViewModel);
         }
 
-        public void DoTheWork()
+        public void DoTheWork(IStoreViewModel storeViewModel)
         {
             _logger.WriteLog($"Starting Run: {DateTime.Now}");
-            var svm = new StoreViewModel { EventCommand = "List" };
-            svm.HandleRequest();
-            foreach (var storeAndSign in svm.StoresAndSigns)
+            storeViewModel.EventCommand = "List";
+            storeViewModel.HandleRequest();
+            foreach (var storeAndSign in storeViewModel.StoresAndSigns)
             {
-                if (storeAndSign?.CurrentSchedule.Id != storeAndSign?.LastInstalled?.Id && storeAndSign.CurrentSchedule?.Id != 0 || storeAndSign?.CurrentSchedule.LastUpdated > storeAndSign?.LastInstalled?.LastUpdated)
+                if (storeAndSign.SignNeedsToBeUpdated())
                 {
                     Console.WriteLine($"Starting on store {storeAndSign.Name} ");
                     _logger.WriteLog($"Starting on store {storeAndSign.Name} ");
@@ -68,20 +79,20 @@ namespace NightOwlImageService.Services
             CheckIfTimeToClose();
         }
 
-        private void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode)
+        public void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode)
         {
-            var sm = new StoreManager();
-            sm.Update(storeAndSign, successCode);
+            //  var sm = new StoreManager(_context);
+            _storeManager.Update(storeAndSign, successCode);              
             if (successCode == 0)
             {
-                var sslm = new StoreScheduleLogManager(storeAndSign);
-                _logger.WriteLog(sslm.Insert() ? $"Updated {storeAndSign.id}" : $"{sslm.ErrorMessage} ");
+                _storeScheduleLogManager.Init(storeAndSign);
+                _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated {storeAndSign.id}" : $"{_storeScheduleLogManager.ErrorMessage} ");
             }
         }
 
-        private int SendTheScheduleToSign(StoreAndSign storeAndSign)
+        public int SendTheScheduleToSign(StoreAndSign storeAndSign)
         {
-            return _imageManager.FileUploadResultCode(storeAndSign);
+            return _screenImageManager.FileUploadResultCode(storeAndSign);
         }
         private static void CheckIfTimeToClose()
         {

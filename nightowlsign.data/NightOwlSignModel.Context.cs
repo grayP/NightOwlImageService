@@ -14,19 +14,19 @@ namespace nightowlsign.data
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Core.Objects;
     using System.Linq;
-    
-    public partial class nightowlsign_Entities : DbContext
+
+    public partial class nightowlsign_Entities : DbContext, Inightowlsign_Entities
     {
         public nightowlsign_Entities()
             : base("name=nightowlsign_Entities")
         {
         }
-    
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
         public virtual DbSet<Sign> Signs { get; set; }
         public virtual DbSet<Store> Store { get; set; }
         public virtual DbSet<StoreSign> StoreSigns { get; set; }
@@ -39,15 +39,30 @@ namespace nightowlsign.data
         public virtual DbSet<StoreAndSign> StoreAndSigns { get; set; }
         public virtual DbSet<ScheduleAndSign> ScheduleAndSigns { get; set; }
         public virtual DbSet<StoreScheduleLog> StoreScheduleLogs { get; set; }
-    
+
         public virtual ObjectResult<FindCurrentPlayList_Result> FindCurrentPlayList()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FindCurrentPlayList_Result>("FindCurrentPlayList");
         }
-    
+
         public virtual ObjectResult<FindCurrentPlayListForStore_Result> FindCurrentPlayListForStore()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<FindCurrentPlayListForStore_Result>("FindCurrentPlayListForStore");
         }
+
+        object Inightowlsign_Entities.Set<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public new DbSet Set()
+        {
+            throw new NotImplementedException();
+        }
+
+        //public new DbEntityEntry Entry(TEntity entity)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

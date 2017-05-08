@@ -2,11 +2,16 @@
 
 namespace Logger.Logger
 {
-    public class MLogger : IDisposable
+    public class MLogger : IDisposable, IMLogger
     {
-        private readonly string _fileName;
+        private string _fileName;
 
-        public MLogger(string assemblyName)
+        public MLogger()
+        {
+                
+        }
+
+        public void Init (string assemblyName)
         {
             _fileName = $"{DateTime.Today.ToString("yy-MM-dd")}.txt";
             WriteLog($"Version: {assemblyName}");

@@ -72,7 +72,9 @@
     <Compile Include="ImagesAndSign.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Inightowlsign_Entities.cs" />
     <Compile Include="MetaData\MetaData.cs" />
+    <Compile Include="Models\Image\IImageManager.cs" />
     <Compile Include="Models\Image\ImageManager.cs" />
     <Compile Include="Models\Image\ImageViewModel.cs" />
     <Compile Include="Models\ScheduleImage\ScheduleImageManager.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Models\ScheduleStore\StoreSelect.cs" />
     <Compile Include="Models\Schedule\ScheduleManager.cs" />
     <Compile Include="Models\Schedule\ScheduleViewModel.cs" />
+    <Compile Include="Models\SendToSign\ISendToSignManager.cs" />
     <Compile Include="Models\SendToSign\SendToSignViewModel.cs" />
     <Compile Include="Models\SendToSign\SendToSignManager.cs" />
     <Compile Include="Models\Signs\SignDto.cs" />
@@ -90,10 +93,13 @@
     <Compile Include="Models\Signs\SignManager.cs" />
     <Compile Include="Models\Signs\SignViewModel.cs" />
     <Compile Include="Models\Signs\SignSelect.cs" />
+    <Compile Include="Models\StoreScheduleLog\IStoreScheduleLogManager.cs" />
     <Compile Include="Models\StoreScheduleLog\StoreScheduleLog.cs" />
     <Compile Include="Models\StoreSignDto\StoreSignDto.cs" />
     <Compile Include="Models\StoreSign\StoreSignManager.cs" />
     <Compile Include="Models\StoreSign\StoreSignViewModel.cs" />
+    <Compile Include="Models\Stores\IStoreManager.cs" />
+    <Compile Include="Models\Stores\IStoreViewModel.cs" />
     <Compile Include="Models\Stores\Store.cs" />
     <Compile Include="Models\Stores\StoreManager.cs" />
     <Compile Include="Models\Stores\StoreViewModel.cs" />
@@ -114,6 +120,7 @@
     </Compile>
     <Compile Include="PartialClasses\ImagesAndSign.cs" />
     <Compile Include="PartialClasses\PartialClasses.cs" />
+    <Compile Include="PartialClasses\StoreAndSign.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Schedule.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>

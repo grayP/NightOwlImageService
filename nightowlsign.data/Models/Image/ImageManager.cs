@@ -8,30 +8,29 @@ using nightowlsign.data;
 
 namespace nightowlsign.data.Models.Image
 {
-    public class ImageManager
+    public class ImageManager : IImageManager
     {
-        public ImageManager()
+        private readonly Inightowlsign_Entities _context;
+        public ImageManager(Inightowlsign_Entities context)
         {
+            _context = context;
             ValidationErrors = new List<KeyValuePair<string, string>>();
         }
         //Properties
         public List<KeyValuePair<string, string>> ValidationErrors { get; set; }
 
 
-        public List<ImagesAndSign> Get(ImagesAndSign Entity)
+        public List<ImagesAndSign> Get(ImagesAndSign entity)
         {
             List<ImagesAndSign> ret = new List<ImagesAndSign>();
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
+            ret = _context.ImagesAndSigns.OrderBy(x => x.Model).ThenBy(x => x.Caption).ToList<ImagesAndSign>();
+            if (!string.IsNullOrEmpty(entity.Caption))
             {
-                ret = db.ImagesAndSigns.OrderBy(x=>x.Model).ThenBy(x => x.Caption).ToList<ImagesAndSign>();
+                ret = ret.FindAll(p => p.Caption.ToLower().StartsWith(entity.Caption));
             }
-            if (!string.IsNullOrEmpty(Entity.Caption))
+            if (entity.SignSize > 0)
             {
-                ret = ret.FindAll(p => p.Caption.ToLower().StartsWith(Entity.Caption));
-            }
-            if (Entity.SignSize>0)
-            {
-                ret = ret.FindAll(p => p.SignSize.Equals(Entity.SignSize));
+                ret = ret.FindAll(p => p.SignSize.Equals(entity.SignSize));
             }
 
             return ret;
@@ -39,13 +38,7 @@ namespace nightowlsign.data.Models.Image
 
         public data.Image Find(int imageId)
         {
-            data.Image ret = null;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
-            {
-                ret = db.Images.Find(imageId);
-            }
-            return ret;
-
+            return _context.Images.Find(imageId);
         }
 
         public bool Validate(data.Image entity)
@@ -61,19 +54,14 @@ namespace nightowlsign.data.Models.Image
             }
             return (ValidationErrors.Count == 0);
         }
-   
+
 
         public bool Delete(data.Image entity)
         {
-            bool ret = false;
-            using (nightowlsign_Entities db = new nightowlsign_Entities())
-            {
-                db.Images.Attach(entity);
-                db.Images.Remove(entity);
-                db.SaveChanges();
-                ret = true;
-            }
-            return ret;
+            _context.Images.Attach(entity);
+            _context.Images.Remove(entity);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

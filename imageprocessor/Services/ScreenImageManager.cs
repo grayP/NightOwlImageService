@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.IO;
-using ImageProcessor.CP5200;
-using ImageProcessor.Enums;
+﻿using ImageProcessor.Enums;
+using Logger.Logger;
 using nightowlsign.data;
 using nightowlsign.data.Models;
-using nightowlsign.data.Models.Signs;
-using System.Web;
-using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using Logger;
-using Logger.Logger;
-using nightowlsign.Services;
+using nightowlsign.data.Models.SendToSign;
 
 namespace ImageProcessor.Services
 
 {
-    public class ImageManager
+    public class ScreenImageManager : IScreenImageManager
     {
-        private readonly SendToSignManager _sendToSignManager = new SendToSignManager();
+        private readonly ISendToSignManager _sendToSignManager;
         private PlayBillFiles _cp5200;
 
         private string ImageDirectory = "c:/playBillFiles/Images/";
@@ -35,14 +29,17 @@ namespace ImageProcessor.Services
         private List<ImageSelect> _imagesToSend;
         private StoreAndSign _storeAndSign;
         private Sign _signSizeForSchedule;
-        private readonly MLogger _logger;
+        private readonly IMLogger _logger;
+        private readonly ISendCommunicator _sendCommunicator;
 
         public StoreAndSign StoreAndSign { get; set; }
 
 
-        public ImageManager(MLogger logger)
+        public ScreenImageManager(IMLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager)
         {
             _logger = logger;
+            _sendCommunicator = sendCommunicator;
+            _sendToSignManager = sendToSignManager;
         }
 
         public int FileUploadResultCode(StoreAndSign storeAndSign)
@@ -54,17 +51,17 @@ namespace ImageProcessor.Services
                 DeleteOldFiles(_programFileDirectory, AddStar(ProgramFileExtension));
                 WriteImagesToDisk(_imagesToSend);
                 GeneratetheProgramFiles(storeAndSign.CurrentSchedule.Name, storeAndSign.ProgramFile, storeAndSign.Sign);
-                using (var sender = new SendCommunicator(storeAndSign, _programFileDirectory, PlaybillFileExtension, _logger))
-                {
-                    if (sender.FilesUploadedOk())
+                //using (var sender = new SendCommunicator(storeAndSign, _programFileDirectory, _logger))
+                //{
+                _sendCommunicator.Init(storeAndSign, _programFileDirectory);
+                    if (_sendCommunicator.FilesUploadedOk())
                     {
-                        sender.RestartSign();
+                        _sendCommunicator.RestartSign();
                     }
-                    sender.Disconnect();
-                    return sender.UpLoadSuccess;
-                }
+                    _sendCommunicator.Disconnect();
+                    return _sendCommunicator.UpLoadSuccess;
+                //}
             }
-
             catch (Exception ex)
             {
                 _logger.WriteLog($"ImageManager - FileUploadResultCode - {ex.Message}");
@@ -72,13 +69,12 @@ namespace ImageProcessor.Services
             }
         }
 
- 
-        private List<ImageSelect> GetImages(int scheduleId)
+        public List<ImageSelect> GetImages(int scheduleId)
         {
             return _sendToSignManager.GetImagesForThisSchedule(scheduleId);
         }
 
-        private string AddStar(string fileExtension)
+        private static string AddStar(string fileExtension)
         {
             return string.Concat("*", fileExtension);
         }
@@ -86,13 +82,13 @@ namespace ImageProcessor.Services
         public void DeleteOldFiles(string directoryName, string extension)
         {
             foreach (
-                string fileName in Directory.GetFiles(directoryName, extension))
+                var fileName in Directory.GetFiles(directoryName, extension))
             {
                 System.IO.File.Delete(fileName);
             }
         }
 
-        private void WriteImagesToDisk(List<ImageSelect> images)
+        public void WriteImagesToDisk(IEnumerable<ImageSelect> images)
         {
             var counter = 1;
             foreach (var image in images)
@@ -139,7 +135,7 @@ namespace ImageProcessor.Services
             }
         }
 
-        private void DeleteOldProgramFile(string fileAndPath)
+        public void DeleteOldProgramFile(string fileAndPath)
         {
             System.IO.File.Delete(fileAndPath);
         }
@@ -162,7 +158,7 @@ namespace ImageProcessor.Services
 
         }
 
-        private void SaveImageToFile(string sCounter, ImageSelect image)
+        public void SaveImageToFile(string sCounter, ImageSelect image)
         {
             string tempFileName = string.Concat(ImageDirectory, sCounter, ImageExtension);
             try
@@ -178,13 +174,13 @@ namespace ImageProcessor.Services
             }
         }
 
-        private string GeneratePlayBillFileName(string scheduleName)
+        public string GeneratePlayBillFileName(string scheduleName)
         {
             var newName = "playbill"; //StripCharacters.Strip(scheduleName);
             return PlaybillFileName = string.Concat(_programFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
         }
 
-        private string GenerateProgramFileName(string programFile)
+        public string GenerateProgramFileName(string programFile)
         {
             if (string.IsNullOrEmpty(programFile))
             {

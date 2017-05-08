@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace nightowlsign.data.Models.StoreScheduleLog
 {
-    public class StoreScheduleLogManager
+    public class StoreScheduleLogManager : IStoreScheduleLogManager
     {
         public string ErrorMessage { get; set; }
         public data.StoreScheduleLog Entity { get; set; }
@@ -14,7 +14,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         {
         }
 
-        public StoreScheduleLogManager(StoreAndSign storeAndSign)
+        public void Init(StoreAndSign storeAndSign)
         {
             Entity = new data.StoreScheduleLog()
             {
@@ -37,7 +37,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         }
 
 
-        private data.StoreScheduleLog GetStoreScheduleLog(int scheduleStoreLogId)
+        public data.StoreScheduleLog GetStoreScheduleLog(int scheduleStoreLogId)
         {
             using (var db = new nightowlsign_Entities())
             {

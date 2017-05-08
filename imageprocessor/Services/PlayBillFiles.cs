@@ -16,8 +16,8 @@ namespace ImageProcessor.Services
         private readonly int _displayTime;
         private readonly byte _colourMode;
         private int _playWindowNumber;
-        private MLogger _logger;
-        public PlayBillFiles(int width, int height, int displayTime, byte colourMode, MLogger logger)
+        private readonly IMLogger _logger;
+        public PlayBillFiles(int width, int height, int displayTime, byte colourMode, IMLogger logger)
         {
             _screenWidth = width;
             _screenHeight = height;

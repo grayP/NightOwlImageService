@@ -9,8 +9,12 @@ namespace nightowlsign.data.Models.Signs
 {
     public class SignViewModel : BaseModel.ViewModelBase
     {
-        public SignViewModel() : base()
+        private readonly Inightowlsign_Entities _context;
+        private readonly SignManager sm;
+        public SignViewModel(Inightowlsign_Entities context) : base()
         {
+            _context = context;
+            sm = new SignManager(_context);
 
         }
         public List<Sign> Signs { get; set; }
@@ -35,13 +39,11 @@ namespace nightowlsign.data.Models.Signs
 
         protected override void Get()
         {
-            SignManager sm = new SignManager();
             Signs = sm.Get(SearchEntity);
         }
 
         protected override void Edit()
         {
-            SignManager sm = new SignManager();
             Entity = sm.Find(Convert.ToInt32(EventArgument));
             base.Edit();
         }
@@ -58,7 +60,6 @@ namespace nightowlsign.data.Models.Signs
         }
         protected override void Save()
         {
-            SignManager sm = new SignManager();
             if (Mode == "Add")
             {
                 sm.Insert(Entity);
@@ -73,7 +74,6 @@ namespace nightowlsign.data.Models.Signs
 
         protected override void Delete()
         {
-            SignManager sm= new SignManager();
             Entity = sm.Find(Convert.ToInt32(EventArgument));
             sm.Delete(Entity);
             Get();

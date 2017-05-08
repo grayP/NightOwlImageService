@@ -11,10 +11,12 @@ namespace nightowlsign.data.Models.Image
     {
         private readonly SignManager _signManager;
         public bool Selected { get; set; }
+        private readonly Inightowlsign_Entities _context;
 
-        public ImageViewModel() : base()
+        public ImageViewModel(Inightowlsign_Entities context) : base()
         {
-            _signManager = new SignManager();
+            _context = context;
+            _signManager = new SignManager(_context);
         }
 
         //Properties--------------
@@ -23,7 +25,7 @@ namespace nightowlsign.data.Models.Image
         public data.Image Entity { get; set; }
         public HttpPostedFileBase File { get; set; }
         public bool LastImage { get; set; }
- 
+
         public string CommandString { get; set; }
         public string Message { get; set; }
         public int? SearchSignId { get; set; }
@@ -31,9 +33,7 @@ namespace nightowlsign.data.Models.Image
         {
             get
             {
-                using (nightowlsign_Entities db = new nightowlsign_Entities())
-                {
-                    var selectList = new List<SelectListItem>()
+                var selectList = new List<SelectListItem>()
                     {
                         new SelectListItem
                         {
@@ -41,15 +41,14 @@ namespace nightowlsign.data.Models.Image
                             Model = "Show All"
                         }
                     };
-                    selectList.AddRange(from item in
-                                      db.Signs.OrderBy(x => x.Model)
-                                        select new SelectListItem()
-                                        {
-                                            SignId = item.id,
-                                            Model = item.Model
-                                        });
-                    return selectList;
-                }
+                selectList.AddRange(from item in
+                                  _context.Signs.OrderBy(x => x.Model)
+                                    select new SelectListItem()
+                                    {
+                                        SignId = item.id,
+                                        Model = item.Model
+                                    });
+                return selectList;
             }
         }
 
@@ -89,8 +88,8 @@ namespace nightowlsign.data.Models.Image
                     CommandString = "";
                     break;
             }
-                base.HandleRequest();
-         }
+            base.HandleRequest();
+        }
 
         protected override void ResetSearch()
         {
@@ -99,20 +98,18 @@ namespace nightowlsign.data.Models.Image
 
         protected override void Get()
         {
-            ImageManager cmm = new ImageManager();
-            //SearchEntity.Caption = SearchEntity.Caption;
+            ImageManager cmm = new ImageManager(_context);
             SearchEntity.SignSize = SearchSignId;
             Images = cmm.Get(SearchEntity);
         }
 
- protected override void Delete()
+        protected override void Delete()
         {
             foreach (var image in Images)
             {
                 if (image.Selected)
                 {
                     DeleteTheImage(image);
-                    //ToDo add in image delete
                 }
             }
             Get();
@@ -124,7 +121,7 @@ namespace nightowlsign.data.Models.Image
             DeleteFromScheduleImage(imageToDelete.Id);
         }
 
-  
+
         private void DeleteFromScheduleImage(int id)
         {
             ScheduleImageManager sim = new ScheduleImageManager();
@@ -133,7 +130,7 @@ namespace nightowlsign.data.Models.Image
 
         private void DeleteImage(int imageId)
         {
-            ImageManager imm = new ImageManager();
+            ImageManager imm = new ImageManager(_context);
             Entity = imm.Find(imageId);
             imm.Delete(Entity);
             base.Delete();

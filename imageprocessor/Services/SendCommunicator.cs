@@ -12,27 +12,27 @@ namespace ImageProcessor.Services
     {
         public int UpLoadSuccess { get; set; }
         private readonly int TimeOut = 3600;
-        private readonly StoreAndSign _storeAndSign;
-        private readonly string _programFileDirectory;
-        private readonly MLogger _logger;
+        private StoreAndSign _storeAndSign;
+        private string _programFileDirectory;
+        private readonly IMLogger _logger;
 
-        public SendCommunicator()
+        public SendCommunicator(IMLogger logger)
         {
+            _logger = logger;
         }
 
-        public SendCommunicator(StoreAndSign storeAndSign, string programFileDirectory, string playbillextension, MLogger logger)
+        public void Init(StoreAndSign storeAndSign, string programFileDirectory)
         {
             _storeAndSign = storeAndSign;
             _programFileDirectory = programFileDirectory;
-            _logger = logger;
         }
 
         public bool FilesUploadedOk()
         {
-            return ConnectToSign(_storeAndSign) == 0;
+            return ConnectToSignAndUpload(_storeAndSign) == 0;
         }
 
-        public int ConnectToSign(StoreAndSign storeAndSign)
+        public int ConnectToSignAndUpload(StoreAndSign storeAndSign)
         {
             if (SignIsOnLine(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
             {
@@ -78,7 +78,7 @@ namespace ImageProcessor.Services
 
         public bool SignIsOnLine(string ipAddress, string idCode, string port)
         {
-            var SignIsOnLine = false;
+            var signIsOnLine = false;
             try
             {
                 var dwIpAddr = GetIp(ipAddress);
@@ -89,7 +89,7 @@ namespace ImageProcessor.Services
                     var responseNumber = Cp5200External.CP5200_Net_Init(dwIpAddr, nIpPort, dwIdCode, TimeOut);
                     if (responseNumber == 0)
                     {
-                        SignIsOnLine = true;
+                        signIsOnLine = true;
                         var result = Cp5200External.CP5200_Net_Connect();
                         var result2 = Cp5200External.CP5200_Net_IsConnected();
                         _logger.WriteLog($"Communication established with {ipAddress}");
@@ -99,7 +99,7 @@ namespace ImageProcessor.Services
                         _logger.WriteLog($"Communication failed with Sign {ipAddress} ");
                     }
                 }
-                return SignIsOnLine;
+                return signIsOnLine;
             }
             catch (Exception ex)
             {

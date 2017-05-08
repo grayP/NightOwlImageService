@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using nightowlsign.data.Models.SendToSign;
 using nightowlsign.data.Models.Signs;
 using nightowlsign.data.Models.StoreSignDto;
 
@@ -8,8 +9,10 @@ namespace nightowlsign.data.Models
 {
     public class SendToSignViewModel : BaseModel.ViewModelBase
     {
-        public SendToSignViewModel() : base()
+        private readonly ISendToSignManager _sendToSignManager;
+        public SendToSignViewModel(ISendToSignManager sendToSignManager) : base()
         {
+            _sendToSignManager = sendToSignManager;
             DisplayMessage = "";
             DebugMessage = "";
             Schedule = new data.Schedule();
@@ -43,10 +46,9 @@ namespace nightowlsign.data.Models
 
         protected override void Get()
         {
-            SendToSignManager sm = new SendToSignManager();
-            SignsForSchedule = sm.GetSignsForSchedule(Schedule.Id);
-            AllImagesInSchedule = sm.GetImagesForThisSchedule(Schedule.Id);
-            StoresForSchedule = sm.GetStoresWithThisSign(Schedule.Id);
+            SignsForSchedule = _sendToSignManager.GetSignsForSchedule(Schedule.Id);
+            AllImagesInSchedule = _sendToSignManager.GetImagesForThisSchedule(Schedule.Id);
+            StoresForSchedule = _sendToSignManager.GetStoresWithThisSign(Schedule.Id);
         }
     }
 }

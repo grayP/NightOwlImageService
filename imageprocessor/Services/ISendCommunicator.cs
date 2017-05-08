@@ -9,10 +9,14 @@ namespace ImageProcessor.Services
 {
     public interface ISendCommunicator
     {
+        void Init(StoreAndSign storeAndSign, string directory);
+        int UpLoadSuccess { get; }
+
         bool FilesUploadedOk();
-        int ConnectToSign(StoreAndSign storeAndSign);
+        int ConnectToSignAndUpload(StoreAndSign storeAndSign);
         void SendTheFiletoSign(string programFile);
         bool SignIsOnLine(string ipAddress, string idCode, string port);
         int Disconnect();
+        int RestartSign();
     }
 }
