@@ -11,6 +11,7 @@ namespace ImageProcessor.Services
     public class SendCommunicator : ISendCommunicator, IDisposable
     {
         public int UpLoadSuccess { get; set; }
+
         private readonly int TimeOut = 3600;
         private StoreAndSign _storeAndSign;
         private string _programFileDirectory;

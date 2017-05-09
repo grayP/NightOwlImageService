@@ -18,7 +18,7 @@ namespace ImageProcessor.Services
         private PlayBillFiles _cp5200;
 
         private string ImageDirectory = "c:/playBillFiles/Images/";
-        private readonly string _programFileDirectory = string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
+        private readonly string _programFileDirectory = "c:/programFiles/"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpp";
@@ -27,8 +27,6 @@ namespace ImageProcessor.Services
         public bool Successfull { get; set; }
 
         private List<ImageSelect> _imagesToSend;
-        private StoreAndSign _storeAndSign;
-        private Sign _signSizeForSchedule;
         private readonly IMLogger _logger;
         private readonly ISendCommunicator _sendCommunicator;
 
