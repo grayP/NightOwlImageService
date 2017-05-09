@@ -36,7 +36,7 @@ namespace ImageProcessor.Services
         {
             if (SignIsOnLine(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
             {
-                _logger.WriteLog($"SendCommunicator - sendFiletoSign - {storeAndSign.Name}","Result");
+                _logger.WriteLog($"Sign is Online: {storeAndSign.Name}","Result");
                 SendTheFiletoSign(storeAndSign.ProgramFile);
                 return UpLoadSuccess;
             }
@@ -52,13 +52,13 @@ namespace ImageProcessor.Services
                     Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
                     UpLoadSuccess = UploadFile(programFileName, programFile);
-                    _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - {programFileName} - Success={UpLoadSuccess}","Result");
+                    _logger.WriteLog($"SendFileToSign -{programFileName}- Result:{UpLoadSuccess}","Result");
 
                 }
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"SendComm - SendFileToSign - Error in Sendfile to sign: {ex.Message}","Error");
+                _logger.WriteLog($"SendFileToSign - Error in Sendfile to sign: {ex.Message}","Error");
             }
         }
 

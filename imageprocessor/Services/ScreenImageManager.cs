@@ -51,8 +51,6 @@ namespace ImageProcessor.Services
                 DeleteOldFiles(_programFileDirectory, AddStar(ProgramFileExtension));
                 WriteImagesToDisk(_imagesToSend);
                 GeneratetheProgramFiles(storeAndSign.CurrentSchedule.Name, storeAndSign.ProgramFile, storeAndSign.Sign);
-                //using (var sender = new SendCommunicator(storeAndSign, _programFileDirectory, _logger))
-                //{
                 _sendCommunicator.Init(storeAndSign, _programFileDirectory);
                     if (_sendCommunicator.FilesUploadedOk())
                     {
@@ -60,11 +58,10 @@ namespace ImageProcessor.Services
                     }
                     _sendCommunicator.Disconnect();
                     return _sendCommunicator.UpLoadSuccess;
-                //}
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"ImageManager - FileUploadResultCode - {ex.Message}");
+                _logger.WriteLog($"ImageManager - FileUploadResultCode - {ex.Message}", "Error");
                 return 99;
             }
         }

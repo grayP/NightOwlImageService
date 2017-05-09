@@ -73,7 +73,7 @@ namespace NightOwlImageService.Services
                     UpdateTheDataBase(storeAndSign, successCode);
 
                     this._logger.WriteLog(
-                        $"ServiceRunner - doTheWork - Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}" ,"Result");
+                        $"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}" ,"Result");
                 }
             }
             CheckIfTimeToClose();
@@ -85,7 +85,7 @@ namespace NightOwlImageService.Services
             if (successCode == 0)
             {
                 _storeScheduleLogManager.Init(storeAndSign);
-                _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated {storeAndSign.id}" : $"{_storeScheduleLogManager.ErrorMessage} ","Result");
+                _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated Log for {storeAndSign.Name}" : $"{_storeScheduleLogManager.ErrorMessage} ","Result");
             }
         }
 
