@@ -12,6 +12,7 @@ using Logger;
 using Logger.Logger;
 using nightowlsign.data;
 using nightowlsign.data.Models;
+using nightowlsign.data.Models.Logging;
 using nightowlsign.data.Models.SendToSign;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
@@ -23,8 +24,8 @@ namespace NightOwlImageService.AutoFac
     {
         public static IContainer LetThereBeIoc()
         {
-
             var builder = new ContainerBuilder();
+
             builder.RegisterType<ServiceRunner>().InstancePerLifetimeScope();
             builder.RegisterType<SendCommunicator>().As<ISendCommunicator>().InstancePerLifetimeScope();
             builder.RegisterType<nightowlsign_Entities>().As<Inightowlsign_Entities>().InstancePerLifetimeScope();
@@ -35,10 +36,9 @@ namespace NightOwlImageService.AutoFac
             builder.RegisterType<StoreScheduleLogManager>().As<IStoreScheduleLogManager>().InstancePerLifetimeScope();
             builder.RegisterType<StoreViewModel>().As<IStoreViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<Assembly>().As<_Assembly>().InstancePerLifetimeScope();
-
+            builder.RegisterType<LoggingManager>().As<ILoggingManager>().InstancePerLifetimeScope();
   
             return builder.Build();
-
         }
     }
 }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using nightowlsign.data.Models.SendToSign;
+﻿using System.Collections.Generic;
 using nightowlsign.data.Models.Signs;
 using nightowlsign.data.Models.StoreSignDto;
 
-
-namespace nightowlsign.data.Models
+namespace nightowlsign.data.Models.SendToSign
 {
     public class SendToSignViewModel : BaseModel.ViewModelBase
     {
@@ -39,7 +36,7 @@ namespace nightowlsign.data.Models
             base.HandleRequest();
         }
 
-        public void loadData()
+        public void LoadData()
         {
             Get();
         }

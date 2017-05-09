@@ -73,10 +73,15 @@
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Inightowlsign_Entities.cs" />
+    <Compile Include="Logging.cs">
+      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="MetaData\MetaData.cs" />
     <Compile Include="Models\Image\IImageManager.cs" />
     <Compile Include="Models\Image\ImageManager.cs" />
     <Compile Include="Models\Image\ImageViewModel.cs" />
+    <Compile Include="Models\Logging\ILoggingManager.cs" />
+    <Compile Include="Models\Logging\LoggingManager.cs" />
     <Compile Include="Models\ScheduleImage\ScheduleImageManager.cs" />
     <Compile Include="Models\ScheduleImage\ScheduleImageViewModel.cs" />
     <Compile Include="Models\Image\ImageSelect.cs" />
@@ -96,8 +101,6 @@
     <Compile Include="Models\StoreScheduleLog\IStoreScheduleLogManager.cs" />
     <Compile Include="Models\StoreScheduleLog\StoreScheduleLog.cs" />
     <Compile Include="Models\StoreSignDto\StoreSignDto.cs" />
-    <Compile Include="Models\StoreSign\StoreSignManager.cs" />
-    <Compile Include="Models\StoreSign\StoreSignViewModel.cs" />
     <Compile Include="Models\Stores\IStoreManager.cs" />
     <Compile Include="Models\Stores\IStoreViewModel.cs" />
     <Compile Include="Models\Stores\Store.cs" />
@@ -144,9 +147,6 @@
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
     <Compile Include="StoreScheduleLog.cs">
-      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="StoreSign.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>

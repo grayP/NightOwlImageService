@@ -9,7 +9,7 @@ using Logger.Logger;
 
 namespace ImageProcessor.Services
 {
-    public class PlayBillFiles
+    public class PlayBillFiles     : IDisposable
     {
         private readonly int _screenWidth;
         private readonly int _screenHeight;
@@ -34,7 +34,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"PlayBillFiles - Program_create - Program create threw an error: {ex.Message}");
+                _logger.WriteLog($"PlayBillFiles - Program_create - Program create threw an error: {ex.Message}","Error");
                 return IntPtr.Zero;
             }
         }
@@ -83,11 +83,10 @@ namespace ImageProcessor.Services
             try
             {
                 return Cp5200External.CP5200_Program_SaveToFile(programPointer, filePathAndName);
-
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"PlayBillFiles - SaveFile - Program save threw error; {ex.Message}");
+                _logger.WriteLog($"PlayBillFiles - SaveFile - Program save threw error; {ex.Message}","Error");
                 throw;
             }
         }
@@ -101,7 +100,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"PlayBillFiles - playBill_Create - PlayBill create threw an error: {ex.Message}");
+                _logger.WriteLog($"PlayBillFiles - playBill_Create - PlayBill create threw an error: {ex.Message}","Error");
                 return IntPtr.Zero;
             }
         }
@@ -120,12 +119,12 @@ namespace ImageProcessor.Services
         {
             try
             {
-                System.IO.File.Delete(filePathAndName);
+                //System.IO.File.Delete(filePathAndName);
                 return Cp5200External.CP5200_Playbill_SaveToFile(playBillPointer, filePathAndName);
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"playBillFiles - SavetoFile - Program save to file threw error: {ex.Message}");
+                _logger.WriteLog($"playBillFiles - SavetoFile - Program save to file threw error: {ex.Message}","Error");
                 throw;
             }
         }
@@ -134,5 +133,40 @@ namespace ImageProcessor.Services
         {
             Cp5200External.CP5200_Program_Destroy(programPointer);
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~PlayBillFiles() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

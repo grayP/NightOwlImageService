@@ -13,7 +13,7 @@ namespace nightowlsign.data
     {
         DbSet<Sign> Signs { get; set; }
         DbSet<Store> Store { get; set; }
-        DbSet<StoreSign> StoreSigns { get; set; }
+        DbSet<Logging> Logging { get; set; }
         DbSet<Image> Images { get; set; }
         DbSet<Schedule> Schedules { get; set; }
         DbSet<ScheduleStore> ScheduleStores { get; set; }

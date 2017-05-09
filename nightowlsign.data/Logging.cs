@@ -12,16 +12,11 @@ namespace nightowlsign.data
     using System;
     using System.Collections.Generic;
     
-    public partial class StoreSign
+    public partial class Logging
     {
         public int id { get; set; }
-        public Nullable<int> StoreId { get; set; }
-        public Nullable<int> SignId { get; set; }
-        public Nullable<System.DateTime> InstallDate { get; set; }
-        public Nullable<System.DateTime> DateUpdated { get; set; }
-        public string UpdatedBy { get; set; }
-        public string IPAddress { get; set; }
-        public string SubMask { get; set; }
-        public string Port { get; set; }
+        public string Subject { get; set; }
+        public string Description { get; set; }
+        public Nullable<System.DateTime> DateStamp { get; set; }
     }
 }

@@ -1,23 +1,28 @@
 ﻿using System;
+using nightowlsign.data;
+using nightowlsign.data.Models.Logging;
 
 namespace Logger.Logger
 {
     public class MLogger : IDisposable, IMLogger
     {
         private string _fileName;
+        private readonly Inightowlsign_Entities _context;
+        private readonly ILoggingManager _loggingManager;
 
-        public MLogger()
+        public MLogger(Inightowlsign_Entities context, ILoggingManager loggingManager)
         {
-                
+            _context = context;
+            _loggingManager = loggingManager;
         }
 
         public void Init (string assemblyName)
         {
             _fileName = $"{DateTime.Today.ToString("yy-MM-dd")}.txt";
-            WriteLog($"Version: {assemblyName}");
+            WriteLog($"Version: {assemblyName}","Startup");
         }
 
-        public void WriteLog(string lines)
+        public void WriteLog(string lines, DateTime datetime)
         {
             using (System.IO.StreamWriter file =
             new System.IO.StreamWriter($"c:\\logging\\{_fileName}", true))
@@ -25,6 +30,21 @@ namespace Logger.Logger
                 file.WriteLine($"{lines} - {DateTime.Now}");
                 file.Close();
             }
+        }
+
+        public void WriteLog(string lines)
+        {
+            WriteLog(lines, "logging");
+         }
+        public void WriteLog(string lines, string subject)
+        {
+            var newLog = new Logging()
+            {
+                Description = lines,
+                DateStamp = DateTime.Now.ToLocalTime(),
+                Subject = subject
+            };
+            _loggingManager.Insert(newLog);
         }
 
         #region IDisposable Support

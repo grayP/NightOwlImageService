@@ -36,11 +36,11 @@ namespace ImageProcessor.Services
         {
             if (SignIsOnLine(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
             {
-                _logger.WriteLog($"SendCommunicator - sendFiletoSign - {storeAndSign.Name}");
+                _logger.WriteLog($"SendCommunicator - sendFiletoSign - {storeAndSign.Name}","Result");
                 SendTheFiletoSign(storeAndSign.ProgramFile);
                 return UpLoadSuccess;
             }
-            _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}");
+            _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}","Result");
             return 99;
         }
         public void SendTheFiletoSign(string programFile)
@@ -52,13 +52,13 @@ namespace ImageProcessor.Services
                     Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
                     UpLoadSuccess = UploadFile(programFileName, programFile);
-                    _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - {programFileName} - Success={UpLoadSuccess}");
+                    _logger.WriteLog($"{DateTime.Now}-SendComm - SendFileToSign - {programFileName} - Success={UpLoadSuccess}","Result");
 
                 }
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"SendComm - SendFileToSign - Error in Sendfile to sign: {ex.Message}");
+                _logger.WriteLog($"SendComm - SendFileToSign - Error in Sendfile to sign: {ex.Message}","Error");
             }
         }
 
@@ -72,7 +72,7 @@ namespace ImageProcessor.Services
         public int RestartSign()
         {
             var success = Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
-            _logger.WriteLog($"Restart of sign - {success}");
+            _logger.WriteLog($"Restart of sign - {success}","Result");
             return success;
         }
 
@@ -92,18 +92,18 @@ namespace ImageProcessor.Services
                         signIsOnLine = true;
                         var result = Cp5200External.CP5200_Net_Connect();
                         var result2 = Cp5200External.CP5200_Net_IsConnected();
-                        _logger.WriteLog($"Communication established with {ipAddress}");
+                        _logger.WriteLog($"Communication established with {ipAddress}","Result");
                     }
                     else
                     {
-                        _logger.WriteLog($"Communication failed with Sign {ipAddress} ");
+                        _logger.WriteLog($"Communication failed with Sign {ipAddress} ","Result");
                     }
                 }
                 return signIsOnLine;
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"IP: {ipAddress} ,idCode: {idCode}, Port: {port} - {ex.Message}");
+                _logger.WriteLog($"IP: {ipAddress} ,idCode: {idCode}, Port: {port} - {ex.Message}","Error");
                 return false;
             }
         }

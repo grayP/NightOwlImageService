@@ -102,38 +102,47 @@ namespace ImageProcessor.Services
         public void GeneratetheProgramFiles(string scheduleName, string programFile, Sign sign)
         {
             var PlayItemNo = -1;
-            var PeriodToShowImage = 0xA; //Seconds
-            byte colourMode = 0x77;
-            // ProgramFiles = new List<string>();
+            const int periodToShowImage = 0xA; //Seconds
+            const byte colourMode = 0x77;
+            var screenWidth = (ushort)(sign.Width ?? 100);
+            var screenHeight = (ushort)(sign.Height ?? 100);
 
-            ushort screenWidth = (ushort)(sign.Width ?? 100);
-            ushort screenHeight = (ushort)(sign.Height ?? 100);
-            _cp5200 = new PlayBillFiles(screenWidth, screenHeight, PeriodToShowImage, colourMode, _logger);
 
-            var programPointer = _cp5200.Program_Create();
-            if (programPointer.ToInt32() > 0)
+
+            var images = Directory.GetFiles(ImageDirectory, AddStar(ImageExtension));
+            const int numProgramFiles = 2;
+
+            for (int i = 0; i < numProgramFiles; i++)
             {
-                var windowNo = _cp5200.AddPlayWindow(programPointer);
-                if (windowNo >= 0)
+                using (var cp5200 = new PlayBillFiles(screenWidth, screenHeight, periodToShowImage, colourMode, _logger))
                 {
-                    foreach (
-                        string fileName in Directory.GetFiles(ImageDirectory, AddStar(ImageExtension)))
+                    var programPointer = cp5200.Program_Create();
+                    if (programPointer.ToInt32() > 0)
                     {
-
-                        PlayItemNo = _cp5200.Program_Add_Image(programPointer, windowNo,
-                            Marshal.StringToHGlobalAnsi(fileName), (int)RenderMode.Stretch_to_fit_the_window,
-                           0, 100, PeriodToShowImage, 0);
+                        var windowNo = cp5200.AddPlayWindow(programPointer);
+                        if (windowNo >= 0)
+                        {
+                            for (int j = i * 8; j <= (i * 8) + 7; j++)
+                            {
+                                if (j < images.Length)
+                                {
+                                    PlayItemNo = cp5200.Program_Add_Image(programPointer, windowNo, Marshal.StringToHGlobalAnsi(images[j]), (int)RenderMode.Stretch_to_fit_the_window, 0, 100, periodToShowImage, 0);
+                                }
+                            }
+                        }
+                        var result = cp5200.Program_SaveFile(programPointer, GenerateProgramFileName(Increment(programFile, i)));
+                        cp5200.DestroyProgram(programPointer);
                     }
-                }
-                var programFileName = GenerateProgramFileName(programFile);
-                DeleteOldProgramFile(programFileName);
-                if (
-                    _cp5200.Program_SaveFile(programPointer, programFileName) > 1)
-                {
-                    _cp5200.DestroyProgram(programPointer);
                 }
             }
         }
+
+        private string Increment(string fileName, int i)
+        {
+            int number;
+            return Int32.TryParse(fileName, out number) ? String.Format("000{0:00000}", number + i) : fileName;
+        }
+
 
         public void DeleteOldProgramFile(string fileAndPath)
         {

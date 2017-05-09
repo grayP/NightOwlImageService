@@ -32,7 +32,6 @@ namespace nightowlsign.data.Models.Image
             {
                 ret = ret.FindAll(p => p.SignSize.Equals(entity.SignSize));
             }
-
             return ret;
         }
 
