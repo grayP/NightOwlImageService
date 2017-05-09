@@ -102,7 +102,7 @@ namespace ImageProcessor.Services
             var screenWidth = (ushort)(sign.Width ?? 100);
             var screenHeight = (ushort)(sign.Height ?? 100);
 
-
+            
 
             var images = Directory.GetFiles(ImageDirectory, AddStar(ImageExtension));
             const int numProgramFiles = 2;

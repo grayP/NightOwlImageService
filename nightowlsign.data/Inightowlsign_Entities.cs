@@ -25,7 +25,6 @@ namespace nightowlsign.data
         Database Database { get; }
         DbChangeTracker ChangeTracker { get; }
         DbContextConfiguration Configuration { get; }
-        ObjectResult<FindCurrentPlayList_Result> FindCurrentPlayList();
         ObjectResult<FindCurrentPlayListForStore_Result> FindCurrentPlayListForStore();
         //DbSet Set() where TEntity : class;
         DbSet Set(Type entityType);
