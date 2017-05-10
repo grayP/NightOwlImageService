@@ -66,8 +66,6 @@ namespace NightOwlImageService.Services
             {
                 if (storeAndSign.SignNeedsToBeUpdated())
                 {
-                    Console.WriteLine($"Starting on store {storeAndSign.Name} ");
-                    _logger.WriteLog($"Starting on store {storeAndSign.Name} ", "Store");
 
                     var successCode = SendTheScheduleToSign(storeAndSign);
                     UpdateTheDataBase(storeAndSign, successCode);
@@ -91,6 +89,8 @@ namespace NightOwlImageService.Services
 
         public int SendTheScheduleToSign(StoreAndSign storeAndSign)
         {
+            Console.WriteLine($"Starting on store {storeAndSign.Name} ");
+            _logger.WriteLog($"Starting on store {storeAndSign.Name} ", "Store");
             return _screenImageManager.FileUploadResultCode(storeAndSign);
         }
         private static void CheckIfTimeToClose()

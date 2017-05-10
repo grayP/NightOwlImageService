@@ -38,13 +38,20 @@ namespace Logger.Logger
          }
         public void WriteLog(string lines, string subject)
         {
-            var newLog = new Logging()
+            try
             {
-                Description = lines,
-                DateStamp = DateTime.Now.ToLocalTime(),
-                Subject = subject
-            };
-            _loggingManager.Insert(newLog);
+                var newLog = new Logging()
+                {
+                    Description = lines,
+                    DateStamp = DateTime.Now.ToLocalTime(),
+                    Subject = subject
+                };
+                _loggingManager.Insert(newLog);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         #region IDisposable Support

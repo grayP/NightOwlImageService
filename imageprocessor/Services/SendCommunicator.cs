@@ -37,14 +37,13 @@ namespace ImageProcessor.Services
         {
             if (SignIsOnLine(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
             {
-                _logger.WriteLog($"Sign is Online: {storeAndSign.Name}","Result");
-                SendTheFiletoSign(storeAndSign.ProgramFile);
+                SendTheFiletoSign(storeAndSign.ProgramFile, storeAndSign.NumImagesUploaded);
                 return UpLoadSuccess;
             }
             _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}","Result");
             return 99;
         }
-        public void SendTheFiletoSign(string programFile)
+        public void SendTheFiletoSign(string programFile, int numImages)
         {
             try
             {
@@ -52,8 +51,9 @@ namespace ImageProcessor.Services
                     var programFileName in
                     Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
-                    UpLoadSuccess = UploadFile(programFileName, programFile);
-                    _logger.WriteLog($"SendFileToSign -{programFileName}- Result:{UpLoadSuccess}","Result");
+                    var filename = Path.GetFileNameWithoutExtension(programFileName);
+                    UpLoadSuccess = UploadFile(programFileName, filename);
+                    _logger.WriteLog($"SendFileToSign -{programFileName}, {numImages} img. Result:{UpLoadSuccess}","Result");
 
                 }
             }
@@ -91,9 +91,9 @@ namespace ImageProcessor.Services
                     if (responseNumber == 0)
                     {
                         signIsOnLine = true;
+                        _logger.WriteLog($"Communication established with {ipAddress}","Result");
                         var result = Cp5200External.CP5200_Net_Connect();
                         var result2 = Cp5200External.CP5200_Net_IsConnected();
-                        _logger.WriteLog($"Communication established with {ipAddress}","Result");
                     }
                     else
                     {

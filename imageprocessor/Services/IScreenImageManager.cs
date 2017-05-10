@@ -13,7 +13,7 @@ namespace ImageProcessor.Services
         List<ImageSelect> GetImages(int scheduleId);
         void DeleteOldFiles(string directoryName, string extension);
         void WriteImagesToDisk(IEnumerable<ImageSelect> images);
-        void GeneratetheProgramFiles(string scheduleName, string programFile, Sign sign);
+        void GeneratetheProgramFiles(StoreAndSign storeAndSign);
         void DeleteOldProgramFile(string fileAndPath);
         void GeneratethePlayBillFile(string scheduleName);
         void SaveImageToFile(string sCounter, ImageSelect image);

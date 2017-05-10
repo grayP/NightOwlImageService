@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Web.UI.WebControls;
 using nightowlsign.data.Models.SendToSign;
 
 namespace ImageProcessor.Services
@@ -48,14 +49,14 @@ namespace ImageProcessor.Services
                 DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
                 DeleteOldFiles(_programFileDirectory, AddStar(ProgramFileExtension));
                 WriteImagesToDisk(_imagesToSend);
-                GeneratetheProgramFiles(storeAndSign.CurrentSchedule.Name, storeAndSign.ProgramFile, storeAndSign.Sign);
+                GeneratetheProgramFiles(storeAndSign);
                 _sendCommunicator.Init(storeAndSign, _programFileDirectory);
-                    if (_sendCommunicator.FilesUploadedOk())
-                    {
-                        _sendCommunicator.RestartSign();
-                    }
-                    _sendCommunicator.Disconnect();
-                    return _sendCommunicator.UpLoadSuccess;
+                if (_sendCommunicator.FilesUploadedOk())
+                {
+                    _sendCommunicator.RestartSign();
+                }
+                _sendCommunicator.Disconnect();
+                return _sendCommunicator.UpLoadSuccess;
             }
             catch (Exception ex)
             {
@@ -94,19 +95,17 @@ namespace ImageProcessor.Services
             }
         }
 
-        public void GeneratetheProgramFiles(string scheduleName, string programFile, Sign sign)
+        public void GeneratetheProgramFiles(StoreAndSign storeAndSign)
         {
-            var PlayItemNo = -1;
+            var programFile = storeAndSign.ProgramFile;
+            const int ImagesInFile = 16;
             const int periodToShowImage = 0xA; //Seconds
             const byte colourMode = 0x77;
-            var screenWidth = (ushort)(sign.Width ?? 100);
-            var screenHeight = (ushort)(sign.Height ?? 100);
-
-            
-
+            var screenWidth = (ushort)(storeAndSign.Sign.Width ?? 100);
+            var screenHeight = (ushort)(storeAndSign.Sign.Height ?? 100);
             var images = Directory.GetFiles(ImageDirectory, AddStar(ImageExtension));
-            const int numProgramFiles = 2;
-
+            storeAndSign.NumImagesUploaded = images.Length;
+            int numProgramFiles = images.Length > ImagesInFile ? 2 : 1;
             for (int i = 0; i < numProgramFiles; i++)
             {
                 using (var cp5200 = new PlayBillFiles(screenWidth, screenHeight, periodToShowImage, colourMode, _logger))
@@ -117,11 +116,11 @@ namespace ImageProcessor.Services
                         var windowNo = cp5200.AddPlayWindow(programPointer);
                         if (windowNo >= 0)
                         {
-                            for (int j = i * 8; j <= (i * 8) + 7; j++)
+                            for (int j = i * ImagesInFile; j <= (i * ImagesInFile) + ImagesInFile - 1; j++)
                             {
                                 if (j < images.Length)
                                 {
-                                    PlayItemNo = cp5200.Program_Add_Image(programPointer, windowNo, Marshal.StringToHGlobalAnsi(images[j]), (int)RenderMode.Stretch_to_fit_the_window, 0, 100, periodToShowImage, 0);
+                                    cp5200.Program_Add_Image(programPointer, windowNo, Marshal.StringToHGlobalAnsi(images[j]), (int)RenderMode.Stretch_to_fit_the_window, 0, 100, periodToShowImage, 0);
                                 }
                             }
                         }
@@ -132,10 +131,13 @@ namespace ImageProcessor.Services
             }
         }
 
-        private string Increment(string fileName, int i)
+        private static string Increment(string fileName, int i)
         {
             int number;
-            return Int32.TryParse(fileName, out number) ? String.Format("000{0:00000}", number + i) : fileName;
+            var success = Int32.TryParse(fileName, out number);
+            if (!success) return fileName;
+            var answer = $"000000{number + i}";
+            return answer.Substring(answer.Length - 8);
         }
 
 
