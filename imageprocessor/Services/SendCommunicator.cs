@@ -12,7 +12,7 @@ namespace ImageProcessor.Services
     {
         public int UpLoadSuccess { get; set; }
 
-        private readonly int TimeOut = 10800;
+        private readonly int TimeOut = 3600;
         private StoreAndSign _storeAndSign;
         private string _programFileDirectory;
         private readonly IMLogger _logger;
@@ -100,8 +100,6 @@ namespace ImageProcessor.Services
                         var bind = Cp5200External.CP5200_Net_SetBindParam(dwIpAddr, nIpPort);
                         var result = Cp5200External.CP5200_Net_Connect();
                         var result2 = Cp5200External.CP5200_Net_IsConnected();
-
-
                     }
                     else
                     {

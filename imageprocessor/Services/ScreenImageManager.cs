@@ -98,7 +98,7 @@ namespace ImageProcessor.Services
         public void GeneratetheProgramFiles(StoreAndSign storeAndSign)
         {
             var programFile = storeAndSign.ProgramFile;
-            const int imagesInFile = 20;
+            int imagesInFile = storeAndSign.NumImages ?? 12;
             const int periodToShowImage = 0xA; //Seconds
             const byte colourMode = 0x77;
             var screenWidth = (ushort)(storeAndSign.Sign.Width ?? 100);

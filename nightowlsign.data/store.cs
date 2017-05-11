@@ -30,5 +30,6 @@ namespace nightowlsign.data
         public string ProgramFile { get; set; }
         public Nullable<int> LastUpdateStatus { get; set; }
         public Nullable<System.DateTime> LastUpdateTime { get; set; }
+        public Nullable<int> NumImages { get; set; }
     }
 }
