@@ -203,7 +203,7 @@ namespace nightowlsign.data.Models.Stores
                     modifiedStore.Property(e => e.ProgramFile).IsModified = true;
                     modifiedStore.Property(e => e.LastUpdateTime).IsModified = true;
                     modifiedStore.Property(e => e.LastUpdateStatus).IsModified = true;
-                    _context.SaveChanges();
+                    db.SaveChanges();
                     return true;
                 }
             }

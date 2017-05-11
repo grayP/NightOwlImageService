@@ -80,6 +80,10 @@ namespace ImageProcessor.CP5200
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Net_RestartApp(byte nCardID);
 
+        [DllImport(DllPath, CharSet = CharSet.Auto)]
+        public static extern int CP5200_Net_SetBindParam(uint dwClientIP, int nClientPort);
+
+
         public Cp5200External(ushort width, ushort height, ushort displayTime, byte colourMode)
         {
             _screenWidth = width;

@@ -98,14 +98,14 @@ namespace ImageProcessor.Services
         public void GeneratetheProgramFiles(StoreAndSign storeAndSign)
         {
             var programFile = storeAndSign.ProgramFile;
-            const int ImagesInFile = 16;
+            const int imagesInFile = 20;
             const int periodToShowImage = 0xA; //Seconds
             const byte colourMode = 0x77;
             var screenWidth = (ushort)(storeAndSign.Sign.Width ?? 100);
             var screenHeight = (ushort)(storeAndSign.Sign.Height ?? 100);
             var images = Directory.GetFiles(ImageDirectory, AddStar(ImageExtension));
             storeAndSign.NumImagesUploaded = images.Length;
-            int numProgramFiles = images.Length > ImagesInFile ? 2 : 1;
+            int numProgramFiles =  (int)Math.Ceiling((double)images.Length/imagesInFile);
             for (int i = 0; i < numProgramFiles; i++)
             {
                 using (var cp5200 = new PlayBillFiles(screenWidth, screenHeight, periodToShowImage, colourMode, _logger))
@@ -116,7 +116,7 @@ namespace ImageProcessor.Services
                         var windowNo = cp5200.AddPlayWindow(programPointer);
                         if (windowNo >= 0)
                         {
-                            for (int j = i * ImagesInFile; j <= (i * ImagesInFile) + ImagesInFile - 1; j++)
+                            for (int j = i * imagesInFile; j <= ((i+1) * imagesInFile - 1); j++)
                             {
                                 if (j < images.Length)
                                 {

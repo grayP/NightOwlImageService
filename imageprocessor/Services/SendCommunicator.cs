@@ -12,7 +12,7 @@ namespace ImageProcessor.Services
     {
         public int UpLoadSuccess { get; set; }
 
-        private readonly int TimeOut = 3600;
+        private readonly int TimeOut = 10800;
         private StoreAndSign _storeAndSign;
         private string _programFileDirectory;
         private readonly IMLogger _logger;
@@ -40,7 +40,7 @@ namespace ImageProcessor.Services
                 SendTheFiletoSign(storeAndSign.ProgramFile, storeAndSign.NumImagesUploaded);
                 return UpLoadSuccess;
             }
-            _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}","Result");
+            _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}", "Result");
             return 99;
         }
         public void SendTheFiletoSign(string programFile, int numImages)
@@ -52,14 +52,19 @@ namespace ImageProcessor.Services
                     Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
                     var filename = Path.GetFileNameWithoutExtension(programFileName);
-                    UpLoadSuccess = UploadFile(programFileName, filename);
-                    _logger.WriteLog($"SendFileToSign -{programFileName}, {numImages} img. Result:{UpLoadSuccess}","Result");
+                    for (int i = 0; i < 5; i++)
+                    {
+                        UpLoadSuccess = UploadFile(programFileName, filename);
+                        _logger.WriteLog($"SendFileToSign {i}, {filename}", "Result");
+                        if (UpLoadSuccess == 0) break;
+                    }
+                    _logger.WriteLog($"SendFileToSign -{filename}, {numImages} img. Result:{UpLoadSuccess}", "Result");
 
                 }
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"SendFileToSign - Error in Sendfile to sign: {ex.Message}","Error");
+                _logger.WriteLog($"SendFileToSign - Error in Sendfile to sign: {ex.Message}", "Error");
             }
         }
 
@@ -73,7 +78,7 @@ namespace ImageProcessor.Services
         public int RestartSign()
         {
             var success = Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
-            _logger.WriteLog($"Restart of sign - {success}","Result");
+            _logger.WriteLog($"Restart of sign - {success}", "Result");
             return success;
         }
 
@@ -91,20 +96,23 @@ namespace ImageProcessor.Services
                     if (responseNumber == 0)
                     {
                         signIsOnLine = true;
-                        _logger.WriteLog($"Communication established with {ipAddress}","Result");
+                        _logger.WriteLog($"Communication established with {ipAddress}", "Result");
+                        var bind = Cp5200External.CP5200_Net_SetBindParam(dwIpAddr, nIpPort);
                         var result = Cp5200External.CP5200_Net_Connect();
                         var result2 = Cp5200External.CP5200_Net_IsConnected();
+
+
                     }
                     else
                     {
-                        _logger.WriteLog($"Communication failed with Sign {ipAddress} ","Result");
+                        _logger.WriteLog($"Communication failed with Sign {ipAddress} ", "Result");
                     }
                 }
                 return signIsOnLine;
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"IP: {ipAddress} ,idCode: {idCode}, Port: {port} - {ex.Message}","Error");
+                _logger.WriteLog($"IP: {ipAddress} ,idCode: {idCode}, Port: {port} - {ex.Message}", "Error");
                 return false;
             }
         }
