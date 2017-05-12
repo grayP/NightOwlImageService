@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using ImageProcessor.CP5200;
 using ImageProcessor.Enums;
 using Logger;
-using Logger.Logger;
+using Logger.Service;
 
 
 namespace ImageProcessor.Services
@@ -16,8 +16,8 @@ namespace ImageProcessor.Services
         private readonly int _displayTime;
         private readonly byte _colourMode;
         private int _playWindowNumber;
-        private readonly IMLogger _logger;
-        public PlayBillFiles(int width, int height, int displayTime, byte colourMode, IMLogger logger)
+        private readonly IGeneralLogger _logger;
+        public PlayBillFiles(int width, int height, int displayTime, byte colourMode, IGeneralLogger logger)
         {
             _screenWidth = width;
             _screenHeight = height;

@@ -5,7 +5,7 @@ using Autofac;
 using ConfigInjector;
 using ImageProcessor.Services;
 using Logger;
-using Logger.Logger;
+using Logger.Service;
 using nightowlsign.data;
 using nightowlsign.data.Models.Image;
 using nightowlsign.data.Models.Stores;
@@ -17,7 +17,7 @@ namespace NightOwlImageService.Services
     public class ServiceRunner : IServiceRunner
     {
         private readonly Timer _timer;
-        private readonly IMLogger _logger;
+        private readonly IGeneralLogger _logger;
         private readonly IStoreManager _storeManager;
         private readonly IStoreViewModel _storeViewModel;
         private readonly Inightowlsign_Entities _context;
@@ -38,7 +38,7 @@ namespace NightOwlImageService.Services
         }
 
 
-        public ServiceRunner(IScreenImageManager screenImageManager, IStoreManager storeManager, IStoreViewModel storeViewModel, Inightowlsign_Entities context, IStoreScheduleLogManager storeScheduleLogManager, IMLogger logger)
+        public ServiceRunner(IScreenImageManager screenImageManager, IStoreManager storeManager, IStoreViewModel storeViewModel, Inightowlsign_Entities context, IStoreScheduleLogManager storeScheduleLogManager, IGeneralLogger logger)
         {
             _screenImageManager = screenImageManager;
             _storeManager = storeManager;

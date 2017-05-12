@@ -106,6 +106,8 @@
     <Compile Include="Models\Stores\Store.cs" />
     <Compile Include="Models\Stores\StoreManager.cs" />
     <Compile Include="Models\Stores\StoreViewModel.cs" />
+    <Compile Include="Models\UpLoadLog\IUpLoadLoggingManager.cs" />
+    <Compile Include="Models\UpLoadLog\UpLoadLoggingManager.cs" />
     <Compile Include="NightOwlSignModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -149,6 +151,9 @@
     <Compile Include="StoreScheduleLog.cs">
       <DependentUpon>NightOwlSignModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="UpLoadLog.cs">
+      <DependentUpon>NightOwlSignModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
@@ -183,6 +188,7 @@
       <Name>basemodel</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

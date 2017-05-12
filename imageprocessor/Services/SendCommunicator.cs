@@ -4,7 +4,10 @@ using nightowlsign.data;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using Logger.Logger;
+using System.Runtime.Remoting.Messaging;
+using System.Security.Policy;
+using Logger.Service;
+using nightowlsign.data.Models.UpLoadLog;
 
 namespace ImageProcessor.Services
 {
@@ -12,14 +15,16 @@ namespace ImageProcessor.Services
     {
         public int UpLoadSuccess { get; set; }
 
-        private readonly int TimeOut = 3600;
+        private const int TimeOut = 3600;
         private StoreAndSign _storeAndSign;
         private string _programFileDirectory;
-        private readonly IMLogger _logger;
+        private readonly IGeneralLogger _logger;
+        private readonly IUpLoadLogger _upLoadLogger;
 
-        public SendCommunicator(IMLogger logger)
+        public SendCommunicator(IGeneralLogger logger, IUpLoadLogger uploadLogger)
         {
             _logger = logger;
+            _upLoadLogger = uploadLogger;
         }
 
         public void Init(StoreAndSign storeAndSign, string programFileDirectory)
@@ -35,15 +40,15 @@ namespace ImageProcessor.Services
 
         public int ConnectToSignAndUpload(StoreAndSign storeAndSign)
         {
-            if (SignIsOnLine(storeAndSign.IpAddress, storeAndSign.SubMask, storeAndSign.Port))
+            if (SignIsOnLine(storeAndSign))
             {
-                SendTheFiletoSign(storeAndSign.ProgramFile, storeAndSign.NumImagesUploaded);
+                SendTheFiletoSign(storeAndSign);
                 return UpLoadSuccess;
             }
             _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}", "Result");
             return 99;
         }
-        public void SendTheFiletoSign(string programFile, int numImages)
+        public void SendTheFiletoSign(StoreAndSign storeAndSign)
         {
             try
             {
@@ -51,15 +56,18 @@ namespace ImageProcessor.Services
                     var programFileName in
                     Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
-                    var filename = Path.GetFileNameWithoutExtension(programFileName);
-                    for (int i = 0; i < 5; i++)
+                    var fileName = Path.GetFileNameWithoutExtension(programFileName);
+                    if (!FileNeedsToBeSent(storeAndSign, fileName)) continue;
+                    for (var i = 0; i < 5; i++)
                     {
-                        UpLoadSuccess = UploadFile(programFileName, filename);
-                        _logger.WriteLog($"SendFileToSign {i}, {filename}", "Result");
+                        UpLoadSuccess = UploadFile(programFileName, fileName);
+                        _logger.WriteLog($"SendFileToSign {i}, {fileName}", "Result");
                         if (UpLoadSuccess == 0) break;
                     }
-                    _logger.WriteLog($"SendFileToSign -{filename}, {numImages} img. Result:{UpLoadSuccess}", "Result");
-
+                    _upLoadLogger.WriteLog(storeAndSign.id, UpLoadSuccess, fileName);
+                    _logger.WriteLog(
+                        $"SendFileToSign -{fileName}, {storeAndSign.NumImages} img. Result:{UpLoadSuccess}",
+                        "Result");
                 }
             }
             catch (Exception ex)
@@ -68,11 +76,18 @@ namespace ImageProcessor.Services
             }
         }
 
-        private int UploadFile(string programFileName, string programFile)
+        public bool FileNeedsToBeSent(StoreAndSign storeAndSign, string fileName)
         {
-            return Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
-                  GetPointerFromFileName(programFileName),
-                  GetPointerFromFileName($"{programFile}.lpb"));
+            return _upLoadLogger.FileNeedsToBeUploaded(storeAndSign.id, fileName, storeAndSign.CurrentSchedule.LastUpdated ?? DateTime.Now);
+          
+        }
+
+        private int UploadFile( string programFileName, string programFile)
+        {
+                return Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
+                    GetPointerFromFileName(programFileName),
+                    GetPointerFromFileName($"{programFile}.lpb"));
+            
         }
 
         public int RestartSign()
@@ -82,35 +97,35 @@ namespace ImageProcessor.Services
             return success;
         }
 
-        public bool SignIsOnLine(string ipAddress, string idCode, string port)
+        public bool SignIsOnLine(StoreAndSign storeAndSign)   
         {
             var signIsOnLine = false;
             try
             {
-                var dwIpAddr = GetIp(ipAddress);
-                var dwIdCode = GetIp(idCode);
-                var nIpPort = Convert.ToInt32(port);
+                var dwIpAddr = GetIp(storeAndSign.IpAddress);
+                var dwIdCode = GetIp(storeAndSign.SubMask);
+                var nIpPort = Convert.ToInt32(storeAndSign.Port);
                 if (dwIpAddr != 0 && dwIdCode != 0)
                 {
                     var responseNumber = Cp5200External.CP5200_Net_Init(dwIpAddr, nIpPort, dwIdCode, TimeOut);
                     if (responseNumber == 0)
                     {
                         signIsOnLine = true;
-                        _logger.WriteLog($"Communication established with {ipAddress}", "Result");
+                        _logger.WriteLog($"Communication established with {storeAndSign.IpAddress}", "Result");
                         var bind = Cp5200External.CP5200_Net_SetBindParam(dwIpAddr, nIpPort);
                         var result = Cp5200External.CP5200_Net_Connect();
                         var result2 = Cp5200External.CP5200_Net_IsConnected();
                     }
                     else
                     {
-                        _logger.WriteLog($"Communication failed with Sign {ipAddress} ", "Result");
+                        _logger.WriteLog($"Communication failed with Sign {storeAndSign.IpAddress} ", "Result");
                     }
                 }
                 return signIsOnLine;
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"IP: {ipAddress} ,idCode: {idCode}, Port: {port} - {ex.Message}", "Error");
+                _logger.WriteLog($"IP: {storeAndSign.IpAddress} ,idCode: {storeAndSign.SubMask}, Port: {storeAndSign.Port} - {ex.Message}", "Error");
                 return false;
             }
         }

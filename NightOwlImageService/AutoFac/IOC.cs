@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 using Autofac;
 using ImageProcessor.Services;
 using Logger;
-using Logger.Logger;
+using Logger.Service;
 using nightowlsign.data;
 using nightowlsign.data.Models;
 using nightowlsign.data.Models.Logging;
 using nightowlsign.data.Models.SendToSign;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
+using nightowlsign.data.Models.UpLoadLog;
 using NightOwlImageService.Services;
 
 namespace NightOwlImageService.AutoFac
@@ -29,15 +30,17 @@ namespace NightOwlImageService.AutoFac
             builder.RegisterType<ServiceRunner>().InstancePerLifetimeScope();
             builder.RegisterType<SendCommunicator>().As<ISendCommunicator>().InstancePerLifetimeScope();
             builder.RegisterType<nightowlsign_Entities>().As<Inightowlsign_Entities>().InstancePerLifetimeScope();
-            builder.RegisterType<MLogger>().As<IMLogger>().InstancePerLifetimeScope();
             builder.RegisterType<SendToSignManager>().As<ISendToSignManager>().InstancePerLifetimeScope();
             builder.RegisterType<ScreenImageManager>().As<IScreenImageManager>().InstancePerLifetimeScope();
             builder.RegisterType<StoreManager>().As<IStoreManager>().InstancePerLifetimeScope();
             builder.RegisterType<StoreScheduleLogManager>().As<IStoreScheduleLogManager>().InstancePerLifetimeScope();
             builder.RegisterType<StoreViewModel>().As<IStoreViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<Assembly>().As<_Assembly>().InstancePerLifetimeScope();
+            builder.RegisterType<GeneralLogger>().As<IGeneralLogger>().InstancePerLifetimeScope();
             builder.RegisterType<LoggingManager>().As<ILoggingManager>().InstancePerLifetimeScope();
-  
+            builder.RegisterType<UpLoadLogger>().As<IUpLoadLogger>().InstancePerLifetimeScope();
+            builder.RegisterType<UpLoadLoggingManager>().As<IUpLoadLoggingManager>().InstancePerLifetimeScope();
+
             return builder.Build();
         }
     }

@@ -37,8 +37,9 @@ namespace nightowlsign.data
         public virtual DbSet<StoreAndSign> StoreAndSigns { get; set; }
         public virtual DbSet<ScheduleAndSign> ScheduleAndSigns { get; set; }
         public virtual DbSet<StoreScheduleLog> StoreScheduleLogs { get; set; }
-        public virtual DbSet<Logging> Logging { get; set; }
-        //public DbSet<Logging> Logging { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public virtual DbSet<Logging> Loggings { get; set; }
+        public virtual DbSet<UpLoadLog> UpLoadLogs { get; set; }
+        public DbSet<Logging> Logging { get; set ; }
 
         public virtual ObjectResult<FindCurrentPlayList_Result> FindCurrentPlayList()
         {

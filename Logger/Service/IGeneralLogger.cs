@@ -1,7 +1,7 @@
 
-namespace Logger.Logger
+namespace Logger.Service
 {
-    public interface IMLogger
+    public interface IGeneralLogger
     {
         void Init(string assembly);
         void WriteLog(string lines);

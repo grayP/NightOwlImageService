@@ -1,5 +1,4 @@
 ﻿using ImageProcessor.Enums;
-using Logger.Logger;
 using nightowlsign.data;
 using nightowlsign.data.Models;
 using System;
@@ -8,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Web.UI.WebControls;
+using Logger.Service;
 using nightowlsign.data.Models.SendToSign;
 
 namespace ImageProcessor.Services
@@ -18,8 +18,8 @@ namespace ImageProcessor.Services
         private readonly ISendToSignManager _sendToSignManager;
         private PlayBillFiles _cp5200;
 
-        private string ImageDirectory = "c:/playBillFiles/Images/";
-        private readonly string _programFileDirectory = "c:/programFiles/"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
+        private string _imageDirectory = "c:/playBillFiles/Images/";
+        private string _programFileDirectory = "c:/programFiles/"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
         private const string ImageExtension = ".jpg";
         private const string ProgramFileExtension = ".lpb";
         private const string PlaybillFileExtension = ".lpp";
@@ -28,13 +28,13 @@ namespace ImageProcessor.Services
         public bool Successfull { get; set; }
 
         private List<ImageSelect> _imagesToSend;
-        private readonly IMLogger _logger;
+        private readonly IGeneralLogger _logger;
         private readonly ISendCommunicator _sendCommunicator;
 
         public StoreAndSign StoreAndSign { get; set; }
 
 
-        public ScreenImageManager(IMLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager)
+        public ScreenImageManager(IGeneralLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager)
         {
             _logger = logger;
             _sendCommunicator = sendCommunicator;
@@ -45,8 +45,10 @@ namespace ImageProcessor.Services
         {
             try
             {
+                UpdateTheStorageDirectory(storeAndSign);
+                UpdateTheImageDirectory();
                 _imagesToSend = GetImages(storeAndSign.CurrentSchedule.Id);
-                DeleteOldFiles(ImageDirectory, AddStar(ImageExtension));
+                DeleteOldFiles(_imageDirectory, AddStar(ImageExtension));
                 DeleteOldFiles(_programFileDirectory, AddStar(ProgramFileExtension));
                 WriteImagesToDisk(_imagesToSend);
                 GeneratetheProgramFiles(storeAndSign);
@@ -63,6 +65,18 @@ namespace ImageProcessor.Services
                 _logger.WriteLog($"ImageManager - FileUploadResultCode - {ex.Message}", "Error");
                 return 99;
             }
+        }
+
+        private void UpdateTheStorageDirectory(StoreAndSign storeAndSign)
+        {
+            _programFileDirectory = $"c:/programFiles/{storeAndSign.id}/";
+            Directory.CreateDirectory(_programFileDirectory);
+        }
+
+        private void UpdateTheImageDirectory()
+        {
+            _imageDirectory = $"{_programFileDirectory}images/";
+            Directory.CreateDirectory(_imageDirectory);
         }
 
         public List<ImageSelect> GetImages(int scheduleId)
@@ -103,7 +117,7 @@ namespace ImageProcessor.Services
             const byte colourMode = 0x77;
             var screenWidth = (ushort)(storeAndSign.Sign.Width ?? 100);
             var screenHeight = (ushort)(storeAndSign.Sign.Height ?? 100);
-            var images = Directory.GetFiles(ImageDirectory, AddStar(ImageExtension));
+            var images = Directory.GetFiles(_imageDirectory, AddStar(ImageExtension));
             storeAndSign.NumImagesUploaded = images.Length;
             int numProgramFiles =  (int)Math.Ceiling((double)images.Length/imagesInFile);
             for (int i = 0; i < numProgramFiles; i++)
@@ -166,7 +180,7 @@ namespace ImageProcessor.Services
 
         public void SaveImageToFile(string sCounter, ImageSelect image)
         {
-            string tempFileName = string.Concat(ImageDirectory, sCounter, ImageExtension);
+            string tempFileName = string.Concat(_imageDirectory, sCounter, ImageExtension);
             try
             {
                 using (WebClient webClient = new WebClient())

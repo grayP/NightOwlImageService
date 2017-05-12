@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-
-
+using nightowlsign.data.Models.UpLoadLog;
 
 
 namespace nightowlsign.data.Models.Stores
@@ -13,9 +12,11 @@ namespace nightowlsign.data.Models.Stores
         private data.Schedule _defaultSchedule;
         private Sign _defaultSign;
         private readonly Inightowlsign_Entities _context;
-        public StoreManager(Inightowlsign_Entities context)
+        private readonly IUpLoadLoggingManager _upLoadLoggingManager;
+        public StoreManager(Inightowlsign_Entities context, IUpLoadLoggingManager upLoadLoggingManager)
         {
             _context = context;
+            _upLoadLoggingManager = upLoadLoggingManager;
             ValidationErrors = new List<KeyValuePair<string, string>>();
             _defaultSchedule = new data.Schedule
             {
@@ -40,8 +41,6 @@ namespace nightowlsign.data.Models.Stores
 
         public List<StoreAndSign> Get(Store entity)
         {
-           // using (nightowlsign_Entities db = new nightowlsign_Entities())
-           // {
                 var ret = _context.StoreAndSigns.OrderBy(x => x.Name).ToList<StoreAndSign>();
                 if (!string.IsNullOrEmpty(entity.Name))
                 {
@@ -49,7 +48,6 @@ namespace nightowlsign.data.Models.Stores
                 }
                 GetSchedulesAndSign(ret);
                 return ret;
-            //}
         }
 
         public void GetSchedulesAndSign(List<StoreAndSign> storeList)
@@ -64,16 +62,11 @@ namespace nightowlsign.data.Models.Stores
 
         public Sign GetSign(int signId)
         {
-            //using (var db = new nightowlsign_Entities())
-            //{
                 return _context.Signs.Find(signId);
-           // }
         }
 
         public data.Schedule GetInstalledSchedule(int storeId)
         {
-            //using (var db = new nightowlsign_Entities())
-            //{
                 var ret = (from s in _context.StoreScheduleLogs
                            where s.StoreId == storeId
                            select new { s.ScheduleId, s.ScheduleName, s.DateInstalled })
@@ -86,15 +79,12 @@ namespace nightowlsign.data.Models.Stores
                         LastUpdated = x.DateInstalled
                     }).FirstOrDefault();
 
-                return ret;
-            //}
+               return ret;
         }
 
 
         public data.Schedule GetCurrentSchedule(int storeId)
         {
-            //using (nightowlsign_Entities db = new nightowlsign_Entities())
-            //{
                 var playListResult = _context.Database
                     .SqlQuery<FindCurrentPlayListForStore_Result>("FindCurrentPlayListForStore")
                     .OrderBy(x => x.Importance)
@@ -107,14 +97,11 @@ namespace nightowlsign.data.Models.Stores
                     LastUpdated = playListResult?.LastUpdated.Value.ToLocalTime() ?? DateTime.Now
                 };
                 return getCurrentSchedule;
-           // }
         }
 
 
         public List<data.Schedule> GetSelectedSchedules(int storeId)
         {
-            //using (nightowlsign_Entities db = new nightowlsign_Entities())
-            //{
                 var ret = (from s in _context.Schedules
                            join st in _context.ScheduleStores on s.Id equals st.ScheduleID
                            where st.StoreId == storeId
@@ -131,13 +118,10 @@ namespace nightowlsign.data.Models.Stores
                         EndTime = x.EndTime
                     });
                 return ret.ToList();
-          //  }
         }
 
         public List<data.Schedule> GetAvailableSchedules(int storeId)
         {
-           // using (var db = new nightowlsign_Entities())
-            //{
                 var ret = (from s in _context.Schedules
                            join st in _context.Store on s.SignId equals st.SignId
                            where st.id == storeId
@@ -154,7 +138,6 @@ namespace nightowlsign.data.Models.Stores
                         EndTime = x.EndTime
                     });
                 return ret.ToList();
-           // }
         }
 
         public Store Find(int storeId)
@@ -176,7 +159,8 @@ namespace nightowlsign.data.Models.Stores
         public bool Update(StoreAndSign storeAndSign, int successCode)
         {
             var store = Find(storeAndSign.id);
-            store.LastUpdateStatus = successCode;
+            store.LastUpdateStatus =
+                _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.LastUpdated);
             store.LastUpdateTime = DateTime.Now;
             return Update(store);
         }
@@ -250,18 +234,14 @@ namespace nightowlsign.data.Models.Stores
             }
         }
 
-
         public bool Delete(Store entity)
         {
             try
             {
-                using (var db = new nightowlsign_Entities())
-                {
                     _context.Store.Attach(entity);
                     _context.Store.Remove(entity);
                     _context.SaveChanges();
                     return true;
-                }
             }
             catch (Exception e)
             {

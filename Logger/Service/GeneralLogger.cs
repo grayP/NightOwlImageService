@@ -2,17 +2,15 @@
 using nightowlsign.data;
 using nightowlsign.data.Models.Logging;
 
-namespace Logger.Logger
+namespace Logger.Service
 {
-    public class MLogger : IDisposable, IMLogger
+    public class GeneralLogger : IDisposable, IGeneralLogger
     {
         private string _fileName;
-        private readonly Inightowlsign_Entities _context;
         private readonly ILoggingManager _loggingManager;
 
-        public MLogger(Inightowlsign_Entities context, ILoggingManager loggingManager)
+        public GeneralLogger(ILoggingManager loggingManager)
         {
-            _context = context;
             _loggingManager = loggingManager;
         }
 
@@ -74,7 +72,7 @@ namespace Logger.Logger
         }
 
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~Logger() {
+        // ~GeneralLogger() {
         //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
         //   Dispose(false);
         // }

@@ -27,10 +27,8 @@ namespace nightowlsign.data.Models.Logging
                 {
                     Description = log.Description.Trim(),
                     Subject = log.Subject.Trim(),
-                    DateStamp =DateTime.Now.ToLocalTime()
-                 
+                    DateStamp = DateTime.Now.ToLocalTime()
                 };
-
                 _context.Logging.Add(newLog);
                 _context.SaveChanges();
                 return true;
@@ -41,6 +39,5 @@ namespace nightowlsign.data.Models.Logging
                 return false;
             }
         }
-
     }
 }

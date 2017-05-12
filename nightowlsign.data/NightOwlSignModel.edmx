@@ -109,6 +109,16 @@
           <Property Name="DateInstalled" Type="datetime" Nullable="false" />
           <Property Name="ScheduleId" Type="int" />
         </EntityType>
+        <EntityType Name="UpLoadLog">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StoreId" Type="int" />
+          <Property Name="ProgramFile" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResultCode" Type="int" />
+          <Property Name="DateTime" Type="datetime" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'nightowlsign.dbo.ImagesAndSign' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ImagesAndSign">
@@ -195,6 +205,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySet Name="Sign" EntityType="Self.Sign" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store" EntityType="Self.Store" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreScheduleLog" EntityType="Self.StoreScheduleLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UpLoadLog" EntityType="Self.UpLoadLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ImagesAndSign" EntityType="Self.ImagesAndSign" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ImagesAndSign].[Id] AS [Id], 
@@ -284,6 +295,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <FunctionImport Name="FindCurrentPlayList" ReturnType="Collection(Models.FindCurrentPlayList_Result)" />
           <FunctionImport Name="FindCurrentPlayListForStore" ReturnType="Collection(Models.FindCurrentPlayListForStore_Result)" />
           <EntitySet Name="Loggings" EntityType="Models.Logging" />
+          <EntitySet Name="UpLoadLogs" EntityType="Models.UpLoadLog" />
         </EntityContainer>
         <EntityType Name="Store">
           <Key>
@@ -472,6 +484,16 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DateStamp" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="UpLoadLog">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StoreId" Type="Int32" />
+          <Property Name="ProgramFile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResultCode" Type="Int32" />
+          <Property Name="DateTime" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -674,6 +696,17 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
                 <ScalarProperty Name="DateStamp" ColumnName="DateStamp" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UpLoadLogs">
+            <EntityTypeMapping TypeName="Models.UpLoadLog">
+              <MappingFragment StoreEntitySet="UpLoadLog">
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="ResultCode" ColumnName="ResultCode" />
+                <ScalarProperty Name="ProgramFile" ColumnName="ProgramFile" />
+                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

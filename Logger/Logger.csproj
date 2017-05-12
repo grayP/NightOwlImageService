@@ -41,15 +41,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logger\IMLogger.cs" />
-    <Compile Include="Logger\Logger.cs" />
+    <Compile Include="Service\IGeneralLogger.cs" />
+    <Compile Include="Service\GeneralLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\IUpLoadLogger.cs" />
+    <Compile Include="Service\UpLoadLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nightowlsign.data\nightowlsign.data.csproj">
       <Project>{e006fac5-fa56-4a62-921c-2e0cc550ae5f}</Project>
       <Name>nightowlsign.data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UpLoadLogger\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
