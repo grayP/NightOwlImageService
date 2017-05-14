@@ -12,7 +12,7 @@ namespace Logger.Service
             _upLoadLoggingManager = upLoadLoggingManager;
         }
 
-        public void WriteLog(int storeId, int successCode, string programFile)
+        public void WriteLog(int storeId, int successCode, string programFile, int scheduleId)
         {
             try
             {
@@ -21,9 +21,10 @@ namespace Logger.Service
                     StoreId = storeId,
                     ResultCode = successCode,
                     ProgramFile = programFile,
-                    DateTime = DateTime.Now.ToLocalTime()
+                    DateTime = DateTime.Now.ToLocalTime(),
+                    ScheduleId = scheduleId
                 };
-                _upLoadLoggingManager.Insert(newLog);
+                _upLoadLoggingManager.Upsert(newLog);
             }
             catch (Exception e)
             {
@@ -31,7 +32,7 @@ namespace Logger.Service
             }
         }
 
-        public bool FileNeedsToBeUploaded(int storeid, string fileName, DateTime lastUpdated)
+        public bool FileNeedsToBeUploaded(int storeid, string fileName, DateTime lastUpdated, int scheduleId)
         {
             return _upLoadLoggingManager.UpLoadNeeded(storeid, fileName, lastUpdated);
         }

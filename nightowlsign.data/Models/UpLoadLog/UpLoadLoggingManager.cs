@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,30 +24,46 @@ namespace nightowlsign.data.Models.UpLoadLog
 
         public bool UpLoadNeeded(int storeId, string filename, DateTime lastUpdated)
         {
-            var upLoadLog= _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ProgramFile == filename)
+            var upLoadLog = _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ProgramFile == filename)
                 .OrderByDescending(i => i.DateTime).FirstOrDefault();
             if (upLoadLog == null) return true;
             return upLoadLog.ResultCode != 0 || !(upLoadLog.DateTime > lastUpdated);
         }
-        public int? GetOverallStatus(int storeId, DateTime? lastUpdated)
+
+        public void Delete(int storeId, int scheduleId)
         {
-           var result= _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.DateTime > lastUpdated).Sum(i => i.ResultCode);
-            if (result == null) return -99;
-            return result;
+            var results = _context.UpLoadLogs.Where(u => u.StoreId == storeId && u.ScheduleId == scheduleId);
+            _context.UpLoadLogs.RemoveRange(results);
+            _context.SaveChanges();
+
+        }
+        public int? GetOverallStatus(int storeId, DateTime? lastUpdated, int scheduleid)
+        {
+            return _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ScheduleId == scheduleid).Sum(i => i.ResultCode) ?? -99;
         }
 
-        public bool Insert(data.UpLoadLog log)
+        public bool Upsert(data.UpLoadLog log)
         {
             try
             {
-                var newLog = new data.UpLoadLog()
+                var existingLog = _context.UpLoadLogs.FirstOrDefault(u => u.ProgramFile==log.ProgramFile && u.StoreId==log.StoreId && u.ScheduleId==log.ScheduleId);
+
+                if (existingLog != null)
                 {
-                    StoreId = log.StoreId,
-                    ResultCode = log.ResultCode,
-                    ProgramFile = log.ProgramFile,
-                    DateTime = log.DateTime
-                };
-                _context.UpLoadLogs.Add(newLog);
+                    _context.Entry(existingLog).CurrentValues.SetValues(log);
+                }
+                else
+                {
+                    var newLog = new data.UpLoadLog()
+                    {
+                        StoreId = log.StoreId,
+                        ResultCode = log.ResultCode,
+                        ProgramFile = log.ProgramFile,
+                        DateTime = log.DateTime,
+                        ScheduleId = log.ScheduleId
+                    };
+                    _context.UpLoadLogs.Add(newLog);
+                }
                 _context.SaveChanges();
                 return true;
             }
@@ -56,5 +73,5 @@ namespace nightowlsign.data.Models.UpLoadLog
                 return false;
             }
         }
-}
+    }
 }

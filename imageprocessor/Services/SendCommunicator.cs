@@ -64,7 +64,7 @@ namespace ImageProcessor.Services
                         _logger.WriteLog($"SendFileToSign {i}, {fileName}", "Result");
                         if (UpLoadSuccess == 0) break;
                     }
-                    _upLoadLogger.WriteLog(storeAndSign.id, UpLoadSuccess, fileName);
+                    _upLoadLogger.WriteLog(storeAndSign.id, UpLoadSuccess, fileName, storeAndSign.CurrentSchedule.Id);
                     _logger.WriteLog(
                         $"SendFileToSign -{fileName}, {storeAndSign.NumImages} img. Result:{UpLoadSuccess}",
                         "Result");
@@ -78,7 +78,7 @@ namespace ImageProcessor.Services
 
         public bool FileNeedsToBeSent(StoreAndSign storeAndSign, string fileName)
         {
-            return _upLoadLogger.FileNeedsToBeUploaded(storeAndSign.id, fileName, storeAndSign.CurrentSchedule.LastUpdated ?? DateTime.Now);
+            return _upLoadLogger.FileNeedsToBeUploaded(storeAndSign.id, fileName, storeAndSign.CurrentSchedule.LastUpdated ?? DateTime.Now, storeAndSign.CurrentSchedule.Id);
           
         }
 

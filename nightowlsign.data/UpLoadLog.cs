@@ -19,5 +19,6 @@ namespace nightowlsign.data
         public string ProgramFile { get; set; }
         public Nullable<int> ResultCode { get; set; }
         public Nullable<System.DateTime> DateTime { get; set; }
+        public Nullable<int> ScheduleId { get; set; }
     }
 }

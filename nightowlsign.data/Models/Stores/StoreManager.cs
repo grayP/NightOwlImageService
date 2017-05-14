@@ -160,7 +160,7 @@ namespace nightowlsign.data.Models.Stores
         {
             var store = Find(storeAndSign.id);
             store.LastUpdateStatus =
-                _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.LastUpdated);
+                _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.LastUpdated, storeAndSign.CurrentSchedule.Id);
             store.LastUpdateTime = DateTime.Now;
             return Update(store);
         }
