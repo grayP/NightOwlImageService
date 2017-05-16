@@ -38,7 +38,7 @@ namespace nightowlsign.data.Models.UpLoadLog
             _context.SaveChanges();
 
         }
-        public int? GetOverallStatus(int storeId, DateTime? lastUpdated, int scheduleid)
+        public int? GetOverallStatus(int storeId, int scheduleid)
         {
             return _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ScheduleId == scheduleid).Sum(i => i.ResultCode) ?? -99;
         }

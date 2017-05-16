@@ -160,7 +160,7 @@ namespace nightowlsign.data.Models.Stores
         {
             var store = Find(storeAndSign.id);
             store.LastUpdateStatus =
-                _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.LastUpdated, storeAndSign.CurrentSchedule.Id);
+                _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
             store.LastUpdateTime = DateTime.Now.ToUniversalTime();
             return Update(store);
         }
@@ -170,26 +170,24 @@ namespace nightowlsign.data.Models.Stores
             if (!Validate(entity)) return false;
             try
             {
-               using (var db = new nightowlsign_Entities())
-                {
-                   db.Store.Attach(entity);
-                    var modifiedStore = db.Entry(entity);
-                    modifiedStore.Property(e=>e.Name).IsModified = true;
-                    modifiedStore.Property(e => e.Address).IsModified = true;
-                    modifiedStore.Property(e => e.Suburb).IsModified = true;
-                    modifiedStore.Property(e => e.State).IsModified = true;
-                    modifiedStore.Property(e => e.Manager).IsModified = true;
-                    modifiedStore.Property(e => e.Phone).IsModified = true;
-                    modifiedStore.Property(e => e.SignId).IsModified = true;
-                    modifiedStore.Property(e => e.IpAddress).IsModified = true;
-                    modifiedStore.Property(e => e.SubMask).IsModified = true;
-                    modifiedStore.Property(e => e.Port).IsModified = true;
-                    modifiedStore.Property(e => e.ProgramFile).IsModified = true;
-                    modifiedStore.Property(e => e.LastUpdateTime).IsModified = true;
-                    modifiedStore.Property(e => e.LastUpdateStatus).IsModified = true;
-                    db.SaveChanges();
+                   _context.Store.Attach(entity);
+                    var modifiedStore = _context.Entry(entity);
+                    modifiedStore.Property("Name").IsModified = true;
+                    modifiedStore.Property("Address").IsModified = true;
+                    modifiedStore.Property("Suburb").IsModified = true;
+                    modifiedStore.Property("State").IsModified = true;
+                    modifiedStore.Property("Manager").IsModified = true;
+                    modifiedStore.Property("Phone").IsModified = true;
+                    modifiedStore.Property("SignId").IsModified = true;
+                    modifiedStore.Property("IpAddress").IsModified = true;
+                    modifiedStore.Property("SubMask").IsModified = true;
+                    modifiedStore.Property("Port").IsModified = true;
+                    modifiedStore.Property("ProgramFile").IsModified = true;
+                    modifiedStore.Property("LastUpdateTime").IsModified = true;
+                    modifiedStore.Property("LastUpdateStatus").IsModified = true;
+                _context.SaveChanges();
                     return true;
-                }
+ 
             }
             catch (Exception ex)
             {
