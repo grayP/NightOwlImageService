@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
@@ -46,23 +47,20 @@ namespace nightowlsign.data.Models.UpLoadLog
         {
             try
             {
-                var existingLog = _context.UpLoadLogs.FirstOrDefault(u => u.ProgramFile==log.ProgramFile && u.StoreId==log.StoreId && u.ScheduleId==log.ScheduleId);
-
-                if (existingLog != null)
+                if (_context.UpLoadLogs.Any(u => u.ProgramFile == log.ProgramFile && u.StoreId == log.StoreId && u.ScheduleId == log.ScheduleId))
                 {
-                    _context.Entry(existingLog).CurrentValues.SetValues(log);
+
+                    var existingLog = _context.UpLoadLogs.First(u => u.ProgramFile == log.ProgramFile && u.StoreId == log.StoreId && u.ScheduleId == log.ScheduleId);
+                    existingLog.ResultCode = log.ResultCode;
+                    existingLog.DateTime = log.DateTime;
+                    _context.UpLoadLogs.Attach(existingLog);
+                    var dbLog = _context.Entry(existingLog);
+                    dbLog.Property("ResultCode").IsModified = true;
+                    dbLog.Property("DateTime").IsModified = true;
                 }
                 else
                 {
-                    var newLog = new data.UpLoadLog()
-                    {
-                        StoreId = log.StoreId,
-                        ResultCode = log.ResultCode,
-                        ProgramFile = log.ProgramFile,
-                        DateTime = log.DateTime,
-                        ScheduleId = log.ScheduleId
-                    };
-                    _context.UpLoadLogs.Add(newLog);
+                    _context.UpLoadLogs.Add(log);
                 }
                 _context.SaveChanges();
                 return true;

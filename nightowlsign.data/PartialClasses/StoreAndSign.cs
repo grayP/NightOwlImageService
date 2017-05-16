@@ -8,7 +8,7 @@
            
             return this?.CurrentSchedule.Id != this?.LastInstalled?.Id && this.CurrentSchedule?.Id != 0 ||
                    this?.CurrentSchedule.Id == this?.LastInstalled?.Id && this.LastUpdateStatus < 0 ||
-                   this?.CurrentSchedule?.LastUpdated.Value.ToLocalTime() > this?.LastInstalled?.LastUpdated && this.CurrentSchedule?.Id != 0;
+                   this?.CurrentSchedule?.LastUpdated > this?.LastInstalled?.LastUpdated && this.CurrentSchedule?.Id != 0;
         }
     }
 }

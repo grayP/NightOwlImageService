@@ -94,7 +94,7 @@ namespace nightowlsign.data.Models.Stores
                 {
                     Id = playListResult?.ScheduleId ?? 0,
                     Name = playListResult?.ScheduleName,
-                    LastUpdated = playListResult?.LastUpdated.Value.ToLocalTime() ?? DateTime.Now
+                    LastUpdated = playListResult?.LastUpdated ?? DateTime.Now.ToUniversalTime()
                 };
                 return getCurrentSchedule;
         }
@@ -161,7 +161,7 @@ namespace nightowlsign.data.Models.Stores
             var store = Find(storeAndSign.id);
             store.LastUpdateStatus =
                 _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.LastUpdated, storeAndSign.CurrentSchedule.Id);
-            store.LastUpdateTime = DateTime.Now;
+            store.LastUpdateTime = DateTime.Now.ToUniversalTime();
             return Update(store);
         }
 

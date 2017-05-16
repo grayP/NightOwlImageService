@@ -78,7 +78,7 @@ namespace ImageProcessor.Services
 
         public bool FileNeedsToBeSent(StoreAndSign storeAndSign, string fileName)
         {
-            return _upLoadLogger.FileNeedsToBeUploaded(storeAndSign.id, fileName, storeAndSign.CurrentSchedule.LastUpdated ?? DateTime.Now, storeAndSign.CurrentSchedule.Id);
+            return _upLoadLogger.FileNeedsToBeUploaded(storeAndSign.id, fileName, storeAndSign.CurrentSchedule.LastUpdated ?? DateTime.Now.ToUniversalTime(), storeAndSign.CurrentSchedule.Id);
           
         }
 
@@ -111,7 +111,7 @@ namespace ImageProcessor.Services
                     if (responseNumber == 0)
                     {
                         signIsOnLine = true;
-                        _logger.WriteLog($"Communication established with {storeAndSign.IpAddress}", "Result");
+                        _logger.WriteLog($"Comms established with {storeAndSign.IpAddress}, {storeAndSign.Name}", "Result");
                         var bind = Cp5200External.CP5200_Net_SetBindParam(dwIpAddr, nIpPort);
                         var result = Cp5200External.CP5200_Net_Connect();
                         var result2 = Cp5200External.CP5200_Net_IsConnected();

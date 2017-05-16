@@ -21,7 +21,7 @@ namespace Logger.Service
                     StoreId = storeId,
                     ResultCode = successCode,
                     ProgramFile = programFile,
-                    DateTime = DateTime.Now.ToLocalTime(),
+                    DateTime = DateTime.Now.ToUniversalTime(),
                     ScheduleId = scheduleId
                 };
                 _upLoadLoggingManager.Upsert(newLog);

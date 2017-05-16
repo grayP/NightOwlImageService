@@ -18,7 +18,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         {
             Entity = new data.StoreScheduleLog()
             {
-                DateInstalled = DateTime.Now,
+                DateInstalled = DateTime.Now.ToUniversalTime(),
                 ScheduleName = storeAndSign.CurrentSchedule.Name,
                 ScheduleId = storeAndSign.CurrentSchedule.Id,
                 InstalledOk = true,
@@ -54,7 +54,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
                     data.StoreScheduleLog storeScheduleLog = new data.StoreScheduleLog()
                     {
                         ScheduleName = Entity.ScheduleName.Trim(),
-                        DateInstalled = DateTime.Now,
+                        DateInstalled = DateTime.Now.ToUniversalTime(),
                         StoreId = Entity.StoreId,
                         InstalledOk = true,
                         ScheduleId = Entity.ScheduleId
