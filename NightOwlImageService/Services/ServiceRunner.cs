@@ -64,7 +64,7 @@ namespace NightOwlImageService.Services
             storeViewModel.HandleRequest();
             foreach (var storeAndSign in storeViewModel.StoresAndSigns)
             {
-                this._logger.WriteLog($"Debug: {storeAndSign.Name}, {storeAndSign.CurrentSchedule?.LastUpdated}, {storeAndSign.LastInstalled?.LastUpdated}, {storeAndSign.CurrentSchedule?.Id}  ");
+                //this._logger.WriteLog($"Debug: {storeAndSign.Name}, Curr: {storeAndSign.CurrentSchedule?.LastUpdated}, Last:{storeAndSign.LastInstalled?.LastUpdated}, Current: {storeAndSign.CurrentSchedule?.Id}, Last: {storeAndSign.LastInstalled?.Id}   ");
 
  
                 if (storeAndSign.SignNeedsToBeUpdated())
