@@ -9,13 +9,12 @@ namespace nightowlsign.data.Models.Stores
 {
     public class StoreViewModel : BaseModel.ViewModelBase, IStoreViewModel
     {
-        private readonly IStoreManager _storeManager;
-        private readonly Inightowlsign_Entities _context;
+        private readonly StoreManager _storeManager;
+       // private readonly Inightowlsign_Entities _context;
 
-        public StoreViewModel(IStoreManager storeManager, Inightowlsign_Entities context) : base()
+        public StoreViewModel(StoreManager storeManager) : base()
         {
             _storeManager = storeManager;
-            _context = context;
         }
         public List<Store> Stores { get; set; }
         public List<StoreAndSign> StoresAndSigns { get; set; }
@@ -25,8 +24,8 @@ namespace nightowlsign.data.Models.Stores
         {
             get
             {
-                // using (var db = new nightowlsign_Entities())
-                //{
+                 using (var db = new nightowlsign_Entities())
+                {
                 var selectList = new List<SelectListItem>()
                     {
                         new SelectListItem
@@ -36,7 +35,7 @@ namespace nightowlsign.data.Models.Stores
                         }
                     };
                 selectList.AddRange(from item in
-                                  _context.Signs.OrderBy(x => x.Model)
+                                  db.Signs.OrderBy(x => x.Model)
                                     select new SelectListItem()
                                     {
                                         SignId = item.id,
@@ -44,7 +43,7 @@ namespace nightowlsign.data.Models.Stores
                                     });
 
                 return selectList;
-                // }
+                 }
             }
         }
 
@@ -66,7 +65,7 @@ namespace nightowlsign.data.Models.Stores
         }
         protected override void Get()
         {
-            StoresAndSigns = _storeManager.Get(SearchEntity);
+             StoresAndSigns = _storeManager.Get(SearchEntity);
         }
         protected override void Edit()
         {
@@ -81,6 +80,7 @@ namespace nightowlsign.data.Models.Stores
         }
         protected override void Save()
         {
+  
             if (Mode == "Add")
             {
                 _storeManager.Insert(Entity);

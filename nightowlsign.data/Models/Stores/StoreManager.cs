@@ -12,11 +12,11 @@ namespace nightowlsign.data.Models.Stores
         private data.Schedule _defaultSchedule;
         private Sign _defaultSign;
         private readonly Inightowlsign_Entities _context;
-        private readonly IUpLoadLoggingManager _upLoadLoggingManager;
-        public StoreManager(Inightowlsign_Entities context, IUpLoadLoggingManager upLoadLoggingManager)
+        private UpLoadLoggingManager _upLoadLoggingManager;
+        public StoreManager(Inightowlsign_Entities context)
         {
             _context = context;
-            _upLoadLoggingManager = upLoadLoggingManager;
+            _upLoadLoggingManager = new UpLoadLoggingManager(_context); 
             ValidationErrors = new List<KeyValuePair<string, string>>();
             _defaultSchedule = new data.Schedule
             {

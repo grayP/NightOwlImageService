@@ -26,7 +26,7 @@ namespace BaseModel
         {
             ValidationErrors = new List<KeyValuePair<string, string>>();
             EventCommand = "list";
-            EventArgument = String.Empty;
+            EventArgument = string.Empty;
             ListMode();
         }
 
@@ -111,8 +111,7 @@ namespace BaseModel
             ListMode();
 
         }
-
-
+ 
         protected virtual void Get()
         {
 

@@ -52,10 +52,12 @@ namespace ImageProcessor.Services
         {
             try
             {
+                var sumSuccess=0;
                 foreach (
                     var programFileName in
                     Directory.GetFiles(_programFileDirectory, "*.lpb"))
                 {
+                    sumSuccess = 0;
                     var fileName = Path.GetFileNameWithoutExtension(programFileName);
                     if (!FileNeedsToBeSent(storeAndSign, fileName)) continue;
                     for (var i = 0; i < 5; i++)
@@ -68,7 +70,9 @@ namespace ImageProcessor.Services
                     _logger.WriteLog(
                         $"SendFileToSign -{fileName}, {storeAndSign.NumImages} img. Result:{UpLoadSuccess}",
                         "Result");
+                    sumSuccess += UpLoadSuccess;
                 }
+                UpLoadSuccess = sumSuccess;
             }
             catch (Exception ex)
             {

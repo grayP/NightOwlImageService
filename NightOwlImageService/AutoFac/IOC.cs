@@ -32,9 +32,9 @@ namespace NightOwlImageService.AutoFac
             builder.RegisterType<nightowlsign_Entities>().As<Inightowlsign_Entities>().InstancePerLifetimeScope();
             builder.RegisterType<SendToSignManager>().As<ISendToSignManager>().InstancePerLifetimeScope();
             builder.RegisterType<ScreenImageManager>().As<IScreenImageManager>().InstancePerLifetimeScope();
-            builder.RegisterType<StoreManager>().As<IStoreManager>().InstancePerLifetimeScope();
+           // builder.RegisterType<StoreManager>().As<IStoreManager>().InstancePerLifetimeScope();
             builder.RegisterType<StoreScheduleLogManager>().As<IStoreScheduleLogManager>().InstancePerLifetimeScope();
-            builder.RegisterType<StoreViewModel>().As<IStoreViewModel>().InstancePerLifetimeScope();
+            //builder.RegisterType<StoreViewModel>().As<IStoreViewModel>().InstancePerRequest();
             builder.RegisterType<Assembly>().As<_Assembly>().InstancePerLifetimeScope();
             builder.RegisterType<GeneralLogger>().As<IGeneralLogger>().InstancePerLifetimeScope();
             builder.RegisterType<LoggingManager>().As<ILoggingManager>().InstancePerLifetimeScope();
