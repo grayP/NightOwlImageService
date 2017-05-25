@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-
-
 namespace ImageProcessor.CP5200
 {
     public class Cp5200External
@@ -28,14 +26,12 @@ namespace ImageProcessor.CP5200
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Program_AddPicture(IntPtr hObj, int nWinNo, IntPtr pPictFile, int nMode, int nEffect, int nSpeed, int nStay, int nCompress);
 
-
         [DllImport(DllPath, CallingConvention = CallingConvention.StdCall)]
         public static extern int CP5200_Program_AddPlayWindow(IntPtr hobj, int x, int y, int cx, int cy);
 
         [DllImport(DllPath, CallingConvention = CallingConvention.StdCall)]
         public static extern int CP5200_Program_SetWindowProperty(IntPtr hobj, int nWinNo, int nPropertyValue,
             int nPropertyId);
-
 
         [DllImport(DllPath, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int CP5200_Program_SaveToFile(IntPtr hObj,
@@ -56,7 +52,6 @@ namespace ImageProcessor.CP5200
 
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Playbill_AddFile(IntPtr hObj, IntPtr pFilename);
-
 
         [DllImport(DllPath, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int CP5200_Playbill_SaveToFile(IntPtr hObj,
@@ -83,8 +78,7 @@ namespace ImageProcessor.CP5200
         [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Net_SetBindParam(uint dwClientIP, int nClientPort);
 
-
-        public Cp5200External(ushort width, ushort height, ushort displayTime, byte colourMode)
+       public Cp5200External(ushort width, ushort height, ushort displayTime, byte colourMode)
         {
             _screenWidth = width;
             _screenHeight = height;

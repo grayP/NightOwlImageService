@@ -134,7 +134,7 @@ namespace ImageProcessor.Services
                             {
                                 if (j < images.Length)
                                 {
-                                    cp5200.Program_Add_Image(programPointer, windowNo, Marshal.StringToHGlobalAnsi(images[j]), (int)RenderMode.Stretch_to_fit_the_window, 0, 100, periodToShowImage, 0);
+                                    cp5200.Program_Add_Image(programPointer, windowNo, Marshal.StringToHGlobalAnsi(images[j]), (int)RenderMode.Stretch_to_fit_the_window, 0, 100, periodToShowImage, 1);
                                 }
                             }
                         }
