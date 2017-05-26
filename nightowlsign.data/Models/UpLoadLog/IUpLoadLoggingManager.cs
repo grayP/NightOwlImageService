@@ -7,7 +7,7 @@ namespace nightowlsign.data.Models.UpLoadLog
     {
         List<data.UpLoadLog> GetLatest();
         bool Upsert(data.UpLoadLog log);
-        bool UpLoadNeeded(int storeId, string filename, DateTime lastUpdated);
+        bool UpLoadNeeded(int storeId, string filename, DateTime lastUpdated, int scheduleId);
         int? GetOverallStatus(int id, int scheduleId);
     }
 }

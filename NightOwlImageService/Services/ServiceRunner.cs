@@ -5,6 +5,7 @@ using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
 using System;
 using System.Timers;
+using nightowlsign.data.Models.UpLoadLog;
 
 namespace NightOwlImageService.Services
 {
@@ -59,12 +60,23 @@ namespace NightOwlImageService.Services
                 //this._logger.WriteLog($"Debug: {storeAndSign.Name}, Curr: {storeAndSign.CurrentSchedule?.LastUpdated}, Last:{storeAndSign.LastInstalled?.LastUpdated}, Current: {storeAndSign.CurrentSchedule?.Id}, Last: {storeAndSign.LastInstalled?.Id}   ");
                 if (storeAndSign.SignNeedsToBeUpdated())
                 {
+                    if (storeAndSign.CurrentSchedule.Id != storeAndSign.LastInstalled.Id)
+                    {
+                        CleanOutTheUpLoadLog(storeAndSign, context);
+                    }
                     var successCode = SendTheScheduleToSign(storeAndSign);
                     UpdateTheDataBase(storeAndSign, successCode, storeManager);
                     this._logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}" ,"Result");
                 }
             }
             CheckIfTimeToClose();
+        }
+
+        private void CleanOutTheUpLoadLog(StoreAndSign storeAndSign, Inightowlsign_Entities context)
+        {
+            var uploadLoggingManager = new UpLoadLoggingManager(context);
+            uploadLoggingManager.Delete(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
+            uploadLoggingManager.Delete(storeAndSign.id, storeAndSign.LastInstalled.Id);
         }
 
         public void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode, IStoreManager storeManager)

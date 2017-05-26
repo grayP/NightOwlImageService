@@ -23,9 +23,9 @@ namespace nightowlsign.data.Models.UpLoadLog
             return _context.UpLoadLogs.OrderByDescending(i => i.DateTime).Take(50).ToList();
         }
 
-        public bool UpLoadNeeded(int storeId, string filename, DateTime lastUpdated)
+        public bool UpLoadNeeded(int storeId, string filename, DateTime lastUpdated, int scheduleId)
         {
-            var upLoadLog = _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ProgramFile == filename)
+            var upLoadLog = _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ProgramFile == filename && i.ScheduleId==scheduleId)
                 .OrderByDescending(i => i.DateTime).FirstOrDefault();
             if (upLoadLog == null) return true;
             return upLoadLog.ResultCode != 0 || !(upLoadLog.DateTime > lastUpdated);

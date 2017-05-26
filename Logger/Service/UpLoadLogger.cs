@@ -34,7 +34,7 @@ namespace Logger.Service
 
         public bool FileNeedsToBeUploaded(int storeid, string fileName, DateTime lastUpdated, int scheduleId)
         {
-            return _upLoadLoggingManager.UpLoadNeeded(storeid, fileName, lastUpdated);
+            return _upLoadLoggingManager.UpLoadNeeded(storeid, fileName, lastUpdated, scheduleId);
         }
 
         #region IDisposable Support
