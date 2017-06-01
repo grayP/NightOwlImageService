@@ -12,11 +12,11 @@ namespace nightowlsign.data.Models.Stores
         private data.Schedule _defaultSchedule;
         private Sign _defaultSign;
         private readonly Inightowlsign_Entities _context;
-        private UpLoadLoggingManager _upLoadLoggingManager;
+        private readonly UpLoadLoggingManager _upLoadLoggingManager;
         public StoreManager(Inightowlsign_Entities context)
         {
             _context = context;
-            _upLoadLoggingManager = new UpLoadLoggingManager(_context); 
+            _upLoadLoggingManager = new UpLoadLoggingManager(_context);
             ValidationErrors = new List<KeyValuePair<string, string>>();
             _defaultSchedule = new data.Schedule
             {
@@ -41,13 +41,13 @@ namespace nightowlsign.data.Models.Stores
 
         public List<StoreAndSign> Get(Store entity)
         {
-                var ret = _context.StoreAndSigns.OrderBy(x => x.Name).ToList<StoreAndSign>();
-                if (!string.IsNullOrEmpty(entity.Name))
-                {
-                    ret = ret.FindAll(p => p.Name.ToLower().StartsWith(entity.Name));
-                }
-                GetSchedulesAndSign(ret);
-                return ret;
+            var ret = _context.StoreAndSigns.OrderBy(x => x.Name).ToList<StoreAndSign>();
+            if (!string.IsNullOrEmpty(entity.Name))
+            {
+                ret = ret.FindAll(p => p.Name.ToLower().StartsWith(entity.Name));
+            }
+            GetSchedulesAndSign(ret);
+            return ret;
         }
 
         public void GetSchedulesAndSign(List<StoreAndSign> storeList)
@@ -62,87 +62,87 @@ namespace nightowlsign.data.Models.Stores
 
         public Sign GetSign(int signId)
         {
-                return _context.Signs.Find(signId);
+            return _context.Signs.Find(signId);
         }
 
         public data.Schedule GetInstalledSchedule(int storeId)
         {
-                var ret = (from s in _context.StoreScheduleLogs
-                           where s.StoreId == storeId
-                           select new { s.ScheduleId, s.ScheduleName, s.DateInstalled })
-                    .AsEnumerable()
-                    .OrderByDescending(x => x.DateInstalled)
-                    .Select(x => new data.Schedule()
-                    {
-                        Id = x.ScheduleId ?? 0,
-                        Name = x.ScheduleName,
-                        LastUpdated = x.DateInstalled
-                    }).FirstOrDefault();
+            var ret = (from s in _context.StoreScheduleLogs
+                       where s.StoreId == storeId
+                       select new { s.ScheduleId, s.ScheduleName, s.DateInstalled })
+                .AsEnumerable()
+                .OrderByDescending(x => x.DateInstalled)
+                .Select(x => new data.Schedule()
+                {
+                    Id = x.ScheduleId ?? 0,
+                    Name = x.ScheduleName,
+                    LastUpdated = x.DateInstalled
+                }).FirstOrDefault();
 
-               return ret;
+            return ret;
         }
 
 
         public data.Schedule GetCurrentSchedule(int storeId)
         {
-                var playListResult = _context.Database
-                    .SqlQuery<FindCurrentPlayListForStore_Result>("FindCurrentPlayListForStore")
-                    .OrderBy(x => x.Importance)
-                    .FirstOrDefault(x => x.StoreId == storeId);
+            var playListResult = _context.Database
+                .SqlQuery<FindCurrentPlayListForStore_Result>("FindCurrentPlayListForStore")
+                .OrderBy(x => x.Importance)
+                .FirstOrDefault(x => x.StoreId == storeId);
 
-                data.Schedule getCurrentSchedule = new data.Schedule()
-                {
-                    Id = playListResult?.ScheduleId ?? 0,
-                    Name = playListResult?.ScheduleName,
-                    LastUpdated = playListResult?.LastUpdated ?? DateTime.Now.ToUniversalTime()
-                };
-                return getCurrentSchedule;
+            data.Schedule getCurrentSchedule = new data.Schedule()
+            {
+                Id = playListResult?.ScheduleId ?? 0,
+                Name = playListResult?.ScheduleName,
+                LastUpdated = playListResult?.LastUpdated ?? DateTime.Now.ToUniversalTime()
+            };
+            return getCurrentSchedule;
         }
 
 
         public List<data.Schedule> GetSelectedSchedules(int storeId)
         {
-                var ret = (from s in _context.Schedules
-                           join st in _context.ScheduleStores on s.Id equals st.ScheduleID
-                           where st.StoreId == storeId
-                           select new { s.Id, s.Name, s.StartDate, s.EndDate, s.DefaultPlayList, s.StartTime, s.EndTime })
-                    .AsEnumerable()
-                    .Select(x => new data.Schedule()
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        StartDate = x.StartDate,
-                        EndDate = x.EndDate,
-                        DefaultPlayList = x.DefaultPlayList,
-                        StartTime = x.StartTime,
-                        EndTime = x.EndTime
-                    });
-                return ret.ToList();
+            var ret = (from s in _context.Schedules
+                       join st in _context.ScheduleStores on s.Id equals st.ScheduleID
+                       where st.StoreId == storeId
+                       select new { s.Id, s.Name, s.StartDate, s.EndDate, s.DefaultPlayList, s.StartTime, s.EndTime })
+                .AsEnumerable()
+                .Select(x => new data.Schedule()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    DefaultPlayList = x.DefaultPlayList,
+                    StartTime = x.StartTime,
+                    EndTime = x.EndTime
+                });
+            return ret.ToList();
         }
 
         public List<data.Schedule> GetAvailableSchedules(int storeId)
         {
-                var ret = (from s in _context.Schedules
-                           join st in _context.Store on s.SignId equals st.SignId
-                           where st.id == storeId
-                           select new { s.Id, s.Name, s.StartDate, s.EndDate, s.DefaultPlayList, s.StartTime, s.EndTime })
-                    .AsEnumerable()
-                    .Select(x => new data.Schedule()
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        StartDate = x.StartDate,
-                        EndDate = x.EndDate,
-                        DefaultPlayList = x.DefaultPlayList,
-                        StartTime = x.StartTime,
-                        EndTime = x.EndTime
-                    });
-                return ret.ToList();
+            var ret = (from s in _context.Schedules
+                       join st in _context.Store on s.SignId equals st.SignId
+                       where st.id == storeId
+                       select new { s.Id, s.Name, s.StartDate, s.EndDate, s.DefaultPlayList, s.StartTime, s.EndTime })
+                .AsEnumerable()
+                .Select(x => new data.Schedule()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    DefaultPlayList = x.DefaultPlayList,
+                    StartTime = x.StartTime,
+                    EndTime = x.EndTime
+                });
+            return ret.ToList();
         }
 
         public Store Find(int storeId)
         {
-                return _context.Store.Find(storeId);
+            return _context.Store.Find(storeId);
         }
 
         public bool Validate(Store entity)
@@ -170,24 +170,24 @@ namespace nightowlsign.data.Models.Stores
             if (!Validate(entity)) return false;
             try
             {
-                   _context.Store.Attach(entity);
-                    var modifiedStore = _context.Entry(entity);
-                    modifiedStore.Property("Name").IsModified = true;
-                    modifiedStore.Property("Address").IsModified = true;
-                    modifiedStore.Property("Suburb").IsModified = true;
-                    modifiedStore.Property("State").IsModified = true;
-                    modifiedStore.Property("Manager").IsModified = true;
-                    modifiedStore.Property("Phone").IsModified = true;
-                    modifiedStore.Property("SignId").IsModified = true;
-                    modifiedStore.Property("IpAddress").IsModified = true;
-                    modifiedStore.Property("SubMask").IsModified = true;
-                    modifiedStore.Property("Port").IsModified = true;
-                    modifiedStore.Property("ProgramFile").IsModified = true;
-                    modifiedStore.Property("LastUpdateTime").IsModified = true;
-                    modifiedStore.Property("LastUpdateStatus").IsModified = true;
+                _context.Store.Attach(entity);
+                var modifiedStore = _context.Entry(entity);
+                modifiedStore.Property("Name").IsModified = true;
+                modifiedStore.Property("Address").IsModified = true;
+                modifiedStore.Property("Suburb").IsModified = true;
+                modifiedStore.Property("State").IsModified = true;
+                modifiedStore.Property("Manager").IsModified = true;
+                modifiedStore.Property("Phone").IsModified = true;
+                modifiedStore.Property("SignId").IsModified = true;
+                modifiedStore.Property("IpAddress").IsModified = true;
+                modifiedStore.Property("SubMask").IsModified = true;
+                modifiedStore.Property("Port").IsModified = true;
+                modifiedStore.Property("ProgramFile").IsModified = true;
+                modifiedStore.Property("LastUpdateTime").IsModified = true;
+                modifiedStore.Property("LastUpdateStatus").IsModified = true;
                 _context.SaveChanges();
-                    return true;
- 
+                return true;
+
             }
             catch (Exception ex)
             {
@@ -204,24 +204,24 @@ namespace nightowlsign.data.Models.Stores
                 ret = Validate(entity);
                 if (Validate(entity))
                 {
-                        var newStore = new Store()
-                        {
-                            Name = entity.Name.Trim(),
-                            Address = entity.Address,
-                            Suburb = entity.Suburb,
-                            State = entity.State,
-                            Manager = entity.Manager,
-                            Phone = entity.Phone,
-                            SignId = entity.SignId,
-                            IpAddress = entity.IpAddress,
-                            SubMask = entity.SubMask,
-                            Port = entity.Port,
-                            ProgramFile = entity.ProgramFile
-                        };
+                    var newStore = new Store()
+                    {
+                        Name = entity.Name.Trim(),
+                        Address = entity.Address,
+                        Suburb = entity.Suburb,
+                        State = entity.State,
+                        Manager = entity.Manager,
+                        Phone = entity.Phone,
+                        SignId = entity.SignId,
+                        IpAddress = entity.IpAddress,
+                        SubMask = entity.SubMask,
+                        Port = entity.Port,
+                        ProgramFile = entity.ProgramFile
+                    };
 
-                        _context.Store.Add(newStore);
-                        _context.SaveChanges();
-                        ret = true;
+                    _context.Store.Add(newStore);
+                    _context.SaveChanges();
+                    ret = true;
                 }
                 return ret;
             }
@@ -236,15 +236,28 @@ namespace nightowlsign.data.Models.Stores
         {
             try
             {
-                    _context.Store.Attach(entity);
-                    _context.Store.Remove(entity);
-                    _context.SaveChanges();
-                    return true;
+                _context.Store.Attach(entity);
+                _context.Store.Remove(entity);
+                _context.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return false;
+            }
+        }
+
+        public void CleanOutOldSchedule(StoreAndSign storeAndSign)
+        {
+            try
+            {
+                _upLoadLoggingManager.Delete(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
+                _upLoadLoggingManager.Delete(storeAndSign.id, storeAndSign.LastInstalled.Id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

@@ -25,18 +25,20 @@ namespace nightowlsign.data.Models.UpLoadLog
 
         public bool UpLoadNeeded(int storeId, string filename, DateTime lastUpdated, int scheduleId)
         {
-            var upLoadLog = _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ProgramFile == filename && i.ScheduleId==scheduleId)
+            var upLoadLog = _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ProgramFile == filename && i.ScheduleId == scheduleId)
                 .OrderByDescending(i => i.DateTime).FirstOrDefault();
             if (upLoadLog == null) return true;
             return upLoadLog.ResultCode != 0 || !(upLoadLog.DateTime > lastUpdated);
         }
 
-        public void Delete(int storeId, int scheduleId)
+        public void Delete(int storeId, int? scheduleId)
         {
-            var results = _context.UpLoadLogs.Where(u => u.StoreId == storeId && u.ScheduleId == scheduleId);
-            _context.UpLoadLogs.RemoveRange(results);
-            _context.SaveChanges();
-
+            if (scheduleId != null)
+            {
+                var results = _context.UpLoadLogs.Where(u => u.StoreId == storeId && u.ScheduleId == scheduleId);
+                _context.UpLoadLogs.RemoveRange(results);
+                _context.SaveChanges();
+            }
         }
         public int? GetOverallStatus(int storeId, int scheduleid)
         {

@@ -52,6 +52,7 @@ namespace ImageProcessor.Services
                 DeleteOldFiles(_programFileDirectory, AddStar(ProgramFileExtension));
                 WriteImagesToDisk(_imagesToSend);
                 GeneratetheProgramFiles(storeAndSign);
+                GeneratethePlayBillFile(storeAndSign);
                 _sendCommunicator.Init(storeAndSign, _programFileDirectory);
                 if (_sendCommunicator.FilesUploadedOk())
                 {
@@ -160,22 +161,24 @@ namespace ImageProcessor.Services
             System.IO.File.Delete(fileAndPath);
         }
 
-        public void GeneratethePlayBillFile(string scheduleName)
+        public void GeneratethePlayBillFile(StoreAndSign storeAndSign)
         {
-            var playBillPointer = _cp5200.playBill_Create();
-
-            if (playBillPointer.ToInt32() > 0)
+            using (var playBill = new PlayBillFiles(Convert.ToInt32(storeAndSign.Sign.Width.Value), Convert.ToInt32(storeAndSign.Sign.Height.Value), 0xA, 0x77, _logger))
             {
-                _cp5200.Playbill_SetProperty(playBillPointer, 0, 1);
-                foreach (string programFileName in
-                    Directory.GetFiles(_programFileDirectory, AddStar(ProgramFileExtension)))
-                {
-                    _cp5200.Playbill_AddFile(playBillPointer, programFileName);
-                }
-                _cp5200.Playbill_SaveToFile(playBillPointer, GeneratePlayBillFileName(scheduleName));
-                _cp5200.DestroyProgram(playBillPointer);
-            }
+               var playBillPointer = playBill.playBill_Create();
 
+                if (playBillPointer.ToInt32() > 0)
+                {
+                    playBill.Playbill_SetProperty(playBillPointer, 0, 1);
+                    foreach (string programFileName in
+                        Directory.GetFiles(_programFileDirectory, AddStar(ProgramFileExtension)))
+                    {
+                        playBill.Playbill_AddFile(playBillPointer, programFileName);
+                    }
+                    playBill.Playbill_SaveToFile(playBillPointer, GeneratePlayBillFileName("playbill"));
+                    playBill.DestroyProgram(playBillPointer);
+                }
+            };
         }
 
         public void SaveImageToFile(string sCounter, ImageSelect image)

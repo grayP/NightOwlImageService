@@ -15,7 +15,7 @@ namespace ImageProcessor.Services
         void WriteImagesToDisk(IEnumerable<ImageSelect> images);
         void GeneratetheProgramFiles(StoreAndSign storeAndSign);
         void DeleteOldProgramFile(string fileAndPath);
-        void GeneratethePlayBillFile(string scheduleName);
+        void GeneratethePlayBillFile(StoreAndSign storeAndSign);
         void SaveImageToFile(string sCounter, ImageSelect image);
         string GeneratePlayBillFileName(string scheduleName);
         string GenerateProgramFileName(string programFile);

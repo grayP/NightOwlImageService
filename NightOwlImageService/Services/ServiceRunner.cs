@@ -37,7 +37,7 @@ namespace NightOwlImageService.Services
             _context = context;
             _storeScheduleLogManager = storeScheduleLogManager;
 
-            _logger = logger; 
+            _logger = logger;
 
             _logger.Init(System.Reflection.Assembly.GetExecutingAssembly().FullName);
             _timer = new Timer
@@ -50,42 +50,32 @@ namespace NightOwlImageService.Services
 
         public void DoTheWork(Inightowlsign_Entities context)
         {
-            var storeManager= new StoreManager(context);
+            var storeManager = new StoreManager(context);
             var storeViewModel = new StoreViewModel(storeManager);
-            _logger.WriteLog($"Starting Run: {DateTime.Now}","StartUp");
+            _logger.WriteLog($"Starting Run: {DateTime.Now}", "StartUp");
             storeViewModel.EventCommand = "List";
             storeViewModel.HandleRequest();
             foreach (var storeAndSign in storeViewModel.StoresAndSigns)
             {
-                //this._logger.WriteLog($"Debug: {storeAndSign.Name}, Curr: {storeAndSign.CurrentSchedule?.LastUpdated}, Last:{storeAndSign.LastInstalled?.LastUpdated}, Current: {storeAndSign.CurrentSchedule?.Id}, Last: {storeAndSign.LastInstalled?.Id}   ");
-                if (storeAndSign.SignNeedsToBeUpdated())
-                {
-                    if (storeAndSign.CurrentSchedule.Id != storeAndSign.LastInstalled.Id)
-                    {
-                        CleanOutTheUpLoadLog(storeAndSign, context);
-                    }
-                    var successCode = SendTheScheduleToSign(storeAndSign);
-                    UpdateTheDataBase(storeAndSign, successCode, storeManager);
-                    this._logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}" ,"Result");
-                }
+                if (!storeAndSign.SignNeedsToBeUpdated()) continue;
+                if (storeAndSign.CheckForChangeInSchedule()) storeManager.CleanOutOldSchedule(storeAndSign);
+
+                var successCode = SendTheScheduleToSign(storeAndSign);
+                UpdateTheDataBase(storeAndSign, successCode, storeManager);
+                this._logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}", "Result");
             }
             CheckIfTimeToClose();
         }
 
-        private void CleanOutTheUpLoadLog(StoreAndSign storeAndSign, Inightowlsign_Entities context)
-        {
-            var uploadLoggingManager = new UpLoadLoggingManager(context);
-            uploadLoggingManager.Delete(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
-            uploadLoggingManager.Delete(storeAndSign.id, storeAndSign.LastInstalled.Id);
-        }
+   
 
         public void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode, IStoreManager storeManager)
         {
-            storeManager.Update(storeAndSign, successCode);              
+            storeManager.Update(storeAndSign, successCode);
             if (successCode == 0)
             {
                 _storeScheduleLogManager.Init(storeAndSign);
-                _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated Log for {storeAndSign.Name}" : $"{_storeScheduleLogManager.ErrorMessage} ","Result");
+                _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated Log for {storeAndSign.Name}" : $"{_storeScheduleLogManager.ErrorMessage} ", "Result");
             }
         }
 
