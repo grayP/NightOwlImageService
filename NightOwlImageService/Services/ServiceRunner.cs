@@ -20,7 +20,7 @@ namespace NightOwlImageService.Services
 
         public void Start()
         {
-            DoTheWork(_context);
+            DoTheWork();
             _timer.Start();
         }
 
@@ -36,21 +36,18 @@ namespace NightOwlImageService.Services
             _screenImageManager = screenImageManager;
             _context = context;
             _storeScheduleLogManager = storeScheduleLogManager;
-
             _logger = logger;
-
-            _logger.Init(System.Reflection.Assembly.GetExecutingAssembly().FullName);
             _timer = new Timer
             {
                 AutoReset = true,
                 Interval = 300000
             };
-            _timer.Elapsed += (sender, eventArgs) => DoTheWork(_context);
+            _timer.Elapsed += (sender, eventArgs) => DoTheWork();
         }
 
-        public void DoTheWork(Inightowlsign_Entities context)
+        public void DoTheWork()
         {
-            var storeManager = new StoreManager(context);
+            var storeManager = new StoreManager(_context);
             var storeViewModel = new StoreViewModel(storeManager);
             _logger.WriteLog($"Starting Run: {DateTime.Now}", "StartUp");
             storeViewModel.EventCommand = "List";
@@ -66,8 +63,6 @@ namespace NightOwlImageService.Services
             }
             CheckIfTimeToClose();
         }
-
-   
 
         public void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode, IStoreManager storeManager)
         {

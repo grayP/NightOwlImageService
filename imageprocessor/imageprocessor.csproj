@@ -49,7 +49,9 @@
   <ItemGroup>
     <Compile Include="Services\IScreenImageManager.cs" />
     <Compile Include="Services\ScreenImageManager.cs" />
-    <Compile Include="CP5200\CP5200External.cs" />
+    <Compile Include="CP5200\CP5200External.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Enums\ImageProcessorConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ISendCommunicator.cs" />
