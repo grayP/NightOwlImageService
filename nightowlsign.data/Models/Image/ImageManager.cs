@@ -10,10 +10,10 @@ namespace nightowlsign.data.Models.Image
 {
     public class ImageManager : IImageManager
     {
-        private readonly Inightowlsign_Entities _context;
-        public ImageManager(Inightowlsign_Entities context)
+        private  nightowlsign_Entities _context;
+        public ImageManager()
         {
-            _context = context;
+            _context = new nightowlsign_Entities();
             ValidationErrors = new List<KeyValuePair<string, string>>();
         }
         //Properties

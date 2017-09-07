@@ -11,7 +11,7 @@ namespace nightowlsign.data.Models.Stores
         private Sign _defaultSign;
         private readonly Inightowlsign_Entities _context;
         private readonly UpLoadLoggingManager _upLoadLoggingManager;
-        public StoreManager(Inightowlsign_Entities context)
+        public StoreManager(nightowlsign_Entities context)
         {
             _context = context;
             _upLoadLoggingManager = new UpLoadLoggingManager(_context);

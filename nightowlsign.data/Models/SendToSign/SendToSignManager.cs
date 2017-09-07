@@ -8,10 +8,10 @@ namespace nightowlsign.data.Models.SendToSign
 {
     public class SendToSignManager : ISendToSignManager
     {
-        private readonly Inightowlsign_Entities _context;
-        public SendToSignManager(Inightowlsign_Entities context)
+        private nightowlsign_Entities _context;
+        public SendToSignManager()
         {
-            _context = context;
+            _context = new nightowlsign_Entities();
             ValidationErrors = new List<KeyValuePair<string, string>>();
         }
         //Properties
@@ -90,7 +90,7 @@ namespace nightowlsign.data.Models.SendToSign
 
         public void UpdateImageList(ImageSelect imageSelect, data.Schedule schedule)
         {
-            using (var db = new nightowlsign_Entities())
+            using (_context)
             {
                 ScheduleImage imageSelected = new ScheduleImage
                 {
@@ -100,8 +100,8 @@ namespace nightowlsign.data.Models.SendToSign
                 };
                 if (imageSelect.Selected)
                 {
-                    db.Set<ScheduleImage>().AddOrUpdate(imageSelected);
-                    db.SaveChanges();
+                    _context.Set<ScheduleImage>().AddOrUpdate(imageSelected);
+                    _context.SaveChanges();
                 }
                 else
                 {
@@ -109,9 +109,9 @@ namespace nightowlsign.data.Models.SendToSign
                         _context.ScheduleImages.Find(imageSelect.Id);
                     if (scheduleImage != null)
                     {
-                        db.ScheduleImages.Attach(scheduleImage);
-                        db.ScheduleImages.Remove(scheduleImage);
-                        db.SaveChanges();
+                        _context.ScheduleImages.Attach(scheduleImage);
+                        _context.ScheduleImages.Remove(scheduleImage);
+                        _context.SaveChanges();
                     }
                 }
             }

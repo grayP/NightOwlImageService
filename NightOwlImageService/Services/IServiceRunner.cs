@@ -8,7 +8,7 @@ namespace NightOwlImageService.Services
         void Start();
         void Stop();
         void DoTheWork();
-        void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode, IStoreManager storeManager);
+        void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode, StoreManager storeManager);
         int SendTheScheduleToSign(StoreAndSign storeAndSign);
     }
 }

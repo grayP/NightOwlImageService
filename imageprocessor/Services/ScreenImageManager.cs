@@ -54,7 +54,8 @@ namespace ImageProcessor.Services
                 GeneratetheProgramFiles(storeAndSign);
                 GeneratethePlayBillFile(storeAndSign);
                 _sendCommunicator.Init(storeAndSign, _programFileDirectory);
-                if (_sendCommunicator.FilesUploadedOk())
+
+                 if (_sendCommunicator.FilesUploadedOk())
                 {
                     _sendCommunicator.RestartSign();
                 }

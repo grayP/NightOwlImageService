@@ -7,13 +7,13 @@ using nightowlsign.data.Models.Signs;
 
 namespace nightowlsign.data.Models.Image
 {
-    public class ImageViewModel : BaseModel.ViewModelBase
+    public class zzzImageViewModel : BaseModel.ViewModelBase
     {
         private readonly SignManager _signManager;
         public bool Selected { get; set; }
         private readonly Inightowlsign_Entities _context;
 
-        public ImageViewModel(Inightowlsign_Entities context) : base()
+        public zzzImageViewModel(Inightowlsign_Entities context) : base()
         {
             _context = context;
             _signManager = new SignManager(_context);
@@ -98,7 +98,7 @@ namespace nightowlsign.data.Models.Image
 
         protected override void Get()
         {
-            ImageManager cmm = new ImageManager(_context);
+            ImageManager cmm = new ImageManager();
             SearchEntity.SignSize = SearchSignId;
             Images = cmm.Get(SearchEntity);
         }
@@ -130,7 +130,7 @@ namespace nightowlsign.data.Models.Image
 
         private void DeleteImage(int imageId)
         {
-            ImageManager imm = new ImageManager(_context);
+            ImageManager imm = new ImageManager();
             Entity = imm.Find(imageId);
             imm.Delete(Entity);
             base.Delete();

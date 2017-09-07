@@ -10,11 +10,13 @@ namespace nightowlsign.data.Models.Stores
     public class StoreViewModel : BaseModel.ViewModelBase, IStoreViewModel
     {
         private readonly StoreManager _storeManager;
-       // private readonly Inightowlsign_Entities _context;
+        private readonly nightowlsign_Entities _context;
 
-        public StoreViewModel(StoreManager storeManager) : base()
+        public StoreViewModel(StoreManager storeManager, nightowlsign_Entities context) : base()
         {
             _storeManager = storeManager;
+            _context = context;
+            EventCommand = "List";
         }
         public List<Store> Stores { get; set; }
         public List<StoreAndSign> StoresAndSigns { get; set; }
@@ -24,7 +26,7 @@ namespace nightowlsign.data.Models.Stores
         {
             get
             {
-                 using (var db = new nightowlsign_Entities())
+                 using (_context)
                 {
                 var selectList = new List<SelectListItem>()
                     {
@@ -35,13 +37,12 @@ namespace nightowlsign.data.Models.Stores
                         }
                     };
                 selectList.AddRange(from item in
-                                  db.Signs.OrderBy(x => x.Model)
+                                  _context.Signs.OrderBy(x => x.Model)
                                     select new SelectListItem()
                                     {
                                         SignId = item.id,
                                         Model = item.Model
                                     });
-
                 return selectList;
                  }
             }

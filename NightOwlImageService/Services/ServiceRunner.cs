@@ -31,10 +31,9 @@ namespace NightOwlImageService.Services
         }
 
 
-        public ServiceRunner(IScreenImageManager screenImageManager, Inightowlsign_Entities context, IStoreScheduleLogManager storeScheduleLogManager, IGeneralLogger logger)
+        public ServiceRunner(IScreenImageManager screenImageManager, IStoreScheduleLogManager storeScheduleLogManager, IGeneralLogger logger)
         {
             _screenImageManager = screenImageManager;
-            _context = context;
             _storeScheduleLogManager = storeScheduleLogManager;
             _logger = logger;
             _timer = new Timer
@@ -47,10 +46,10 @@ namespace NightOwlImageService.Services
 
         public void DoTheWork()
         {
+            var _context = new nightowlsign_Entities();
             var storeManager = new StoreManager(_context);
-            var storeViewModel = new StoreViewModel(storeManager);
+            var storeViewModel = new StoreViewModel(storeManager, _context);
             _logger.WriteLog($"Starting Run: {DateTime.Now}", "StartUp");
-            storeViewModel.EventCommand = "List";
             storeViewModel.HandleRequest();
             foreach (var storeAndSign in storeViewModel.StoresAndSigns)
             {
@@ -59,12 +58,12 @@ namespace NightOwlImageService.Services
 
                 var successCode = SendTheScheduleToSign(storeAndSign);
                 UpdateTheDataBase(storeAndSign, successCode, storeManager);
-                this._logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}", "Result");
+                _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}", "Result");
             }
             CheckIfTimeToClose();
         }
 
-        public void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode, IStoreManager storeManager)
+        public void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode, StoreManager storeManager)
         {
             storeManager.Update(storeAndSign, successCode);
             if (successCode == 0)
@@ -76,7 +75,8 @@ namespace NightOwlImageService.Services
 
         public int SendTheScheduleToSign(StoreAndSign storeAndSign)
         {
-            Console.WriteLine($"Starting on store {storeAndSign.Name} ");
+
+            //    Console.WriteLine($"Starting on store {storeAndSign.Name} ");
             _logger.WriteLog($"Starting on store {storeAndSign.Name} ", "Store");
             return _screenImageManager.FileUploadResultCode(storeAndSign);
         }
