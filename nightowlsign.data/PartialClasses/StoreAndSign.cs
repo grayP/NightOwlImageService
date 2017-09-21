@@ -16,7 +16,7 @@ namespace nightowlsign.data
         public bool CheckForChangeInSchedule()
         {
             if (this.LastInstalled == null) return false;
-            if (this.CurrentSchedule.Id != this.LastInstalled?.Id)
+            if (this.CurrentSchedule.Id != this.LastInstalled?.Id || this.LastUpdateStatus==-99)
             {
                 return true;
             }
