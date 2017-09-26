@@ -194,7 +194,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"Error save image to disk - {ex.InnerException?.ToString()}","Error");
+                _logger.WriteLog($"Error save image to disk - {ex.Message}","Error");
             }
         }
 

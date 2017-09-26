@@ -27,7 +27,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>14</ApplicationRevision>
+    <ApplicationRevision>16</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -170,7 +170,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SlowCheetah.3.0.61\build\Microsoft.VisualStudio.SlowCheetah.targets'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>IF $(ConfigurationName) == Debug COPY /Y "$(ProjectDir)App.debug.config" "$(ProjectDir)App.config"
+    <PreBuildEvent>IF $(ConfigurationName) == Debug COPY /Y "$(ProjectDir)App.release.config" "$(ProjectDir)App.config"
 IF $(ConfigurationName) == Release COPY /Y "$(ProjectDir)App.release.config" "$(ProjectDir)App.config"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

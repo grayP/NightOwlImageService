@@ -92,7 +92,7 @@ namespace nightowlsign.data.Models.Stores
             {
                 Id = playListResult?.ScheduleId ?? 0,
                 Name = playListResult?.ScheduleName,
-                LastUpdated = playListResult?.LastUpdated ?? DateTime.Now.ToUniversalTime()
+                LastUpdated = playListResult?.LastUpdated ?? DateTime.Now.AddHours(-1).ToUniversalTime()
             };
             return getCurrentSchedule;
         }

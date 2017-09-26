@@ -28,7 +28,7 @@ namespace nightowlsign.data.Models.UpLoadLog
             var upLoadLog = _context.UpLoadLogs.Where(i => i.StoreId == storeId && i.ProgramFile == filename && i.ScheduleId == scheduleId)
                 .OrderByDescending(i => i.DateTime).FirstOrDefault();
             if (upLoadLog == null) return true;
-            return upLoadLog.ResultCode != 0 || !(upLoadLog.DateTime > lastUpdated);
+            return upLoadLog.ResultCode != 0 || (upLoadLog.DateTime < lastUpdated);
         }
 
         public void Delete(int storeId, int? scheduleId)
