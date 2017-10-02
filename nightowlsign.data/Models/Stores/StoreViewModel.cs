@@ -10,9 +10,9 @@ namespace nightowlsign.data.Models.Stores
     public class StoreViewModel : BaseModel.ViewModelBase, IStoreViewModel
     {
         private readonly StoreManager _storeManager;
-        private readonly nightowlsign_Entities _context;
+        private readonly Inightowlsign_Entities _context;
 
-        public StoreViewModel(StoreManager storeManager, nightowlsign_Entities context) : base()
+        public StoreViewModel(StoreManager storeManager, Inightowlsign_Entities context) : base()
         {
             _storeManager = storeManager;
             _context = context;
@@ -22,32 +22,7 @@ namespace nightowlsign.data.Models.Stores
         public List<StoreAndSign> StoresAndSigns { get; set; }
         public Store SearchEntity { get; set; }
         public Store Entity { get; set; }
-        public IEnumerable<SelectListItem> SignList
-        {
-            get
-            {
-                 using (_context)
-                {
-                var selectList = new List<SelectListItem>()
-                    {
-                        new SelectListItem
-                        {
-                            Id = 0,
-                            Model = "Show All"
-                        }
-                    };
-                selectList.AddRange(from item in
-                                  _context.Signs.OrderBy(x => x.Model)
-                                    select new SelectListItem()
-                                    {
-                                        SignId = item.id,
-                                        Model = item.Model
-                                    });
-                return selectList;
-                 }
-            }
-        }
-
+ 
 
         protected override void Init()
         {

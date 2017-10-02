@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using nightowlsign.data.Models.UpLoadLog;
 
+
+
 namespace nightowlsign.data.Models.Stores
 {
     public class StoreManager : IStoreManager
@@ -11,10 +13,13 @@ namespace nightowlsign.data.Models.Stores
         private Sign _defaultSign;
         private readonly Inightowlsign_Entities _context;
         private readonly UpLoadLoggingManager _upLoadLoggingManager;
-        public StoreManager(nightowlsign_Entities context)
+        private Logging.LoggingManager _logger;
+        
+        public StoreManager(Inightowlsign_Entities context)
         {
             _context = context;
-            _upLoadLoggingManager = new UpLoadLoggingManager(_context);
+            _upLoadLoggingManager = new UpLoadLoggingManager(_context);// _context);
+            _logger = new Logging.LoggingManager(_context);
             ValidationErrors = new List<KeyValuePair<string, string>>();
             _defaultSchedule = new data.Schedule
             {
@@ -183,13 +188,15 @@ namespace nightowlsign.data.Models.Stores
                 modifiedStore.Property("ProgramFile").IsModified = true;
                 modifiedStore.Property("LastUpdateTime").IsModified = true;
                 modifiedStore.Property("LastUpdateStatus").IsModified = true;
+               // modifiedStore.Property("Brightness").IsModified = true;
                 _context.SaveChanges();
                 return true;
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException);
+
+                _logger.Insert($"StoreManager -Update- {ex.Message}", "Error");
                 return false;
             }
         }
@@ -214,7 +221,8 @@ namespace nightowlsign.data.Models.Stores
                         IpAddress = entity.IpAddress,
                         SubMask = entity.SubMask,
                         Port = entity.Port,
-                        ProgramFile = entity.ProgramFile
+                        ProgramFile = entity.ProgramFile,
+                        Brightness = 31
                     };
 
                     _context.Store.Add(newStore);
@@ -241,7 +249,7 @@ namespace nightowlsign.data.Models.Stores
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.Insert($"StoreManager -Delete- {e.Message}", "Error");
                 return false;
             }
         }
@@ -255,16 +263,8 @@ namespace nightowlsign.data.Models.Stores
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.Insert($"StoreManager -Cleanout- {e.Message}", "Error");
             }
         }
-    }
-
-    public class SelectPlayList
-    {
-        public int Id { get; set; }
-        public string PlayListName { get; set; }
-        public int? StoreId { get; set; }
-        public string URL { get; set; }
     }
 }

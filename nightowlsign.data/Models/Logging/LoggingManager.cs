@@ -8,10 +8,10 @@ namespace nightowlsign.data.Models.Logging
 {
     public class LoggingManager : ILoggingManager
     {
-        private nightowlsign_Entities _context;
-        public LoggingManager()
+        private  Inightowlsign_Entities _context;
+        public LoggingManager(Inightowlsign_Entities context)
         {
-            _context = new nightowlsign_Entities();
+            _context = context;
         }
 
         public List<data.Logging> GetLatest()
@@ -19,6 +19,16 @@ namespace nightowlsign.data.Models.Logging
             return _context.Logging.OrderByDescending(i => i.DateStamp).Take(50).ToList();
         }
 
+        public bool Insert(string description, string subject)
+        {
+            data.Logging log = new data.Logging
+            {
+                Description = description,
+                Subject = subject,
+                DateStamp = DateTime.Now
+            };
+            return Insert(log);
+        }
         public bool Insert(data.Logging log)
         {
             try

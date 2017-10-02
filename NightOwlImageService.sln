@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenBrightness", "ScreenBrightness\ScreenBrightness.csproj", "{3BDB6237-1635-485D-BF9A-6C0D11FD87E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{204D7789-03AD-433E-8152-532BAC1BFA2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{3BDB6237-1635-485D-BF9A-6C0D11FD87E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BDB6237-1635-485D-BF9A-6C0D11FD87E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BDB6237-1635-485D-BF9A-6C0D11FD87E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{204D7789-03AD-433E-8152-532BAC1BFA2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{204D7789-03AD-433E-8152-532BAC1BFA2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{204D7789-03AD-433E-8152-532BAC1BFA2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{204D7789-03AD-433E-8152-532BAC1BFA2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

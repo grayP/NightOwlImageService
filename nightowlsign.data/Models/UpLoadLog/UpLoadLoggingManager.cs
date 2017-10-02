@@ -35,7 +35,7 @@ namespace nightowlsign.data.Models.UpLoadLog
         {
             if (scheduleId != null)
             {
-                var results = _context.UpLoadLogs.Where(u => u.StoreId == storeId && u.ScheduleId == scheduleId);
+                var results = _context.UpLoadLogs.Where(u => u.StoreId == storeId);
                 _context.UpLoadLogs.RemoveRange(results);
                 _context.SaveChanges();
             }

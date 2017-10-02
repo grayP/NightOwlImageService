@@ -21,4 +21,15 @@ namespace nightowlsign.data
         public Nullable<System.DateTime> DateTime { get; set; }
         public Nullable<int> ScheduleId { get; set; }
     }
+    public partial class SignBrightness
+    {
+        public int Id { get; set; }
+        public Nullable<int> StoreId { get; set; }
+        public Nullable<int> FromPeriod { get; set; }
+        public Nullable<int> ToPeriod { get; set; }
+        public Nullable<int> BrightnessLevel { get; set; }
+        public Nullable<int> CompanyId { get; set; }
+
+
+    }
 }

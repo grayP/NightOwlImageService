@@ -9,13 +9,15 @@ using System.Runtime.InteropServices;
 using System.Web.UI.WebControls;
 using Logger.Service;
 using nightowlsign.data.Models.SendToSign;
+using nightowlsign.data.Models.UpLoadLog;
 
 namespace ImageProcessor.Services
 
 {
     public class ScreenImageManager : IScreenImageManager
     {
-        private readonly ISendToSignManager _sendToSignManager;
+        private readonly SendToSignManager sendToSignManager;
+        private readonly SendCommunicator sendCommunicator;
         private PlayBillFiles _cp5200;
 
         private string _imageDirectory = "c:/playBillFiles/Images/";
@@ -28,17 +30,18 @@ namespace ImageProcessor.Services
         public bool Successfull { get; set; }
 
         private List<ImageSelect> _imagesToSend;
-        private readonly IGeneralLogger _logger;
-        private readonly ISendCommunicator _sendCommunicator;
+        private readonly GeneralLogger _logger;
 
         public StoreAndSign StoreAndSign { get; set; }
 
 
-        public ScreenImageManager(IGeneralLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager)
+        public ScreenImageManager(Inightowlsign_Entities context) //IGeneralLogger logger, ISendCommunicator sendCommunicator, ISendToSignManager sendToSignManager)
         {
-            _logger = logger;
-            _sendCommunicator = sendCommunicator;
-            _sendToSignManager = sendToSignManager;
+            _logger = new GeneralLogger(context);
+            UpLoadLoggingManager upLoadLoggingManager = new UpLoadLoggingManager(context);
+            UpLoadLogger uploadLogger = new UpLoadLogger(upLoadLoggingManager);
+            sendCommunicator = new SendCommunicator(_logger, uploadLogger);
+            sendToSignManager = new SendToSignManager();
         }
 
         public int FileUploadResultCode(StoreAndSign storeAndSign)
@@ -46,21 +49,15 @@ namespace ImageProcessor.Services
             try
             {
                 UpdateTheStorageDirectory(storeAndSign);
-                UpdateTheImageDirectory();
+                var imageDir=UpdateTheImageDirectory();
                 _imagesToSend = GetImages(storeAndSign.CurrentSchedule.Id);
-                DeleteOldFiles(_imageDirectory, AddStar(ImageExtension));
+                WriteImagesToDisk(imageDir, _imagesToSend);
+                //DeleteOldFiles(_imageDirectory, AddStar(ImageExtension));
                 DeleteOldFiles(_programFileDirectory, AddStar(ProgramFileExtension));
-                WriteImagesToDisk(_imagesToSend);
-                GeneratetheProgramFiles(storeAndSign);
-                GeneratethePlayBillFile(storeAndSign);
-                _sendCommunicator.Init(storeAndSign, _programFileDirectory);
+                GeneratetheProgramFiles(_programFileDirectory, storeAndSign);
+                //GeneratethePlayBillFile(storeAndSign);
+                return SendImagesToSign(storeAndSign, _programFileDirectory);
 
-                 if (_sendCommunicator.FilesUploadedOk())
-                {
-                    _sendCommunicator.RestartSign();
-                }
-                _sendCommunicator.Disconnect();
-                return _sendCommunicator.UpLoadSuccess;
             }
             catch (Exception ex)
             {
@@ -69,21 +66,33 @@ namespace ImageProcessor.Services
             }
         }
 
+        private int SendImagesToSign(StoreAndSign storeAndSign, string programFileDirectory)
+        {
+            if (sendCommunicator.FilesUploadedOk(storeAndSign, programFileDirectory))
+            {
+                sendCommunicator.RestartSign();
+            }
+            sendCommunicator.Disconnect();
+            return sendCommunicator.UpLoadSuccess;
+        }
+
         private void UpdateTheStorageDirectory(StoreAndSign storeAndSign)
         {
             _programFileDirectory = $"c:/programFiles/{storeAndSign.id}/";
             Directory.CreateDirectory(_programFileDirectory);
         }
 
-        private void UpdateTheImageDirectory()
+        private string UpdateTheImageDirectory()
         {
-            _imageDirectory = $"{_programFileDirectory}images/";
-            Directory.CreateDirectory(_imageDirectory);
+            string dir = $"{_programFileDirectory}images/";
+            Directory.CreateDirectory(dir);
+            return dir;
         }
 
         public List<ImageSelect> GetImages(int scheduleId)
         {
-            return _sendToSignManager.GetImagesForThisSchedule(scheduleId);
+            SendToSignManager sendToSignManager = new SendToSignManager();
+            return sendToSignManager.GetImagesForThisSchedule(scheduleId);
         }
 
         private static string AddStar(string fileExtension)
@@ -93,25 +102,25 @@ namespace ImageProcessor.Services
 
         public void DeleteOldFiles(string directoryName, string extension)
         {
-            foreach (
-                var fileName in Directory.GetFiles(directoryName, extension))
+        }
+
+        public void WriteImagesToDisk(string imageDirectory, IEnumerable<ImageSelect> images)
+        {
+            foreach (var fileName in Directory.GetFiles(imageDirectory, "*.jpg"))
             {
                 System.IO.File.Delete(fileName);
             }
-        }
 
-        public void WriteImagesToDisk(IEnumerable<ImageSelect> images)
-        {
             var counter = 1;
             foreach (var image in images)
             {
-                SaveImageToFile(string.Format("{0:0000}0000", counter), image);
+                SaveImageToFile(imageDirectory, string.Format("{0:0000}0000", counter), image);
                 image.Dispose();
                 counter++;
             }
         }
 
-        public void GeneratetheProgramFiles(StoreAndSign storeAndSign)
+        public void GeneratetheProgramFiles(string programFileDirectory, StoreAndSign storeAndSign)
         {
             var programFile = storeAndSign.ProgramFile;
             int imagesInFile = storeAndSign.NumImages ?? 12;
@@ -121,7 +130,7 @@ namespace ImageProcessor.Services
             var screenHeight = (ushort)(storeAndSign.Sign.Height ?? 100);
             var images = Directory.GetFiles(_imageDirectory, AddStar(ImageExtension));
             storeAndSign.NumImagesUploaded = images.Length;
-            int numProgramFiles =  (int)Math.Ceiling((double)images.Length/imagesInFile);
+            int numProgramFiles = (int)Math.Ceiling((double)images.Length / imagesInFile);
             for (int i = 0; i < numProgramFiles; i++)
             {
                 using (var cp5200 = new PlayBillFiles(screenWidth, screenHeight, periodToShowImage, colourMode, _logger))
@@ -132,7 +141,7 @@ namespace ImageProcessor.Services
                         var windowNo = cp5200.AddPlayWindow(programPointer);
                         if (windowNo >= 0)
                         {
-                            for (int j = i * imagesInFile; j <= ((i+1) * imagesInFile - 1); j++)
+                            for (int j = i * imagesInFile; j <= ((i + 1) * imagesInFile - 1); j++)
                             {
                                 if (j < images.Length)
                                 {
@@ -140,7 +149,7 @@ namespace ImageProcessor.Services
                                 }
                             }
                         }
-                        var result = cp5200.Program_SaveFile(programPointer, GenerateProgramFileName(Increment(programFile, i)));
+                        var result = cp5200.Program_SaveFile(programPointer, GenerateProgramFileName(programFileDirectory, Increment(programFile, i)));
                         cp5200.DestroyProgram(programPointer);
                     }
                 }
@@ -150,10 +159,10 @@ namespace ImageProcessor.Services
         private static string Increment(string fileName, int i)
         {
             int number;
-            var success = Int32.TryParse(fileName, out number);
+            var success = Int32.TryParse(fileName.Substring(6, 2), out number);
             if (!success) return fileName;
-            var answer = $"000000{number + i}";
-            return answer.Substring(answer.Length - 8);
+            var answer = $"00{number + i}";
+            return $"{fileName.Substring(0, 5)}{answer}";
         }
 
 
@@ -166,7 +175,7 @@ namespace ImageProcessor.Services
         {
             using (var playBill = new PlayBillFiles(Convert.ToInt32(storeAndSign.Sign.Width.Value), Convert.ToInt32(storeAndSign.Sign.Height.Value), 0xA, 0x77, _logger))
             {
-               var playBillPointer = playBill.playBill_Create();
+                var playBillPointer = playBill.playBill_Create();
 
                 if (playBillPointer.ToInt32() > 0)
                 {
@@ -182,9 +191,9 @@ namespace ImageProcessor.Services
             };
         }
 
-        public void SaveImageToFile(string sCounter, ImageSelect image)
+        public void SaveImageToFile(string imageDirectory, string sCounter, ImageSelect image)
         {
-            string tempFileName = string.Concat(_imageDirectory, sCounter, ImageExtension);
+            string tempFileName = string.Concat(imageDirectory, sCounter, ImageExtension);
             try
             {
                 using (WebClient webClient = new WebClient())
@@ -194,7 +203,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"Error save image to disk - {ex.Message}","Error");
+                _logger.WriteLog($"Error save image to disk - {ex.Message}", "Error");
             }
         }
 
@@ -204,13 +213,13 @@ namespace ImageProcessor.Services
             return PlaybillFileName = string.Concat(_programFileDirectory, newName.Substring(0, Math.Min(8, newName.Length)), PlaybillFileExtension);
         }
 
-        public string GenerateProgramFileName(string programFile)
+        public string GenerateProgramFileName(string programFileDirectory, string programFile)
         {
             if (string.IsNullOrEmpty(programFile))
             {
                 programFile = "00010000";
             }
-            return string.Concat(_programFileDirectory, programFile, ".lpb");
+            return string.Concat(programFileDirectory, programFile, ".lpb");
         }
     }
 }

@@ -12,12 +12,12 @@ namespace ImageProcessor.Services
         int FileUploadResultCode(StoreAndSign storeAndSign);
         List<ImageSelect> GetImages(int scheduleId);
         void DeleteOldFiles(string directoryName, string extension);
-        void WriteImagesToDisk(IEnumerable<ImageSelect> images);
-        void GeneratetheProgramFiles(StoreAndSign storeAndSign);
+        void WriteImagesToDisk(string imageDir, IEnumerable<ImageSelect> images);
+        void GeneratetheProgramFiles(string programdir, StoreAndSign storeAndSign);
         void DeleteOldProgramFile(string fileAndPath);
         void GeneratethePlayBillFile(StoreAndSign storeAndSign);
-        void SaveImageToFile(string sCounter, ImageSelect image);
+        void SaveImageToFile(string imageDir, string sCounter, ImageSelect image);
         string GeneratePlayBillFileName(string scheduleName);
-        string GenerateProgramFileName(string programFile);
+        string GenerateProgramFileName(string programdir, string programFile);
     }
 }

@@ -18,44 +18,39 @@ namespace ImageProcessor.Services
         private const int TimeOut = 3600;
         private StoreAndSign _storeAndSign;
         private string _programFileDirectory;
-        private readonly IGeneralLogger _logger;
-        private readonly IUpLoadLogger _upLoadLogger;
+        private readonly GeneralLogger _logger;
+        private readonly UpLoadLogger _upLoadLogger;
+        // private readonly LoggingManager 
 
-        public SendCommunicator(IGeneralLogger logger, IUpLoadLogger uploadLogger)
+        public SendCommunicator(GeneralLogger logger, UpLoadLogger uploadLogger)
         {
             _logger = logger;
             _upLoadLogger = uploadLogger;
         }
 
-        public void Init(StoreAndSign storeAndSign, string programFileDirectory)
+        public bool FilesUploadedOk(StoreAndSign storeAndSign, string programFileDirectory)
         {
-            _storeAndSign = storeAndSign;
-            _programFileDirectory = programFileDirectory;
+            return ConnectToSignAndUpload(storeAndSign, programFileDirectory) == 0;
         }
 
-        public bool FilesUploadedOk()
-        {
-            return ConnectToSignAndUpload(_storeAndSign) == 0;
-        }
-
-        public int ConnectToSignAndUpload(StoreAndSign storeAndSign)
+        public int ConnectToSignAndUpload(StoreAndSign storeAndSign, string programFileDirectory)
         {
             if (SignIsOnLine(storeAndSign))
             {
-                SendTheFiletoSign(storeAndSign);
+                SendTheFiletoSign(storeAndSign, programFileDirectory);
                 return UpLoadSuccess;
             }
             _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}", "Result");
             return 99;
         }
-        public void SendTheFiletoSign(StoreAndSign storeAndSign)
+        public void SendTheFiletoSign(StoreAndSign storeAndSign, string programDirectory)
         {
             try
             {
-                var sumSuccess=0;
+                var sumSuccess = 0;
                 foreach (
                     var programFileName in
-                    Directory.GetFiles(_programFileDirectory, "*.lpb"))
+                    Directory.GetFiles(programDirectory, "*.lpb"))
                 {
                     sumSuccess = 0;
                     var fileName = Path.GetFileNameWithoutExtension(programFileName);
@@ -83,15 +78,15 @@ namespace ImageProcessor.Services
         public bool FileNeedsToBeSent(StoreAndSign storeAndSign, string fileName)
         {
             return _upLoadLogger.FileNeedsToBeUploaded(storeAndSign.id, fileName, storeAndSign.CurrentSchedule.LastUpdated ?? DateTime.Now.ToUniversalTime(), storeAndSign.CurrentSchedule.Id);
-          
+
         }
 
-        private int UploadFile( string programFileName, string programFile)
+        private int UploadFile(string programFileName, string programFile)
         {
-                return Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
-                    GetPointerFromFileName(programFileName),
-                    GetPointerFromFileName($"{programFile}.lpb"));
-            
+            return Cp5200External.CP5200_Net_UploadFile(Convert.ToByte(1),
+                GetPointerFromFileName(programFileName),
+                GetPointerFromFileName($"{programFile}.lpb"));
+
         }
 
         public int RestartSign()
@@ -101,7 +96,7 @@ namespace ImageProcessor.Services
             return success;
         }
 
-        public bool SignIsOnLine(StoreAndSign storeAndSign)   
+        public bool SignIsOnLine(StoreAndSign storeAndSign)
         {
             var signIsOnLine = false;
             try

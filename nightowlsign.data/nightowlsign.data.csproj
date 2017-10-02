@@ -92,6 +92,7 @@
     <Compile Include="Models\ScheduleStore\StoreSelect.cs" />
     <Compile Include="Models\Schedule\ScheduleManager.cs" />
     <Compile Include="Models\Schedule\ScheduleViewModel.cs" />
+    <Compile Include="Models\ScreenBrightness\ScreenBrightnessManager.cs" />
     <Compile Include="Models\SendToSign\ISendToSignManager.cs" />
     <Compile Include="Models\SendToSign\SendToSignViewModel.cs" />
     <Compile Include="Models\SendToSign\SendToSignManager.cs" />

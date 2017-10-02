@@ -7,11 +7,11 @@ namespace Logger.Service
     public class GeneralLogger : IDisposable, IGeneralLogger
     {
         private string _fileName;
-        private readonly ILoggingManager _loggingManager;
+        private readonly LoggingManager _loggingManager;
 
-        public GeneralLogger(ILoggingManager loggingManager)
+        public GeneralLogger(Inightowlsign_Entities context)
         {
-            _loggingManager = loggingManager;
+            _loggingManager = new LoggingManager(context);
         }
 
         public void Init (string assemblyName)

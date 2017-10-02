@@ -8,7 +8,6 @@ namespace nightowlsign.data.Models.Stores
         List<StoreAndSign> StoresAndSigns { get; set; }
         Store SearchEntity { get; set; }
         Store Entity { get; set; }
-        IEnumerable<SelectListItem> SignList { get; }
         string Mode { get; set; }
         string EventCommand { get; set; }
         string EventArgument { get; set; }
