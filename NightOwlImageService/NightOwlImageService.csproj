@@ -124,7 +124,9 @@
     </None>
     <None Include="NightOwlImageService_TemporaryKey.pfx" />
     <None Include="packages.config" />
-    <None Include="privatesettings.config" />
+    <None Include="privatesettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\PublishProfiles\NightOwlImageService - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup />
