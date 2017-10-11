@@ -8,10 +8,10 @@ namespace nightowlsign.data
         public int NumImagesUploaded { get; set; }
         public bool SignNeedsToBeUpdated()
         {
-            return false;
             return this?.CurrentSchedule.Id != this?.LastInstalled?.Id && this.CurrentSchedule?.Id != 0 ||
                    this?.CurrentSchedule.Id == this?.LastInstalled?.Id && this.LastUpdateStatus < 0 ||
-                   this?.CurrentSchedule?.LastUpdated > this?.LastInstalled?.LastUpdated && this.CurrentSchedule?.Id != 0;
+                   this?.CurrentSchedule?.LastUpdated > this?.LastInstalled?.LastUpdated && this.CurrentSchedule?.Id != 0 ||
+                   this?.LastUpdateStatus==-99;
         }
 
         public bool CheckForChangeInSchedule()
@@ -26,7 +26,8 @@ namespace nightowlsign.data
 
         public bool BrightnessNeedsToBeSet(ScreenBrightnessManager sbm, int storeId)
         {
-            return sbm.SignBrightnessNeedsToBeSet(storeId, DateTime.Now.Minute);
+            return true;
+           // return sbm.SignBrightnessNeedsToBeSet(storeId, DateTime.Now.Minute);
         }
     }
 }

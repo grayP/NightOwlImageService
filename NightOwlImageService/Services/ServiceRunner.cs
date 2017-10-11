@@ -4,19 +4,18 @@ using nightowlsign.data;
 using nightowlsign.data.Models.Stores;
 using nightowlsign.data.Models.StoreScheduleLog;
 using System;
-using System.Timers;
-using nightowlsign.data.Models.UpLoadLog;
 using ScreenBrightness;
 using nightowlsign.data.Models.ScreenBrightness;
+
 
 namespace NightOwlImageService.Services
 {
     public class ServiceRunner : IServiceRunner
     {
-        private readonly Timer _timer;
+        private readonly System.Timers.Timer _timer;
         private readonly IGeneralLogger _logger;
         private readonly Inightowlsign_Entities _context;
-        private readonly StoreScheduleLogManager _storeScheduleLogManager;
+        private StoreScheduleLogManager _storeScheduleLogManager;
         //private readonly IScreenImageManager _screenImageManager;
         //private readonly IBrightness _brightness;
         // private RunnerCycleTime runCycleTime;
@@ -25,6 +24,7 @@ namespace NightOwlImageService.Services
         {
             DoTheWork();
             _timer.Start();
+
         }
 
 
@@ -37,14 +37,15 @@ namespace NightOwlImageService.Services
         public ServiceRunner(Inightowlsign_Entities context, IStoreScheduleLogManager storeScheduleLogManager)//, IScreenImageManager screenImageManager, , IGeneralLogger logger, IBrightness brightness)
         {
             _context = context;
-            _logger =  new GeneralLogger(context);
+            _logger = new GeneralLogger(context);
             //_brightness = brightness;
-            _timer = new Timer
+            _timer = new System.Timers.Timer
             {
                 AutoReset = true,
                 Interval = 300000
             };
             _timer.Elapsed += (sender, eventArgs) => DoTheWork();
+
         }
 
         public void DoTheWork()
@@ -56,7 +57,7 @@ namespace NightOwlImageService.Services
 
             UpdateSignImages(storeManager, storeViewModel);
 
-            //  SetBrightnessLevels(storeViewModel);
+            //SetBrightnessLevels(storeViewModel);
             CheckIfTimeToClose();
         }
 
@@ -81,13 +82,18 @@ namespace NightOwlImageService.Services
 
         private void SetBrightnessLevels(StoreViewModel storeViewModel)
         {
+            storeViewModel.HandleRequest();
+
             foreach (var storeAndSign in storeViewModel.StoresAndSigns)
             {
-                ScreenBrightnessManager sbm = new ScreenBrightnessManager();
-                if (storeAndSign.BrightnessNeedsToBeSet(sbm, storeAndSign.id))
+                if (storeAndSign.Name == "West End")
                 {
-                    ScreenBrightnessSetter brightness = new ScreenBrightnessSetter(storeAndSign.IpAddress, storeAndSign.Port, sbm.currentBrightness);
-                    brightness.SetBrightness();
+                    ScreenBrightnessManager sbm = new ScreenBrightnessManager();
+                    if (storeAndSign.BrightnessNeedsToBeSet(sbm, storeAndSign.id))
+                    {
+                        ScreenBrightnessSetter brightness = new ScreenBrightnessSetter(storeAndSign.IpAddress, storeAndSign.Port, sbm.currentBrightness);
+                        brightness.SetBrightness();
+                    }
                 }
             }
         }
@@ -97,8 +103,20 @@ namespace NightOwlImageService.Services
             storeManager.Update(storeAndSign, successCode);
             if (successCode == 0)
             {
+                _storeScheduleLogManager = new StoreScheduleLogManager();
                 _storeScheduleLogManager.Init(storeAndSign);
-                _logger.WriteLog(_storeScheduleLogManager.Insert() ? $"Updated Log for {storeAndSign.Name}" : $"{_storeScheduleLogManager.ErrorMessage} ", "Result");
+                if (_storeScheduleLogManager.Insert())
+                {
+                    _logger.WriteLog($"Updated Log for {storeAndSign.Name}", "Result");
+                }
+                else
+                {
+                    _logger.WriteLog($"Store schedule Log not updated for  {storeAndSign.Name} {_storeScheduleLogManager.ErrorMessage}", "Result");
+                }
+            }
+            else
+            {
+                _logger.WriteLog($"Success code was not 0 for {storeAndSign.Name}", "Result");
             }
         }
 

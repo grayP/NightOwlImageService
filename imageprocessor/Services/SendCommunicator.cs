@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Policy;
 using Logger.Service;
-using nightowlsign.data.Models.UpLoadLog;
+using System.Threading;
 
 namespace ImageProcessor.Services
 {
@@ -16,8 +16,6 @@ namespace ImageProcessor.Services
         public int UpLoadSuccess { get; set; }
 
         private const int TimeOut = 3600;
-        private StoreAndSign _storeAndSign;
-        private string _programFileDirectory;
         private readonly GeneralLogger _logger;
         private readonly UpLoadLogger _upLoadLogger;
         // private readonly LoggingManager 
@@ -37,13 +35,13 @@ namespace ImageProcessor.Services
         {
             if (SignIsOnLine(storeAndSign))
             {
-                SendTheFiletoSign(storeAndSign, programFileDirectory);
-                return UpLoadSuccess;
+                return SendTheFiletoSign(storeAndSign, programFileDirectory);
+                 //UpLoadSuccess;
             }
             _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}", "Result");
-            return 99;
+            return -99;
         }
-        public void SendTheFiletoSign(StoreAndSign storeAndSign, string programDirectory)
+        public int SendTheFiletoSign(StoreAndSign storeAndSign, string programDirectory)
         {
             try
             {
@@ -58,7 +56,7 @@ namespace ImageProcessor.Services
                     for (var i = 0; i < 5; i++)
                     {
                         UpLoadSuccess = UploadFile(programFileName, fileName);
-                        _logger.WriteLog($"SendFileToSign {i}, {fileName}", "Result");
+                        _logger.WriteLog($"SendFileToSign {i}, {fileName}, {UpLoadSuccess}", "Upload");
                         if (UpLoadSuccess == 0) break;
                     }
                     _upLoadLogger.WriteLog(storeAndSign.id, UpLoadSuccess, fileName, storeAndSign.CurrentSchedule.Id);
@@ -67,11 +65,12 @@ namespace ImageProcessor.Services
                         "Result");
                     sumSuccess += UpLoadSuccess;
                 }
-                UpLoadSuccess = sumSuccess;
+                return sumSuccess;
             }
             catch (Exception ex)
             {
                 _logger.WriteLog($"SendFileToSign - Error in Sendfile to sign: {ex.Message}", "Error");
+                return -99;
             }
         }
 

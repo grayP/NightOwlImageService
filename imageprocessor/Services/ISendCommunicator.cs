@@ -13,7 +13,7 @@ namespace ImageProcessor.Services
 
         bool FilesUploadedOk(StoreAndSign storeAndSign, string programFileDirectory);
         int ConnectToSignAndUpload(StoreAndSign storeAndSign, string programDir);
-        void SendTheFiletoSign(StoreAndSign storeAndSign, string programDir);
+        int SendTheFiletoSign(StoreAndSign storeAndSign, string programDir);
         bool SignIsOnLine(StoreAndSign storeAndSign);
         int Disconnect();
         int RestartSign();

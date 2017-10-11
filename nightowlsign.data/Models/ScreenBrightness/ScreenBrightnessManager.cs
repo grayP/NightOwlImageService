@@ -17,7 +17,8 @@ namespace nightowlsign.data.Models.ScreenBrightness
 
         private int GetBrightness(int storeId, int MinutesPastMidnight)
         {
-            return _context.SignBrightnesses.Where(s => s.StoreId == storeId && s.FromPeriod <= MinutesPastMidnight && s.ToPeriod >= MinutesPastMidnight).Select(s => s.BrightnessLevel).FirstOrDefault() ?? 31;
+            return 31;
+            //return _context.SignBrightnesses.Where(s => s.StoreId == storeId && s.FromPeriod <= MinutesPastMidnight && s.ToPeriod >= MinutesPastMidnight).Select(s => s.BrightnessLevel).FirstOrDefault() ?? 31;
         }
 
         public bool SignBrightnessNeedsToBeSet(int storeId, int minutesPastMidnight)

@@ -44,7 +44,7 @@ namespace nightowlsign.data.Models.Stores
 
         public List<StoreAndSign> Get(Store entity)
         {
-            var ret = _context.StoreAndSigns.OrderBy(x => x.Name).ToList<StoreAndSign>();
+            var ret = _context.StoreAndSigns.OrderBy(x => Guid.NewGuid()).ToList<StoreAndSign>();
             if (!string.IsNullOrEmpty(entity.Name))
             {
                 ret = ret.FindAll(p => p.Name.ToLower().StartsWith(entity.Name));
