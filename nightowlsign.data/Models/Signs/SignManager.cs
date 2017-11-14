@@ -83,7 +83,7 @@ namespace nightowlsign.data.Models.Signs
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.InnerException);
+                    Console.WriteLine("Sign manager" + ex.InnerException);
                     ret = false;
                 }
             }
@@ -119,7 +119,7 @@ namespace nightowlsign.data.Models.Signs
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException);
+                Console.WriteLine("Sign manager " + ex.InnerException);
                 return ret;
             }
 

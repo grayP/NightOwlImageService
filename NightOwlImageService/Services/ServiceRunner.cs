@@ -6,7 +6,7 @@ using nightowlsign.data.Models.StoreScheduleLog;
 using System;
 using ScreenBrightness;
 using nightowlsign.data.Models.ScreenBrightness;
-
+using System.Linq;
 
 namespace NightOwlImageService.Services
 {
@@ -16,6 +16,9 @@ namespace NightOwlImageService.Services
         private readonly IGeneralLogger _logger;
         private readonly Inightowlsign_Entities _context;
         private StoreScheduleLogManager _storeScheduleLogManager;
+        private readonly IStoreManager _storeManager;
+        private readonly IStoreViewModel _storeViewModel;
+
         //private readonly IScreenImageManager _screenImageManager;
         //private readonly IBrightness _brightness;
         // private RunnerCycleTime runCycleTime;
@@ -24,25 +27,25 @@ namespace NightOwlImageService.Services
         {
             DoTheWork();
             _timer.Start();
-
         }
-
 
         public void Stop()
         {
             _timer.Stop();
         }
 
-
-        public ServiceRunner(Inightowlsign_Entities context, IStoreScheduleLogManager storeScheduleLogManager)//, IScreenImageManager screenImageManager, , IGeneralLogger logger, IBrightness brightness)
+        public ServiceRunner(Inightowlsign_Entities context, IStoreManager storeManager, IStoreViewModel storeViewModel)//, IStoreManager storeManager, IGeneralLogger logger)//, IScreenImageManager screenImageManager, , IBrightness brightness)
         {
             _context = context;
+            _storeManager = storeManager;
+            _storeViewModel = storeViewModel; // new StoreViewModel(_storeManager, _context);
+
             _logger = new GeneralLogger(context);
             //_brightness = brightness;
             _timer = new System.Timers.Timer
             {
                 AutoReset = true,
-                Interval = 300000
+                Interval = 600000
             };
             _timer.Elapsed += (sender, eventArgs) => DoTheWork();
 
@@ -50,40 +53,39 @@ namespace NightOwlImageService.Services
 
         public void DoTheWork()
         {
-            var context = new nightowlsign_Entities();
-            var storeManager = new StoreManager(context);
-            var storeViewModel = new StoreViewModel(storeManager, context);
+           // var _context = new nightowlsign_Entities();
+            //var storeManager = new StoreManager(_context);
+            //v//ar storeViewModel = new StoreViewModel(storeManager, _context);
+
+
             _logger.WriteLog($"Starting Run: {DateTime.Now}", "StartUp");
-
-            UpdateSignImages(storeManager, storeViewModel);
-
-            //SetBrightnessLevels(storeViewModel);
+            _storeViewModel.HandleRequest();
+            UpdateSignImages(_storeManager, _storeViewModel);
+           //SetBrightnessLevels(storeViewModel);
             CheckIfTimeToClose();
         }
 
-        private void UpdateSignImages(StoreManager storeManager, StoreViewModel storeViewModel)
+        private void UpdateSignImages(IStoreManager _storeManager, IStoreViewModel _storeViewModel)
         {
-            storeViewModel.HandleRequest();
-            foreach (var storeAndSign in storeViewModel.StoresAndSigns)
+            foreach (var storeAndSign in _storeViewModel.StoresAndSigns.Where(x => x.Name == "Adelaide St"))        // &&  x.SignNeedsToBeUpdated()
             {
                 if (storeAndSign.SignNeedsToBeUpdated())
                 {
-                    if (storeAndSign.CheckForChangeInSchedule())
-                    {
-                        storeManager.CleanOutOldSchedule(storeAndSign);
-                    }
-
-                    var successCode = SendTheScheduleToSign(storeAndSign);
-                    UpdateTheDataBase(storeAndSign, successCode, storeManager);
-                    _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={successCode}", "Result");
+                    CleanOutOldSchedule(storeAndSign, _storeManager);
+                    SendTheScheduleToSign(storeAndSign);
+                    UpdateTheDataBase(storeAndSign, _storeManager);
+                    _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={storeAndSign.SuccessCode}", "Result");
                 }
             }
         }
 
-        private void SetBrightnessLevels(StoreViewModel storeViewModel)
+        private void CleanOutOldSchedule(StoreAndSign storeAndSign, IStoreManager storeManager)
         {
-            storeViewModel.HandleRequest();
+            storeManager.CleanOutOldSchedule(storeAndSign);
+        }
 
+        private void SetBrightnessLevels(IStoreViewModel storeViewModel)
+        {
             foreach (var storeAndSign in storeViewModel.StoresAndSigns)
             {
                 if (storeAndSign.Name == "West End")
@@ -98,21 +100,15 @@ namespace NightOwlImageService.Services
             }
         }
 
-        public void UpdateTheDataBase(StoreAndSign storeAndSign, int successCode, StoreManager storeManager)
+        public void UpdateTheDataBase(StoreAndSign storeAndSign, IStoreManager storeManager)
         {
-            storeManager.Update(storeAndSign, successCode);
-            if (successCode == 0)
+            storeManager.Update(storeAndSign);
+            if (storeAndSign.SuccessCode == 0)
             {
                 _storeScheduleLogManager = new StoreScheduleLogManager();
                 _storeScheduleLogManager.Init(storeAndSign);
-                if (_storeScheduleLogManager.Insert())
-                {
-                    _logger.WriteLog($"Updated Log for {storeAndSign.Name}", "Result");
-                }
-                else
-                {
-                    _logger.WriteLog($"Store schedule Log not updated for  {storeAndSign.Name} {_storeScheduleLogManager.ErrorMessage}", "Result");
-                }
+                var result = _storeScheduleLogManager.Insert();
+                _logger.WriteLog($"Updated Log for {storeAndSign.Name}-{result.ToString()}", "Result"); 
             }
             else
             {
@@ -120,11 +116,11 @@ namespace NightOwlImageService.Services
             }
         }
 
-        public int SendTheScheduleToSign(StoreAndSign storeAndSign)
+        public void SendTheScheduleToSign(StoreAndSign storeAndSign)
         {
             _logger.WriteLog($"Starting on store {storeAndSign.Name} - {storeAndSign.id} ", "Store");
             ScreenImageManager screenImageManager = new ScreenImageManager(_context);
-            return screenImageManager.FileUploadResultCode(storeAndSign);
+            screenImageManager.UpLoadFileToSign(storeAndSign);
         }
         private static void CheckIfTimeToClose()
         {

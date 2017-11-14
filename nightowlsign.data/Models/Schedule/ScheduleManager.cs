@@ -91,7 +91,7 @@ namespace nightowlsign.data.Models.Schedule
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.InnerException);
+                    Console.WriteLine("schedule manager " + ex.InnerException);
                     ret = false;
                 }
             }
@@ -136,7 +136,7 @@ namespace nightowlsign.data.Models.Schedule
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException);
+                Console.WriteLine("sched manager" + ex.InnerException);
                 return ret;
             }
         }

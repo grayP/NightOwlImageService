@@ -14,9 +14,8 @@ namespace nightowlsign.data.Models.Stores
         List<data.Schedule> GetAvailableSchedules(int storeId);
         Store Find(int storeId);
         bool Validate(Store entity);
-        bool Update(StoreAndSign storeAndSign, int successCode);
+        bool Update(StoreAndSign storeAndSign);
         bool Update(Store entity);
-        bool Insert(Store entity);
-        bool Delete(Store entity);
+        void CleanOutOldSchedule(StoreAndSign storeAndSign);
     }
 }

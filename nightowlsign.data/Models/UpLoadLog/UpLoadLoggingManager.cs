@@ -69,7 +69,7 @@ namespace nightowlsign.data.Models.UpLoadLog
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException);
+                Console.WriteLine("uploader" + ex.InnerException);
                 return false;
             }
         }

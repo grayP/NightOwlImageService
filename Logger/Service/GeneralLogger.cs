@@ -11,7 +11,7 @@ namespace Logger.Service
 
         public GeneralLogger(Inightowlsign_Entities context)
         {
-            _loggingManager = new LoggingManager(context);
+            _loggingManager = new LoggingManager();
         }
 
         public void Init (string assemblyName)
@@ -48,7 +48,7 @@ namespace Logger.Service
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("general logger" + e);
             }
         }
 

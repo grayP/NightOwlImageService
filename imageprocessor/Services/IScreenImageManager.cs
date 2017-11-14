@@ -9,7 +9,7 @@ namespace ImageProcessor.Services
         string PlaybillFileName { get; set; }
         bool Successfull { get; set; }
         StoreAndSign StoreAndSign { get; set; }
-        int FileUploadResultCode(StoreAndSign storeAndSign);
+        void UpLoadFileToSign(StoreAndSign storeAndSign);
         List<ImageSelect> GetImages(int scheduleId);
         void DeleteOldFiles(string directoryName, string extension);
         void WriteImagesToDisk(string imageDir, IEnumerable<ImageSelect> images);
@@ -19,5 +19,8 @@ namespace ImageProcessor.Services
         void SaveImageToFile(string imageDir, string sCounter, ImageSelect image);
         string GeneratePlayBillFileName(string scheduleName);
         string GenerateProgramFileName(string programdir, string programFile);
+        void SendImagesToSign(StoreAndSign storeAndSign, string programFileDirectory);
+
+
     }
 }

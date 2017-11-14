@@ -1,33 +1,37 @@
 ﻿using nightowlsign.data.Models.ScreenBrightness;
-using System.Runtime.CompilerServices;
-using System;
+
 namespace nightowlsign.data
 {
     public partial class StoreAndSign
     {
         public int NumImagesUploaded { get; set; }
+        public int SuccessCode { get; set; }
         public bool SignNeedsToBeUpdated()
         {
-            return this?.CurrentSchedule.Id != this?.LastInstalled?.Id && this.CurrentSchedule?.Id != 0 ||
-                   this?.CurrentSchedule.Id == this?.LastInstalled?.Id && this.LastUpdateStatus < 0 ||
-                   this?.CurrentSchedule?.LastUpdated > this?.LastInstalled?.LastUpdated && this.CurrentSchedule?.Id != 0 ||
-                   this?.LastUpdateStatus==-99;
+
+            if (this?.LastUpdateStatus == 1  || this.CurrentSchedule.Id == 0)
+            {
+                //Last Update Status= 1 means store has been turned off!
+                return false;
+            }
+            else
+            {
+                return this?.CurrentSchedule.Id != this?.LastInstalled?.Id ||
+                       this?.CurrentSchedule.Id == this?.LastInstalled?.Id && this.LastUpdateStatus < 0 ||
+                       this?.CurrentSchedule?.LastUpdated > this?.LastInstalled?.LastUpdated  ||
+                       this?.LastUpdateStatus == -99;
+            }
         }
 
         public bool CheckForChangeInSchedule()
         {
-            if (this.LastInstalled == null) return false;
-            if (this.CurrentSchedule.Id != this.LastInstalled?.Id || this.LastUpdateStatus == -99)
-            {
-                return true;
-            }
-            return false;
+           return this.LastInstalled == null ?  false : this.CurrentSchedule.Id != this.LastInstalled?.Id || this.LastUpdateStatus == -99;
         }
 
         public bool BrightnessNeedsToBeSet(ScreenBrightnessManager sbm, int storeId)
         {
             return true;
-           // return sbm.SignBrightnessNeedsToBeSet(storeId, DateTime.Now.Minute);
+            // return sbm.SignBrightnessNeedsToBeSet(storeId, DateTime.Now.Minute);
         }
     }
 }

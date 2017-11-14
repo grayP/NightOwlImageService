@@ -28,7 +28,7 @@ namespace Logger.Service
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("Upload logger" + e);
             }
         }
 

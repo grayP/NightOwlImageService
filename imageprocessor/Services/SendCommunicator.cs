@@ -53,7 +53,7 @@ namespace ImageProcessor.Services
                     sumSuccess = 0;
                     var fileName = Path.GetFileNameWithoutExtension(programFileName);
                     if (!FileNeedsToBeSent(storeAndSign, fileName)) continue;
-                    for (var i = 0; i < 5; i++)
+                    for (var i = 0; i < 3; i++)
                     {
                         UpLoadSuccess = UploadFile(programFileName, fileName);
                         _logger.WriteLog($"SendFileToSign {i}, {fileName}, {UpLoadSuccess}", "Upload");

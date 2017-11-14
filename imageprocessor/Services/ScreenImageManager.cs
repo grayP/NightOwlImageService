@@ -10,6 +10,7 @@ using System.Web.UI.WebControls;
 using Logger.Service;
 using nightowlsign.data.Models.SendToSign;
 using nightowlsign.data.Models.UpLoadLog;
+using System.Linq;
 
 namespace ImageProcessor.Services
 
@@ -45,7 +46,7 @@ namespace ImageProcessor.Services
             sendToSignManager = new SendToSignManager();
         }
 
-        public int FileUploadResultCode(StoreAndSign storeAndSign)
+        public void UpLoadFileToSign(StoreAndSign storeAndSign)
         {
             try
             {
@@ -55,32 +56,33 @@ namespace ImageProcessor.Services
                 CleanOutTheProgramFiles(_storeProgramDirectory);
                 GeneratetheProgramFiles(_storeProgramDirectory, storeAndSign);
                 //GeneratethePlayBillFile(storeAndSign);
-                return SendImagesToSign(storeAndSign, _storeProgramDirectory);
+                SendImagesToSign(storeAndSign, _storeProgramDirectory);
 
             }
             catch (Exception ex)
             {
                 _logger.WriteLog($"ImageManager - FileUpload_ResultCode - {ex.Message}{ex.InnerException}", "Error");
-                return -99;
+                storeAndSign.SuccessCode = -99;
             }
         }
 
         private void CleanOutTheProgramFiles(string storeProgramDirectory)
         {
-            foreach (var fileName in Directory.GetFiles(storeProgramDirectory, $"*{ProgramFileExtension}"))
-            {
-                System.IO.File.Delete(fileName);
-            }
+            Directory.GetFiles(storeProgramDirectory, $"*{ProgramFileExtension}").ToList().ForEach(f=> { File.Delete(f); });
+            //foreach (var fileName in Directory.GetFiles(storeProgramDirectory, $"*{ProgramFileExtension}"))
+            //{
+            //    System.IO.File.Delete(fileName);
+            //}
         }
 
-        private int SendImagesToSign(StoreAndSign storeAndSign, string programFileDirectory)
+        public void SendImagesToSign(StoreAndSign storeAndSign, string programFileDirectory)
         {
             if (sendCommunicator.FilesUploadedOk(storeAndSign, programFileDirectory))
             {
                 sendCommunicator.RestartSign();
             }
             sendCommunicator.Disconnect();
-            return sendCommunicator.UpLoadSuccess;
+            storeAndSign.SuccessCode= sendCommunicator.UpLoadSuccess;
         }
 
         private void UpdateTheStorageDirectory(StoreAndSign storeAndSign)

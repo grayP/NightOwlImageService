@@ -8,10 +8,10 @@ namespace nightowlsign.data.Models.Logging
 {
     public class LoggingManager : ILoggingManager
     {
-        private  Inightowlsign_Entities _context;
-        public LoggingManager(Inightowlsign_Entities context)
+        private  nightowlsign_Entities _context;
+        public LoggingManager()
         {
-            _context = context;
+            _context = new nightowlsign_Entities();
         }
 
         public List<data.Logging> GetLatest()
@@ -45,7 +45,7 @@ namespace nightowlsign.data.Models.Logging
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException);
+                Console.WriteLine("logging Manager" + ex.InnerException);
                 return false;
             }
         }

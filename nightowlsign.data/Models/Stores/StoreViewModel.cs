@@ -9,10 +9,10 @@ namespace nightowlsign.data.Models.Stores
 {
     public class StoreViewModel : BaseModel.ViewModelBase, IStoreViewModel
     {
-        private readonly StoreManager _storeManager;
+        private readonly IStoreManager _storeManager;
         private readonly Inightowlsign_Entities _context;
 
-        public StoreViewModel(StoreManager storeManager, Inightowlsign_Entities context) : base()
+        public StoreViewModel(IStoreManager storeManager, Inightowlsign_Entities context) : base()
         {
             _storeManager = storeManager;
             _context = context;
@@ -59,7 +59,7 @@ namespace nightowlsign.data.Models.Stores
   
             if (Mode == "Add")
             {
-                _storeManager.Insert(Entity);
+            //    _storeManager.Insert(Entity);
             }
             else
             {
@@ -68,12 +68,12 @@ namespace nightowlsign.data.Models.Stores
             ValidationErrors = _storeManager.ValidationErrors;
             base.Save();
         }
-        protected override void Delete()
-        {
-            Entity = _storeManager.Find(Convert.ToInt32(EventArgument));
-            _storeManager.Delete(Entity);
-            Get();
-            base.Delete();
-        }
+        //protected override void Delete()
+        //{
+        //    Entity = _storeManager.Find(Convert.ToInt32(EventArgument));
+        //    _storeManager.Delete(Entity);
+        //    Get();
+        //    base.Delete();
+        //}
     }
 }

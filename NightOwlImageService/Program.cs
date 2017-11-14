@@ -16,7 +16,6 @@ namespace NightOwlImageService
             HostFactory.Run(x => //1
             {
                 x.UseAutofacContainer(container);
-
                 x.Service<ServiceRunner>(s =>                        //2
                 {
                     s.ConstructUsing(() =>container.Resolve<ServiceRunner>());     //3

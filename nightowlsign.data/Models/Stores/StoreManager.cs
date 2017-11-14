@@ -14,12 +14,12 @@ namespace nightowlsign.data.Models.Stores
         private readonly Inightowlsign_Entities _context;
         private readonly UpLoadLoggingManager _upLoadLoggingManager;
         private Logging.LoggingManager _logger;
-        
+
         public StoreManager(Inightowlsign_Entities context)
         {
             _context = context;
             _upLoadLoggingManager = new UpLoadLoggingManager(_context);// _context);
-            _logger = new Logging.LoggingManager(_context);
+            _logger = new Logging.LoggingManager();
             ValidationErrors = new List<KeyValuePair<string, string>>();
             _defaultSchedule = new data.Schedule
             {
@@ -157,14 +157,13 @@ namespace nightowlsign.data.Models.Stores
                 ValidationErrors.Add(new KeyValuePair<string, string>("Store Name", "Store Name cannot be all lower case"));
             }
             return (ValidationErrors.Count == 0);
-        }
+        } 
 
-        public bool Update(StoreAndSign storeAndSign, int successCode)
+        public bool Update(StoreAndSign storeAndSign)
         {
             var store = Find(storeAndSign.id);
-            store.LastUpdateStatus =
-                _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
-            store.LastUpdateTime = DateTime.Now.ToUniversalTime();
+            store.LastUpdateStatus = _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
+            store.LastUpdateTime = DateTime.Now;
             return Update(store);
         }
 
@@ -175,20 +174,20 @@ namespace nightowlsign.data.Models.Stores
             {
                 _context.Store.Attach(entity);
                 var modifiedStore = _context.Entry(entity);
-                modifiedStore.Property("Name").IsModified = true;
-                modifiedStore.Property("Address").IsModified = true;
-                modifiedStore.Property("Suburb").IsModified = true;
-                modifiedStore.Property("State").IsModified = true;
-                modifiedStore.Property("Manager").IsModified = true;
-                modifiedStore.Property("Phone").IsModified = true;
-                modifiedStore.Property("SignId").IsModified = true;
-                modifiedStore.Property("IpAddress").IsModified = true;
-                modifiedStore.Property("SubMask").IsModified = true;
-                modifiedStore.Property("Port").IsModified = true;
-                modifiedStore.Property("ProgramFile").IsModified = true;
+                modifiedStore.Property("Name").IsModified = false;
+                modifiedStore.Property("Address").IsModified = false;
+                modifiedStore.Property("Suburb").IsModified = false;
+                modifiedStore.Property("State").IsModified = false;
+                modifiedStore.Property("Manager").IsModified = false;
+                modifiedStore.Property("Phone").IsModified = false;
+                modifiedStore.Property("SignId").IsModified = false;
+                modifiedStore.Property("IpAddress").IsModified = false;
+                modifiedStore.Property("SubMask").IsModified = false;
+                modifiedStore.Property("Port").IsModified = false;
+                modifiedStore.Property("ProgramFile").IsModified = false;
                 modifiedStore.Property("LastUpdateTime").IsModified = true;
                 modifiedStore.Property("LastUpdateStatus").IsModified = true;
-               // modifiedStore.Property("Brightness").IsModified = true;
+                // modifiedStore.Property("Brightness").IsModified = true;
                 _context.SaveChanges();
                 return true;
 
@@ -201,65 +200,16 @@ namespace nightowlsign.data.Models.Stores
             }
         }
 
-        public bool Insert(Store entity)
-        {
-            bool ret = false;
-            try
-            {
-                ret = Validate(entity);
-                if (Validate(entity))
-                {
-                    var newStore = new Store()
-                    {
-                        Name = entity.Name.Trim(),
-                        Address = entity.Address,
-                        Suburb = entity.Suburb,
-                        State = entity.State,
-                        Manager = entity.Manager,
-                        Phone = entity.Phone,
-                        SignId = entity.SignId,
-                        IpAddress = entity.IpAddress,
-                        SubMask = entity.SubMask,
-                        Port = entity.Port,
-                        ProgramFile = entity.ProgramFile,
-                        Brightness = 31
-                    };
-
-                    _context.Store.Add(newStore);
-                    _context.SaveChanges();
-                    ret = true;
-                }
-                return ret;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.InnerException);
-                return ret;
-            }
-        }
-
-        public bool Delete(Store entity)
-        {
-            try
-            {
-                _context.Store.Attach(entity);
-                _context.Store.Remove(entity);
-                _context.SaveChanges();
-                return true;
-            }
-            catch (Exception e)
-            {
-                _logger.Insert($"StoreManager -Delete- {e.Message}", "Error");
-                return false;
-            }
-        }
-
+ 
         public void CleanOutOldSchedule(StoreAndSign storeAndSign)
         {
             try
             {
-                _upLoadLoggingManager.Delete(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
-                _upLoadLoggingManager.Delete(storeAndSign.id, storeAndSign.LastInstalled.Id);
+                if (storeAndSign.CheckForChangeInSchedule())
+                {
+                    _upLoadLoggingManager.Delete(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
+                    _upLoadLoggingManager.Delete(storeAndSign.id, storeAndSign.LastInstalled.Id);
+                }
             }
             catch (Exception e)
             {
