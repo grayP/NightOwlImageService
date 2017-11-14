@@ -55,7 +55,7 @@ namespace NightOwlImageService.Services
         {
            // var _context = new nightowlsign_Entities();
             //var storeManager = new StoreManager(_context);
-            //v//ar storeViewModel = new StoreViewModel(storeManager, _context);
+            //var storeViewModel = new StoreViewModel(storeManager, _context);
 
 
             _logger.WriteLog($"Starting Run: {DateTime.Now}", "StartUp");
@@ -67,15 +67,12 @@ namespace NightOwlImageService.Services
 
         private void UpdateSignImages(IStoreManager _storeManager, IStoreViewModel _storeViewModel)
         {
-            foreach (var storeAndSign in _storeViewModel.StoresAndSigns.Where(x => x.Name == "Adelaide St"))        // &&  x.SignNeedsToBeUpdated()
+            foreach (var storeAndSign in _storeViewModel.StoresAndSigns.Where(x => x.SignNeedsToBeUpdated()) )
             {
-                if (storeAndSign.SignNeedsToBeUpdated())
-                {
                     CleanOutOldSchedule(storeAndSign, _storeManager);
                     SendTheScheduleToSign(storeAndSign);
                     UpdateTheDataBase(storeAndSign, _storeManager);
                     _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={storeAndSign.SuccessCode}", "Result");
-                }
             }
         }
 
