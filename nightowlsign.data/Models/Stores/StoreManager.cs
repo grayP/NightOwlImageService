@@ -159,11 +159,11 @@ namespace nightowlsign.data.Models.Stores
             return (ValidationErrors.Count == 0);
         } 
 
-        public bool Update(StoreAndSign storeAndSign)
+        public bool Update(StoreAndSign storeAndSign, DateTime dateTime)
         {
             var store = Find(storeAndSign.id);
             store.LastUpdateStatus = _upLoadLoggingManager.GetOverallStatus(storeAndSign.id, storeAndSign.CurrentSchedule.Id);
-            store.LastUpdateTime = DateTime.Now;
+            store.LastUpdateTime = dateTime;
             return Update(store);
         }
 

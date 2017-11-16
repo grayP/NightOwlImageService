@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace nightowlsign.data.Models.Stores
@@ -14,7 +15,7 @@ namespace nightowlsign.data.Models.Stores
         List<data.Schedule> GetAvailableSchedules(int storeId);
         Store Find(int storeId);
         bool Validate(Store entity);
-        bool Update(StoreAndSign storeAndSign);
+        bool Update(StoreAndSign storeAndSign, DateTime dateTime);
         bool Update(Store entity);
         void CleanOutOldSchedule(StoreAndSign storeAndSign);
     }

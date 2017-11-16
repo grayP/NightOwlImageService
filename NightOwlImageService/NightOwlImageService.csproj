@@ -27,7 +27,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>53</ApplicationRevision>
+    <ApplicationRevision>56</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -119,6 +119,7 @@
     <None Include="App.NightOwlImageService - Web Deploy.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
+      <SubType>Designer</SubType>
     </None>
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
@@ -132,6 +133,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\PublishProfiles\NightOwlImageService - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\nightowlsign - Web Deploy.pubxml" />
+    <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -184,6 +187,7 @@
     <PreBuildEvent>IF $(ConfigurationName) == Debug COPY /Y "$(ProjectDir)App.debug.config" "$(ProjectDir)App.config"
 IF $(ConfigurationName) == Release COPY /Y "$(ProjectDir)App.release.config" "$(ProjectDir)App.config"</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Microsoft.Web.WebJobs.Publish.1.1.0\tools\webjobs.targets" Condition="Exists('..\packages\Microsoft.Web.WebJobs.Publish.1.1.0\tools\webjobs.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

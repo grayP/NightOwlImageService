@@ -105,6 +105,7 @@ namespace ImageProcessor.Services
                 var nIpPort = Convert.ToInt32(storeAndSign.Port);
                 if (dwIpAddr != 0 && dwIdCode != 0)
                 {
+                    _logger.WriteLog($"Comms Start with {storeAndSign.IpAddress}, {storeAndSign.Name}", "Result");
                     var responseNumber = Cp5200External.CP5200_Net_Init(dwIpAddr, nIpPort, dwIdCode, TimeOut);
                     if (responseNumber == 0)
                     {

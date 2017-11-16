@@ -53,26 +53,21 @@ namespace NightOwlImageService.Services
 
         public void DoTheWork()
         {
-           // var _context = new nightowlsign_Entities();
-            //var storeManager = new StoreManager(_context);
-            //var storeViewModel = new StoreViewModel(storeManager, _context);
-
-
             _logger.WriteLog($"Starting Run: {DateTime.Now}", "StartUp");
             _storeViewModel.HandleRequest();
             UpdateSignImages(_storeManager, _storeViewModel);
-           //SetBrightnessLevels(storeViewModel);
+            //SetBrightnessLevels(storeViewModel);
             CheckIfTimeToClose();
         }
 
         private void UpdateSignImages(IStoreManager _storeManager, IStoreViewModel _storeViewModel)
         {
-            foreach (var storeAndSign in _storeViewModel.StoresAndSigns.Where(x => x.SignNeedsToBeUpdated()) )
+            foreach (var storeAndSign in _storeViewModel.StoresAndSigns.Where(x => x.SignNeedsToBeUpdated()))
             {
-                    CleanOutOldSchedule(storeAndSign, _storeManager);
-                    SendTheScheduleToSign(storeAndSign);
-                    UpdateTheDataBase(storeAndSign, _storeManager);
-                    _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={storeAndSign.SuccessCode}", "Result");
+                CleanOutOldSchedule(storeAndSign, _storeManager);
+                SendTheScheduleToSign(storeAndSign);
+                UpdateTheDataBase(storeAndSign, _storeManager);
+                _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={storeAndSign.SuccessCode}", "Result");
             }
         }
 
@@ -99,13 +94,14 @@ namespace NightOwlImageService.Services
 
         public void UpdateTheDataBase(StoreAndSign storeAndSign, IStoreManager storeManager)
         {
-            storeManager.Update(storeAndSign);
+            DateTime dateUpdated = DateTime.Now;
+            storeManager.Update(storeAndSign, dateUpdated);
             if (storeAndSign.SuccessCode == 0)
             {
                 _storeScheduleLogManager = new StoreScheduleLogManager();
                 _storeScheduleLogManager.Init(storeAndSign);
-                var result = _storeScheduleLogManager.Insert();
-                _logger.WriteLog($"Updated Log for {storeAndSign.Name}-{result.ToString()}", "Result"); 
+                var result = _storeScheduleLogManager.Insert(dateUpdated);
+                _logger.WriteLog($"Updated Log for {storeAndSign.Name}-{result.ToString()}", "Result");
             }
             else
             {

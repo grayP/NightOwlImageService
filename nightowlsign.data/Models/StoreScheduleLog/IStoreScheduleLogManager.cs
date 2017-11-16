@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace nightowlsign.data.Models.StoreScheduleLog
@@ -9,7 +10,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
         data.StoreScheduleLog Entity { get; set; }
         List<data.StoreScheduleLog> Get(data.StoreScheduleLog storeScheduleLog);
         data.StoreScheduleLog GetStoreScheduleLog(int scheduleStoreLogId);
-        bool Insert();
+        bool Insert(DateTime datetime);
         bool Delete(data.StoreScheduleLog entity);
     }
 }

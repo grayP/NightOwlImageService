@@ -45,7 +45,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
             }
         }
 
-        public bool Insert()
+        public bool Insert(DateTime dateTime)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace nightowlsign.data.Models.StoreScheduleLog
                     data.StoreScheduleLog storeScheduleLog = new data.StoreScheduleLog()
                     {
                         ScheduleName = Entity.ScheduleName.Trim(),
-                        DateInstalled = DateTime.Now.ToUniversalTime(),
+                        DateInstalled = dateTime.ToUniversalTime(),
                         StoreId = Entity.StoreId,
                         InstalledOk = true,
                         ScheduleId = Entity.ScheduleId

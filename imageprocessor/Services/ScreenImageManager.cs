@@ -21,7 +21,8 @@ namespace ImageProcessor.Services
         private readonly SendCommunicator sendCommunicator;
         private PlayBillFiles _cp5200;
 
-        private string _programFileDirectory = "c:/programFiles/"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
+        private string _programFileDirectory = "D:\\local\\Temp\\"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
+        //private string _programFileDirectory = "c:\\programFiles\\"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
         private string _storeProgramDirectory;
         private string _imageDirectory;
         private const string ImageExtension = ".jpg";
