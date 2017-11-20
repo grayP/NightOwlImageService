@@ -64,11 +64,11 @@ namespace NightOwlImageService.Services
         {
             foreach (var storeAndSign in _storeViewModel.StoresAndSigns.Where(x => x.SignNeedsToBeUpdated()))
             {
-                CleanOutOldSchedule(storeAndSign, _storeManager);
+               // CleanOutOldSchedule(storeAndSign, _storeManager);
                 SendTheScheduleToSign(storeAndSign);
                 UpdateTheDataBase(storeAndSign, _storeManager);
                 _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={storeAndSign.SuccessCode}", "Result");
-            }
+            }  //
         }
 
         private void CleanOutOldSchedule(StoreAndSign storeAndSign, IStoreManager storeManager)

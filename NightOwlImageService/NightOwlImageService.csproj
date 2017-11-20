@@ -27,7 +27,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>56</ApplicationRevision>
+    <ApplicationRevision>65</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -128,10 +128,14 @@
     </None>
     <None Include="NightOwlImageService_TemporaryKey.pfx" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="privatesettings.config">
+    <Content Include="privatesettings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+    </Content>
+    <Content Include="debugsettings.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\NightOwlImageService - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\nightowlsign - Web Deploy.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />

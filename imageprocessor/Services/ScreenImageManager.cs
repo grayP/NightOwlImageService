@@ -21,8 +21,8 @@ namespace ImageProcessor.Services
         private readonly SendCommunicator sendCommunicator;
         private PlayBillFiles _cp5200;
 
-        private string _programFileDirectory = "D:\\local\\Temp\\"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
-        //private string _programFileDirectory = "c:\\programFiles\\"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
+        //private string _programFileDirectory = "D:\\local\\Temp\\"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
+        private string _programFileDirectory = "c:\\programFiles\\"; // string.Concat(System.IO.Directory.GetCurrentDirectory(), "\\");
         private string _storeProgramDirectory;
         private string _imageDirectory;
         private const string ImageExtension = ".jpg";
@@ -62,18 +62,21 @@ namespace ImageProcessor.Services
             }
             catch (Exception ex)
             {
-                _logger.WriteLog($"ImageManager - FileUpload_ResultCode - {ex.Message}{ex.InnerException}", "Error");
+                _logger.WriteLog($"ImageManager -  {ex.Message}{ex.InnerException}", "Error");
                 storeAndSign.SuccessCode = -99;
             }
         }
 
         private void CleanOutTheProgramFiles(string storeProgramDirectory)
         {
-            Directory.GetFiles(storeProgramDirectory, $"*{ProgramFileExtension}").ToList().ForEach(f=> { File.Delete(f); });
-            //foreach (var fileName in Directory.GetFiles(storeProgramDirectory, $"*{ProgramFileExtension}"))
-            //{
-            //    System.IO.File.Delete(fileName);
-            //}
+            try
+            {
+                Directory.GetFiles(storeProgramDirectory, $"*{ProgramFileExtension}").ToList().ForEach(f => { File.Delete(f); });
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteLog($"ScreenImageManager - CleanOutTheProgramFiles-{ex.Message}{ex.InnerException}", "Error");
+            }
         }
 
         public void SendImagesToSign(StoreAndSign storeAndSign, string programFileDirectory)
@@ -83,7 +86,7 @@ namespace ImageProcessor.Services
                 sendCommunicator.RestartSign();
             }
             sendCommunicator.Disconnect();
-            storeAndSign.SuccessCode= sendCommunicator.UpLoadSuccess;
+            storeAndSign.SuccessCode = sendCommunicator.UpLoadSuccess;
         }
 
         private void UpdateTheStorageDirectory(StoreAndSign storeAndSign)
@@ -185,7 +188,7 @@ namespace ImageProcessor.Services
 
         public void DeleteOldProgramFile(string fileAndPath)
         {
-            System.IO.File.Delete(fileAndPath);
+            File.Delete(fileAndPath);
         }
 
         public void GeneratethePlayBillFile(StoreAndSign storeAndSign)

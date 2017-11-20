@@ -4,10 +4,7 @@ using nightowlsign.data;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
 using Logger.Service;
-using System.Threading;
 
 namespace ImageProcessor.Services
 {
@@ -52,7 +49,7 @@ namespace ImageProcessor.Services
                 {
                     sumSuccess = 0;
                     var fileName = Path.GetFileNameWithoutExtension(programFileName);
-                    if (!FileNeedsToBeSent(storeAndSign, fileName)) continue;
+                   // if (!FileNeedsToBeSent(storeAndSign, fileName)) continue;
                     for (var i = 0; i < 3; i++)
                     {
                         UpLoadSuccess = UploadFile(programFileName, fileName);

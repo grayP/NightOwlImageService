@@ -199,8 +199,6 @@ namespace nightowlsign.data.Models.Stores
                 return false;
             }
         }
-
- 
         public void CleanOutOldSchedule(StoreAndSign storeAndSign)
         {
             try
