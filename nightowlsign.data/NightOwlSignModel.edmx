@@ -87,7 +87,7 @@
           <Property Name="State" Type="nvarchar" MaxLength="10" />
           <Property Name="Latitude" Type="decimal" Precision="10" Scale="4" />
           <Property Name="Longitude" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="Manager" Type="nvarchar" MaxLength="50" />
+          <Property Name="Manager" Type="nvarchar" MaxLength="255" />
           <Property Name="Phone" Type="nvarchar" MaxLength="50" />
           <Property Name="SignId" Type="int" />
           <Property Name="IpAddress" Type="nvarchar" MaxLength="50" />
@@ -97,6 +97,9 @@
           <Property Name="LastUpdateStatus" Type="int" />
           <Property Name="LastUpdateTime" Type="datetime" />
           <Property Name="NumImages" Type="int" />
+          <Property Name="Brightness" Type="int" />
+          <Property Name="Operational" Type="int" Nullable="false" />
+          <Property Name="Active" Type="bit" />
         </EntityType>
         <EntityType Name="StoreScheduleLog">
           <Key>
@@ -175,6 +178,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
         <EntityType Name="StoreAndSign">
           <Key>
             <PropertyRef Name="id" />
+            <PropertyRef Name="Operational" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" />
@@ -183,7 +187,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="State" Type="nvarchar" MaxLength="10" />
           <Property Name="Latitude" Type="decimal" Precision="10" Scale="4" />
           <Property Name="Longitude" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="Manager" Type="nvarchar" MaxLength="50" />
+          <Property Name="Manager" Type="nvarchar" MaxLength="255" />
           <Property Name="Phone" Type="nvarchar" MaxLength="50" />
           <Property Name="SignId" Type="int" />
           <Property Name="IpAddress" Type="nvarchar" MaxLength="50" />
@@ -193,6 +197,9 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="LastUpdateStatus" Type="int" />
           <Property Name="LastUpdateTime" Type="datetime" />
           <Property Name="NumImages" Type="int" />
+          <Property Name="Brightness" Type="int" />
+          <Property Name="Operational" Type="int" Nullable="false" />
+          <Property Name="Active" Type="bit" />
           <Property Name="Model" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Function Name="FindCurrentPlayList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -262,6 +269,9 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
     [StoreAndSign].[LastUpdateStatus] AS [LastUpdateStatus], 
     [StoreAndSign].[LastUpdateTime] AS [LastUpdateTime], 
     [StoreAndSign].[NumImages] AS [NumImages], 
+    [StoreAndSign].[Brightness] AS [Brightness], 
+    [StoreAndSign].[Operational] AS [Operational], 
+    [StoreAndSign].[Active] AS [Active], 
     [StoreAndSign].[Model] AS [Model]
     FROM [dbo].[StoreAndSign] AS [StoreAndSign]</DefiningQuery>
           </EntitySet>
@@ -309,7 +319,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="State" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="Decimal" Precision="10" Scale="4" />
           <Property Name="Longitude" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="Manager" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Manager" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SignId" Type="Int32" />
           <Property Name="IpAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -319,6 +329,9 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="LastUpdateStatus" Type="Int32" />
           <Property Name="LastUpdateTime" Type="DateTime" Precision="3" />
           <Property Name="NumImages" Type="Int32" />
+          <Property Name="Brightness" Type="Int32" />
+          <Property Name="Operational" Type="Int32" Nullable="false" />
+          <Property Name="Active" Type="Boolean" />
         </EntityType>
         <EntityType Name="Image">
           <Key>
@@ -388,6 +401,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
         <EntityType Name="StoreAndSign">
           <Key>
             <PropertyRef Name="id" />
+            <PropertyRef Name="Operational" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -396,7 +410,7 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="State" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="Decimal" Precision="10" Scale="4" />
           <Property Name="Longitude" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="Manager" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Manager" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SignId" Type="Int32" />
           <Property Name="IpAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -407,6 +421,9 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <Property Name="LastUpdateStatus" Type="Int32" />
           <Property Name="LastUpdateTime" Type="DateTime" Precision="3" />
           <Property Name="NumImages" Type="Int32" />
+          <Property Name="Brightness" Type="Int32" />
+          <Property Name="Operational" Type="Int32" Nullable="false" />
+          <Property Name="Active" Type="Boolean" />
         </EntityType>
         <EntityType Name="ScheduleAndSign">
           <Key>
@@ -519,6 +536,9 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySetMapping Name="Store">
             <EntityTypeMapping TypeName="Models.Store">
               <MappingFragment StoreEntitySet="Store">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Operational" ColumnName="Operational" />
+                <ScalarProperty Name="Brightness" ColumnName="Brightness" />
                 <ScalarProperty Name="NumImages" ColumnName="NumImages" />
                 <ScalarProperty Name="LastUpdateTime" ColumnName="LastUpdateTime" />
                 <ScalarProperty Name="LastUpdateStatus" ColumnName="LastUpdateStatus" />
@@ -612,6 +632,9 @@ warning 6002: The table/view 'nightowlsign.dbo.StoreAndSign' does not have a pri
           <EntitySetMapping Name="StoreAndSigns">
             <EntityTypeMapping TypeName="Models.StoreAndSign">
               <MappingFragment StoreEntitySet="StoreAndSign">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Operational" ColumnName="Operational" />
+                <ScalarProperty Name="Brightness" ColumnName="Brightness" />
                 <ScalarProperty Name="NumImages" ColumnName="NumImages" />
                 <ScalarProperty Name="LastUpdateTime" ColumnName="LastUpdateTime" />
                 <ScalarProperty Name="LastUpdateStatus" ColumnName="LastUpdateStatus" />

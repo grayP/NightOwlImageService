@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="32a18a5ca1394e4fb042e2e22d135e66" Name="Diagram1" ZoomLevel="46">
         <EntityTypeShape EntityType="Models.Sign" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Models.Store" Width="1.5" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="Models.Store" Width="1.5" PointX="4.75" PointY="0.5" />
         <EntityTypeShape EntityType="Models.Image" Width="1.5" PointX="0.75" PointY="4.75" />
         <EntityTypeShape EntityType="Models.Schedule" Width="1.5" PointX="3.375" PointY="4.75" />
         <EntityTypeShape EntityType="Models.ScheduleStore" Width="1.5" PointX="5.375" PointY="4.75" />

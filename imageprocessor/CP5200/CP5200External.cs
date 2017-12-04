@@ -70,6 +70,14 @@ namespace ImageProcessor.CP5200
         public static extern int CP5200_Net_Disconnect();
 
         [DllImport(DllPath, CharSet = CharSet.Auto)]
+        public static extern int CP5200_Net_TestController(int nCardID);
+        [DllImport(DllPath, CharSet = CharSet.Auto)]
+        public static extern int CP5200_Net_TestCommunication(int nCardID);
+
+        [DllImport(DllPath, CharSet = CharSet.Auto)]
+        public static extern int CP5200_Net_RestartSys(int ncardId);
+
+        [DllImport(DllPath, CharSet = CharSet.Auto)]
         public static extern int CP5200_Net_UploadFile(int nCardID, IntPtr pSourceFilename, IntPtr pTargetFilename);
 
         [DllImport(DllPath, CharSet = CharSet.Auto)]

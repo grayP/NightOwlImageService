@@ -62,13 +62,17 @@ namespace NightOwlImageService.Services
 
         private void UpdateSignImages(IStoreManager _storeManager, IStoreViewModel _storeViewModel)
         {
-            foreach (var storeAndSign in _storeViewModel.StoresAndSigns.Where(x => x.SignNeedsToBeUpdated()))
+            foreach (var storeAndSign in _storeViewModel.StoresAndSigns.Where(x => x.SignNeedsToBeUpdated() == true && x.Active == true))// && x.SignNeedsToBeUpdated()))
             {
-               // CleanOutOldSchedule(storeAndSign, _storeManager);
-                SendTheScheduleToSign(storeAndSign);
-                UpdateTheDataBase(storeAndSign, _storeManager);
-                _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={storeAndSign.SuccessCode}", "Result");
-            }  //
+
+//                if (storeAndSign.SignNeedsToBeUpdated())
+  //              {
+                    // CleanOutOldSchedule(storeAndSign, _storeManager);
+                    SendTheScheduleToSign(storeAndSign);
+                    UpdateTheDataBase(storeAndSign, _storeManager);
+                    _logger.WriteLog($"Uploaded images for {storeAndSign.Name} store, schedule: {storeAndSign.CurrentSchedule.Name}, SuccessCode={storeAndSign.SuccessCode}", "Result");
+    //            }
+            }
         }
 
         private void CleanOutOldSchedule(StoreAndSign storeAndSign, IStoreManager storeManager)

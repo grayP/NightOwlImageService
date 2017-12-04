@@ -51,13 +51,20 @@ namespace ImageProcessor.Services
         {
             try
             {
-                UpdateTheStorageDirectory(storeAndSign);
-                _imagesToSend = GetImages(storeAndSign.CurrentSchedule.Id);
-                WriteImagesToDisk(_imageDirectory, _imagesToSend);
-                CleanOutTheProgramFiles(_storeProgramDirectory);
-                GeneratetheProgramFiles(_storeProgramDirectory, storeAndSign);
-                //GeneratethePlayBillFile(storeAndSign);
-                SendImagesToSign(storeAndSign, _storeProgramDirectory);
+                if (SignIsOnLine(storeAndSign))
+                {
+                    UpdateTheStorageDirectory(storeAndSign);
+                    _imagesToSend = GetImages(storeAndSign.CurrentSchedule.Id);
+                    WriteImagesToDisk(_imageDirectory, _imagesToSend);
+                    CleanOutTheProgramFiles(_storeProgramDirectory);
+                    GeneratetheProgramFiles(_storeProgramDirectory, storeAndSign);
+                    //GeneratethePlayBillFile(storeAndSign);
+                    SendImagesToSign(storeAndSign, _storeProgramDirectory);
+                }
+                else
+                {
+                    storeAndSign.SuccessCode = -5;
+                }
 
             }
             catch (Exception ex)
@@ -65,6 +72,11 @@ namespace ImageProcessor.Services
                 _logger.WriteLog($"ImageManager -  {ex.Message}{ex.InnerException}", "Error");
                 storeAndSign.SuccessCode = -99;
             }
+        }
+
+        private bool SignIsOnLine(StoreAndSign storeAndSign)
+        {
+            return sendCommunicator.SignIsOnLine(storeAndSign);
         }
 
         private void CleanOutTheProgramFiles(string storeProgramDirectory)

@@ -33,9 +33,9 @@ namespace ImageProcessor.Services
             if (SignIsOnLine(storeAndSign))
             {
                 return SendTheFiletoSign(storeAndSign, programFileDirectory);
-                 //UpLoadSuccess;
+                //UpLoadSuccess;
             }
-            _logger.WriteLog($"Fail send file to sign {storeAndSign.Name}", "Result");
+            _logger.WriteLog($"Sign is off line -{storeAndSign.Name}", "Result");
             return -99;
         }
         public int SendTheFiletoSign(StoreAndSign storeAndSign, string programDirectory)
@@ -49,7 +49,7 @@ namespace ImageProcessor.Services
                 {
                     sumSuccess = 0;
                     var fileName = Path.GetFileNameWithoutExtension(programFileName);
-                   // if (!FileNeedsToBeSent(storeAndSign, fileName)) continue;
+                    // if (!FileNeedsToBeSent(storeAndSign, fileName)) continue;
                     for (var i = 0; i < 3; i++)
                     {
                         UpLoadSuccess = UploadFile(programFileName, fileName);
@@ -106,11 +106,20 @@ namespace ImageProcessor.Services
                     var responseNumber = Cp5200External.CP5200_Net_Init(dwIpAddr, nIpPort, dwIdCode, TimeOut);
                     if (responseNumber == 0)
                     {
-                        signIsOnLine = true;
                         _logger.WriteLog($"Comms established with {storeAndSign.IpAddress}, {storeAndSign.Name}", "Result");
                         var bind = Cp5200External.CP5200_Net_SetBindParam(dwIpAddr, nIpPort);
                         var result = Cp5200External.CP5200_Net_Connect();
                         var result2 = Cp5200External.CP5200_Net_IsConnected();
+                        //   var result3 = Cp5200External.CP5200_Net_TestController(Convert.ToByte(1));
+                        //   var result4 = Cp5200External.CP5200_Net_TestCommunication(Convert.ToByte(1));
+
+                        //   if (result4==0)
+                        //   {
+                        //     var result6=Cp5200External.CP5200_Net_RestartApp(Convert.ToByte(1));
+                        //     var result5=  Cp5200External.CP5200_Net_RestartSys(Convert.ToByte(1));
+                        //   }
+                        signIsOnLine = result == 1;
+
                     }
                     else
                     {

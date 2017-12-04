@@ -32,6 +32,7 @@ namespace nightowlsign.data
         public Nullable<System.DateTime> LastUpdateTime { get; set; }
         public Nullable<int> NumImages { get; set; }
         public Nullable<int> Brightness { get; set; }
-        public Nullable<int> CompanyId { get; set; }
+        public int Operational { get; set; }
+        public Nullable<bool> Active { get; set; }
     }
 }

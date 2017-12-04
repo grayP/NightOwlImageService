@@ -16,7 +16,7 @@ namespace nightowlsign.data.Models.Logging
 
         public List<data.Logging> GetLatest()
         {
-            return _context.Logging.OrderByDescending(i => i.DateStamp).Take(50).ToList();
+            return _context.Loggings.OrderByDescending(i => i.DateStamp).Take(50).ToList();
         }
 
         public bool Insert(string description, string subject)
@@ -39,7 +39,7 @@ namespace nightowlsign.data.Models.Logging
                     Subject = log.Subject.Trim(),
                     DateStamp = DateTime.Now.ToLocalTime()
                 };
-                _context.Logging.Add(newLog);
+                _context.Loggings.Add(newLog);
                 _context.SaveChanges();
                 return true;
             }

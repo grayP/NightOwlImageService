@@ -23,7 +23,7 @@ namespace nightowlsign.data
         DbSet<ScheduleAndSign> ScheduleAndSigns { get; set; }
         DbSet<StoreScheduleLog> StoreScheduleLogs { get; set; }
         DbSet<UpLoadLog> UpLoadLogs { get; set; }
-        DbSet<SignBrightness> SignBrightnesses { get; set; }
+      //  DbSet<SignBrightness> SignBrightnesses { get; set; }
         Database Database { get; }
         DbChangeTracker ChangeTracker { get; }
         DbContextConfiguration Configuration { get; }
